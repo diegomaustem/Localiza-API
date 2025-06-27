@@ -8,16 +8,21 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
+    "@prisma/client": "^6.10.1",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.4",
+    "@types/uuid": "^10.0.0",
+    "prisma": "^6.10.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
-  }
+    "express": "^5.1.0",
+    "uuid": "^11.1.0"
+  },
+  "description": ""
 }

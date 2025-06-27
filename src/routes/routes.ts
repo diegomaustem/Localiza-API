@@ -1,14 +1,8 @@
 import { Router } from "express";
+import { userController } from "../controllers/UserController";
 
-const routes = Router();
+const router = Router();
 
-routes.get("/usuarios", (req, res) => {
-  res.send("List of users");
-});
+router.get("/users", userController.getUsers);
 
-routes.post("/usuario", (req, res) => {
-  const user = req.body;
-  res.status(201).send(`User ${user.name} created`);
-});
-
-export default routes;
+export default router;
