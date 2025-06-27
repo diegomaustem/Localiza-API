@@ -7,17 +7,12 @@ class UserController {
     try {
       const users = await userService.getUsers();
 
-      if (users.length === 0) {
-        res
-          .status(404)
-          .json({ code: 404, status: "error", message: "No users found." });
-        return;
-      }
-      const parsedUsers = this.parseUsersDataResponse(users);
+      const usersToReturn =
+        users.length === 0 ? users : this.parseUsersDataResponse(users);
 
       res
         .status(200)
-        .json({ code: 200, status: "success", users: parsedUsers });
+        .json({ code: 200, status: "success", users: usersToReturn });
     } catch (error) {
       console.error("Error getting users.", error);
       throw error;
