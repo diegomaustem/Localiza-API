@@ -15,7 +15,12 @@ class UserController {
         .json({ code: 200, status: "success", users: usersToReturn });
     } catch (error) {
       console.error("Error getting users.", error);
-      throw error;
+
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while searching for users.",
+      });
     }
   }
 
