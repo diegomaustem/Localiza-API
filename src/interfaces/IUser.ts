@@ -13,7 +13,19 @@ export interface IUser {
   criacaoData: Date;
   atualizacaoData: Date;
 }
-
+export interface ICreateUser {
+  id: string;
+  nome: string;
+  sobrenome: string;
+  cpf: bigint;
+  rg: bigint;
+  email: string;
+  senha: string | null;
+  endereco: string;
+  telefone: string;
+  numeroCarteira: bigint;
+  tipoCarteira: string;
+}
 export interface IUserResponse {
   id: string;
   nome: string;
@@ -28,17 +40,4 @@ export interface IUserResponse {
   tipoCarteira: string;
   criacaoData: Date;
   atualizacaoData: Date;
-}
-
-export interface ICreateUser {
-  nome: string;
-  sobrenome: string;
-  cpf: bigint;
-  rg: bigint;
-  email: string;
-  senha: string | null;
-  endereco: string;
-  telefone: string;
-  numeroCarteira: bigint;
-  tipoCarteira: string;
 }

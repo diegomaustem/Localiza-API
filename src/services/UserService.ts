@@ -16,6 +16,18 @@ class UserService {
       throw error;
     }
   }
+
+  async createUser(user: ICreateUser): Promise<IUser> {
+    const newUser: ICreateUser = { ...user, id: uuidv4() };
+
+    try {
+      const users = await UserRepository.create(newUser);
+      return users;
+    } catch (error) {
+      console.error("Failed to create user.", error);
+      throw error;
+    }
+  }
 }
 
 export const userService = new UserService();
