@@ -11,6 +11,18 @@ class UserRepository {
     }
   }
 
+  async findOne(userId: string): Promise<IUser> {
+    try {
+      const user = await prisma.users.findUnique({
+        where: { id: userId },
+      });
+      return user;
+    } catch (error) {
+      console.error("Error fetching user.", error);
+      throw error;
+    }
+  }
+
   async create(user: ICreateUser): Promise<IUser> {
     try {
       return await prisma.users.create({

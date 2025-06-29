@@ -25,6 +25,35 @@ class UserController {
     }
   }
 
+  async getUser(req: Request, res: Response): Promise<void> {
+    const userId: string = req.params.id;
+
+    try {
+      const user = await userService.getUser(userId);
+      if (!user) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "User not found.",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        user: userController.parseUsersDataResponse(user),
+      });
+    } catch (error) {
+      console.error("Error getting user.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while searching for user.",
+      });
+    }
+  }
+
   async createUser(req: Request, res: Response): Promise<void> {
     const userData: ICreateUser = {
       ...req.body,

@@ -17,6 +17,16 @@ class UserService {
     }
   }
 
+  async getUser(userId: string): Promise<IUser> {
+    try {
+      const users = await UserRepository.findOne(userId);
+      return users;
+    } catch (error) {
+      console.error("Failed to retrieve user.", error);
+      throw error;
+    }
+  }
+
   async createUser(user: ICreateUser): Promise<IUser> {
     const newUser: ICreateUser = { ...user, id: uuidv4() };
 
