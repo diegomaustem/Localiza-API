@@ -82,6 +82,38 @@ class UserController {
     }
   }
 
+  async deleteUser(req: Request, res: Response): Promise<void> {
+    const userId: string = req.params.id;
+
+    try {
+      const user = await userService.getUser(userId);
+      if (!user) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "User not found.",
+        });
+        return;
+      }
+
+      // Assuming there's a delete method in userService
+      await userService.deleteUser(userId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "User deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting user.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting user.",
+      });
+    }
+  }
+
   private parseUsersDataResponse(users: IUser[] | IUser): IUserResponse[] {
     const userList = Array.isArray(users) ? users : [users];
 

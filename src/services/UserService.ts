@@ -38,6 +38,14 @@ class UserService {
       throw error;
     }
   }
-}
 
+  async deleteUser(userId: string): Promise<void> {
+    try {
+      await UserRepository.delete(userId);
+    } catch (error) {
+      console.error("Failed to delete user.", error);
+      throw error;
+    }
+  }
+}
 export const userService = new UserService();
