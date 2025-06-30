@@ -39,6 +39,16 @@ class UserService {
     }
   }
 
+  async updateUser(userId: string, userData: ICreateUser): Promise<IUser> {
+    try {
+      const updatedUser = await UserRepository.update(userId, userData);
+      return updatedUser;
+    } catch (error) {
+      console.error("Failed to update user.", error);
+      throw error;
+    }
+  }
+
   async deleteUser(userId: string): Promise<void> {
     try {
       await UserRepository.delete(userId);

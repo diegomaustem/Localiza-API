@@ -82,6 +82,44 @@ class UserController {
     }
   }
 
+  async updateUser(req: Request, res: Response): Promise<void> {
+    const userId: string = req.params.id;
+    const userData: ICreateUser = {
+      ...req.body,
+      cpf: BigInt(req.body.cpf),
+      rg: BigInt(req.body.rg),
+      numeroCarteira: BigInt(req.body.numeroCarteira),
+    };
+
+    try {
+      const user = await userService.getUser(userId);
+      if (!user) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "User not found.",
+        });
+        return;
+      }
+
+      const updatedUser = await userService.updateUser(userId, userData);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "User updated successfully.",
+        user: userController.parseUsersDataResponse(updatedUser),
+      });
+    } catch (error) {
+      console.error("Error updating user.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while updating user.",
+      });
+    }
+  }
+
   async deleteUser(req: Request, res: Response): Promise<void> {
     const userId: string = req.params.id;
 

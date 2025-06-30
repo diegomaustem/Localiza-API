@@ -13,10 +13,9 @@ class UserRepository {
 
   async findOne(userId: string): Promise<IUser> {
     try {
-      const user = await prisma.users.findUnique({
+      return await prisma.users.findUnique({
         where: { id: userId },
       });
-      return user;
     } catch (error) {
       console.error("Error fetching user.", error);
       throw error;
@@ -30,6 +29,18 @@ class UserRepository {
       });
     } catch (error) {
       console.error("Error fetching users.", error);
+      throw error;
+    }
+  }
+
+  async update(userId: string, userData: ICreateUser): Promise<IUser> {
+    try {
+      return await prisma.users.update({
+        where: { id: userId },
+        data: userData,
+      });
+    } catch (error) {
+      console.error("Error updating user.", error);
       throw error;
     }
   }
