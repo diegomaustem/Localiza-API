@@ -5,7 +5,7 @@ export interface IUser {
   cpf: bigint;
   rg: bigint;
   email: string;
-  senha: string | null;
+  senha: string;
   endereco: string;
   telefone: string;
   numeroCarteira: bigint;
@@ -20,7 +20,7 @@ export interface ICreateUser {
   cpf: bigint;
   rg: bigint;
   email: string;
-  senha: string | null;
+  senha: string;
   endereco: string;
   telefone: string;
   numeroCarteira: bigint;
@@ -33,7 +33,7 @@ export interface IUserResponse {
   cpf: string;
   rg: string;
   email: string;
-  senha: string | null;
+  senha: string;
   endereco: string;
   telefone: string;
   numeroCarteira: string;
