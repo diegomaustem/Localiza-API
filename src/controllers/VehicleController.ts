@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ICreateUser, IUser, IUserResponse } from "../interfaces/IUser";
 import { ICreateVehicle } from "../interfaces/IVehicle";
 import { vehicleService } from "../services/VehicleService";
 
