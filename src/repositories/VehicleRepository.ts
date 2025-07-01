@@ -11,6 +11,17 @@ class VehicleRepository {
     }
   }
 
+  async findOne(vehicleId: string): Promise<IVehicle> {
+    try {
+      return await prisma.vehicles.findUnique({
+        where: { id: vehicleId },
+      });
+    } catch (error) {
+      console.error("Error fetching vehicle.", error);
+      throw error;
+    }
+  }
+
   async create(vehicle: ICreateVehicle): Promise<IVehicle> {
     try {
       return await prisma.vehicles.create({
@@ -18,6 +29,17 @@ class VehicleRepository {
       });
     } catch (error) {
       console.error("Error fetching vehicles.", error);
+      throw error;
+    }
+  }
+
+  async delete(vehicleId: string): Promise<IVehicle> {
+    try {
+      return await prisma.vehicles.delete({
+        where: { id: vehicleId },
+      });
+    } catch (error) {
+      console.error("Error deleting vehicle.", error);
       throw error;
     }
   }

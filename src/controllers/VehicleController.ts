@@ -21,6 +21,35 @@ class VehicleController {
     }
   }
 
+  async getVehicle(req: Request, res: Response): Promise<void> {
+    const vehicleId: string = req.params.id;
+
+    try {
+      const vehicle = await vehicleService.getUser(vehicleId);
+      if (!vehicle) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Vehicle not found.",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        user: vehicle,
+      });
+    } catch (error) {
+      console.error("Error getting vehicle.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while searching for vehicle.",
+      });
+    }
+  }
+
   async createVehicle(req: Request, res: Response): Promise<void> {
     const vehicleData: ICreateVehicle = req.body;
 
@@ -43,15 +72,36 @@ class VehicleController {
     }
   }
 
-  private parseUsersDataResponse(users: IUser[] | IUser): IUserResponse[] {
-    const userList = Array.isArray(users) ? users : [users];
+  async deleteVehice(req: Request, res: Response): Promise<void> {
+    const vehiceId: string = req.params.id;
 
-    return userList.map((user) => ({
-      ...user,
-      cpf: user.cpf.toString(),
-      rg: user.rg.toString(),
-      numeroCarteira: user.numeroCarteira.toString(),
-    }));
+    try {
+      const vehicle = await vehicleService.getUser(vehiceId);
+
+      if (!vehicle) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Vehicle not found for deletion.",
+        });
+        return;
+      }
+
+      await vehicleService.deleteUser(vehiceId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Vehicle deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting vehicle.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting vehicle.",
+      });
+    }
   }
 }
 

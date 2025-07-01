@@ -26,6 +26,8 @@ router.delete("/user/:id", userController.deleteUser);
 
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
+router.get("/vehicle/:id", vehicleController.getVehicle);
 router.post("/vehicle", vehicleController.createVehicle);
+router.delete("/vehicle/:id", vehicleController.deleteVehice);
 
 export default router;
