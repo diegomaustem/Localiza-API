@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { userController } from "../controllers/UserController";
+import { vehicleController } from "../controllers/VehicleController";
 import { validate } from "../middlewares/validationMiddleware";
 import {
   createUserSchema,
@@ -22,5 +23,9 @@ router.put(
   userController.updateUser
 );
 router.delete("/user/:id", userController.deleteUser);
+
+// VEHICLES :::
+router.get("/vehicles", vehicleController.getVehicles);
+router.post("/vehicle", vehicleController.createVehicle);
 
 export default router;
