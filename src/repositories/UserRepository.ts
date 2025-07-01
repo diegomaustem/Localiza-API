@@ -2,7 +2,7 @@ import { ICreateUser, IUser } from "../interfaces/IUser";
 import prisma from "../lib/prisma";
 
 class UserRepository {
-  async findMany() {
+  async findMany(): Promise<IUser[]> {
     try {
       return await prisma.users.findMany();
     } catch (error) {
@@ -45,9 +45,9 @@ class UserRepository {
     }
   }
 
-  async delete(userId: string): Promise<void> {
+  async delete(userId: string): Promise<IUser> {
     try {
-      await prisma.users.delete({
+      return await prisma.users.delete({
         where: { id: userId },
       });
     } catch (error) {

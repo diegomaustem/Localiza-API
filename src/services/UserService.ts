@@ -7,11 +7,7 @@ import { passwordManager } from "../utils/PasswordManager";
 class UserService {
   async getUsers(): Promise<IUser[]> {
     try {
-      const users = await UserRepository.findMany();
-      if (users.length === 0) {
-        return [];
-      }
-      return users;
+      return await UserRepository.findMany();
     } catch (error) {
       console.error("Failed to retrieve users.", error);
       throw error;
@@ -20,8 +16,7 @@ class UserService {
 
   async getUser(userId: string): Promise<IUser> {
     try {
-      const users = await UserRepository.findOne(userId);
-      return users;
+      return await UserRepository.findOne(userId);
     } catch (error) {
       console.error("Failed to retrieve user.", error);
       throw error;
@@ -36,8 +31,7 @@ class UserService {
     };
 
     try {
-      const createdUser = await UserRepository.create(newUser);
-      return createdUser;
+      return await UserRepository.create(newUser);
     } catch (error) {
       console.error("Failed to create user.", error);
       throw error;
@@ -51,17 +45,16 @@ class UserService {
     };
 
     try {
-      const updatedUser = await UserRepository.update(userId, updatedData);
-      return updatedUser;
+      return await UserRepository.update(userId, updatedData);
     } catch (error) {
       console.error("Failed to update user.", error);
       throw error;
     }
   }
 
-  async deleteUser(userId: string): Promise<void> {
+  async deleteUser(userId: string): Promise<IUser> {
     try {
-      await UserRepository.delete(userId);
+      return await UserRepository.delete(userId);
     } catch (error) {
       console.error("Failed to delete user.", error);
       throw error;

@@ -64,13 +64,12 @@ class UserController {
 
     try {
       const userCreated = await userService.createUser(userData);
-      const userDataStr = userController.parseUsersDataResponse(userCreated);
 
       res.status(201).json({
         code: 201,
         status: "success",
         message: "User created successfully.",
-        user: userDataStr,
+        user: userController.parseUsersDataResponse(userCreated),
       });
     } catch (error) {
       console.error("Error creating user.", error);
@@ -125,16 +124,16 @@ class UserController {
 
     try {
       const user = await userService.getUser(userId);
+
       if (!user) {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found.",
+          message: "User not found for deletion.",
         });
         return;
       }
 
-      // Assuming there's a delete method in userService
       await userService.deleteUser(userId);
 
       res.status(200).json({
