@@ -18,6 +18,7 @@ export const validate =
       }));
 
       res.status(400).json({
+        code: 400,
         message: "Input data validation failed.",
         errors: errors,
       });
