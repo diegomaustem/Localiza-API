@@ -6,7 +6,7 @@ import { vehicleService } from "../services/VehicleService";
 class VehicleController {
   async getVehicles(req: Request, res: Response): Promise<void> {
     try {
-      const vehicles = await vehicleService.getUsers();
+      const vehicles = await vehicleService.getVehicles();
       res
         .status(200)
         .json({ code: 200, status: "success", vehicles: vehicles });
@@ -25,7 +25,7 @@ class VehicleController {
     const vehicleId: string = req.params.id;
 
     try {
-      const vehicle = await vehicleService.getUser(vehicleId);
+      const vehicle = await vehicleService.getVehicle(vehicleId);
       if (!vehicle) {
         res.status(404).json({
           code: 404,
@@ -54,7 +54,7 @@ class VehicleController {
     const vehicleData: ICreateVehicle = req.body;
 
     try {
-      const vehicleCreated = await vehicleService.createUser(vehicleData);
+      const vehicleCreated = await vehicleService.createVehicle(vehicleData);
 
       res.status(201).json({
         code: 201,
@@ -72,11 +72,11 @@ class VehicleController {
     }
   }
 
-  async deleteVehice(req: Request, res: Response): Promise<void> {
+  async deleteVehicle(req: Request, res: Response): Promise<void> {
     const vehiceId: string = req.params.id;
 
     try {
-      const vehicle = await vehicleService.getUser(vehiceId);
+      const vehicle = await vehicleService.getVehicle(vehiceId);
 
       if (!vehicle) {
         res.status(404).json({
@@ -87,7 +87,7 @@ class VehicleController {
         return;
       }
 
-      await vehicleService.deleteUser(vehiceId);
+      await vehicleService.deleteVehicle(vehiceId);
 
       res.status(200).json({
         code: 200,

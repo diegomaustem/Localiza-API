@@ -28,7 +28,7 @@ class VehicleRepository {
         data: vehicle,
       });
     } catch (error) {
-      console.error("Error fetching vehicles.", error);
+      console.error("Error fetching vehicle.", error);
       throw error;
     }
   }

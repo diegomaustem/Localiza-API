@@ -28,6 +28,6 @@ router.delete("/user/:id", userController.deleteUser);
 router.get("/vehicles", vehicleController.getVehicles);
 router.get("/vehicle/:id", vehicleController.getVehicle);
 router.post("/vehicle", vehicleController.createVehicle);
-router.delete("/vehicle/:id", vehicleController.deleteVehice);
+router.delete("/vehicle/:id", vehicleController.deleteVehicle);
 
 export default router;

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import VehicleRepository from "../repositories/VehicleRepository";
 
 class VehicleService {
-  async getUsers(): Promise<IVehicle[]> {
+  async getVehicles(): Promise<IVehicle[]> {
     try {
       return await VehicleRepository.findMany();
     } catch (error) {
@@ -12,7 +12,7 @@ class VehicleService {
     }
   }
 
-  async getUser(vehicleId: string): Promise<IVehicle> {
+  async getVehicle(vehicleId: string): Promise<IVehicle> {
     try {
       return await VehicleRepository.findOne(vehicleId);
     } catch (error) {
@@ -21,7 +21,7 @@ class VehicleService {
     }
   }
 
-  async createUser(vehicle: ICreateVehicle): Promise<IVehicle> {
+  async createVehicle(vehicle: ICreateVehicle): Promise<IVehicle> {
     const newVehicle: ICreateVehicle = {
       ...vehicle,
       id: uuidv4(),
@@ -35,7 +35,7 @@ class VehicleService {
     }
   }
 
-  async deleteUser(vehicleId: string): Promise<IVehicle> {
+  async deleteVehicle(vehicleId: string): Promise<IVehicle> {
     try {
       return await VehicleRepository.delete(vehicleId);
     } catch (error) {
