@@ -8,6 +8,7 @@ import {
 
 const router = Router();
 
+// USERS :::
 router.get("/users", userController.getUsers);
 router.get("/user/:id", userController.getUser);
 router.post(

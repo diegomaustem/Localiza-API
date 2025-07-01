@@ -30,3 +30,21 @@ model users {
   criacaoData     DateTime @default(now())
   atualizacaoData DateTime @updatedAt
 }
+
+model vehicles {
+  id             String  @id @unique
+
+  chassi String     @unique        
+  placa String      @unique
+  marca String
+  modelo String
+  ano Int
+  cor String
+  documento_crlv String @unique
+  cilindrada Int
+
+  criacaoData     DateTime @default(now())
+  atualizacaoData DateTime @updatedAt
+}
+
+
