@@ -35,6 +35,18 @@ class VehicleService {
     }
   }
 
+  async updateVehicle(
+    vehicleId: string,
+    vehicleData: ICreateVehicle
+  ): Promise<IVehicle> {
+    try {
+      return await VehicleRepository.update(vehicleId, vehicleData);
+    } catch (error) {
+      console.error("Failed to update vehicle.", error);
+      throw error;
+    }
+  }
+
   async deleteVehicle(vehicleId: string): Promise<IVehicle> {
     try {
       return await VehicleRepository.delete(vehicleId);

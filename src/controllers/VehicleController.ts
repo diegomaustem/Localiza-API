@@ -72,6 +72,42 @@ class VehicleController {
     }
   }
 
+  async updateVehicle(req: Request, res: Response): Promise<void> {
+    const vehicleId: string = req.params.id;
+    const vehicleData: ICreateVehicle = req.body;
+
+    try {
+      const vehicle = await vehicleService.getVehicle(vehicleId);
+      if (!vehicle) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Vehicle not found.",
+        });
+        return;
+      }
+
+      const updatedVehicle = await vehicleService.updateVehicle(
+        vehicleId,
+        vehicleData
+      );
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "User updated successfully.",
+        vehicle: updatedVehicle,
+      });
+    } catch (error) {
+      console.error("Error updating vehicle.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while updating vehicle.",
+      });
+    }
+  }
+
   async deleteVehicle(req: Request, res: Response): Promise<void> {
     const vehiceId: string = req.params.id;
 

@@ -33,6 +33,21 @@ class VehicleRepository {
     }
   }
 
+  async update(
+    vehicleId: string,
+    vehicleData: ICreateVehicle
+  ): Promise<IVehicle> {
+    try {
+      return await prisma.vehicles.update({
+        where: { id: vehicleId },
+        data: vehicleData,
+      });
+    } catch (error) {
+      console.error("Error updating vehicle.", error);
+      throw error;
+    }
+  }
+
   async delete(vehicleId: string): Promise<IVehicle> {
     try {
       return await prisma.vehicles.delete({
