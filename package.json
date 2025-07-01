@@ -22,10 +22,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@types/joi": "^17.2.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "express-validator": "^7.2.1",
+    "joi": "^17.13.3",
     "uuid": "^11.1.0"
   },
   "description": ""
