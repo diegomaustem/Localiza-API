@@ -6,6 +6,10 @@ import {
   createUserSchema,
   updateUserSchema,
 } from "../validations/userValidation";
+import {
+  createVehicleSchema,
+  updateVehicleSchema,
+} from "../validations/vehicleValidation";
 
 const router = Router();
 
@@ -27,8 +31,17 @@ router.delete("/user/:id", userController.deleteUser);
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
 router.get("/vehicle/:id", vehicleController.getVehicle);
-router.post("/vehicle", vehicleController.createVehicle);
-router.put("/vehicle/:id", vehicleController.updateVehicle);
+router.post(
+  "/vehicle",
+  validate(createVehicleSchema, "body"),
+  vehicleController.createVehicle
+);
+
+router.put(
+  "/vehicle/:id",
+  validate(updateVehicleSchema, "body"),
+  vehicleController.updateVehicle
+);
 router.delete("/vehicle/:id", vehicleController.deleteVehicle);
 
 export default router;
