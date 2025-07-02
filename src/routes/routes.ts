@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userController } from "../controllers/UserController";
 import { vehicleController } from "../controllers/VehicleController";
+import { privilegeController } from "../controllers/PrivilegeController";
 import { validate } from "../middlewares/validationMiddleware";
 import {
   createUserSchema,
@@ -43,5 +44,10 @@ router.put(
   vehicleController.updateVehicle
 );
 router.delete("/vehicle/:id", vehicleController.deleteVehicle);
+
+// PRIVILEGE :::
+router.get("/privileges", privilegeController.getPrivileges);
+// router.get("/privilege/:id", userController.getUser);
+router.post("/privilege", privilegeController.createPrivilege);
 
 export default router;
