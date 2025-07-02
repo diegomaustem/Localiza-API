@@ -1,4 +1,4 @@
-import { ICreateUser, IUser } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 import prisma from "../lib/prisma";
 
 class UserRepository {
@@ -11,7 +11,7 @@ class UserRepository {
     }
   }
 
-  async findOne(userId: string): Promise<IUser> {
+  async findOne(userId: string): Promise<IUser | null> {
     try {
       return await prisma.users.findUnique({
         where: { id: userId },
@@ -22,7 +22,7 @@ class UserRepository {
     }
   }
 
-  async create(user: ICreateUser): Promise<IUser> {
+  async create(user: IUser): Promise<IUser> {
     try {
       return await prisma.users.create({
         data: user,
@@ -33,7 +33,7 @@ class UserRepository {
     }
   }
 
-  async update(userId: string, userData: ICreateUser): Promise<IUser> {
+  async update(userId: string, userData: IUser): Promise<IUser> {
     try {
       return await prisma.users.update({
         where: { id: userId },

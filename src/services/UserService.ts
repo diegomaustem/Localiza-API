@@ -1,4 +1,4 @@
-import { ICreateUser, IUser } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 import { v4 as uuidv4 } from "uuid";
 import UserRepository from "../repositories/UserRepository";
 import { passwordManager } from "../utils/PasswordManager";
@@ -13,7 +13,7 @@ class UserService {
     }
   }
 
-  async getUser(userId: string): Promise<IUser> {
+  async getUser(userId: string): Promise<IUser | null> {
     try {
       return await UserRepository.findOne(userId);
     } catch (error) {
@@ -22,11 +22,11 @@ class UserService {
     }
   }
 
-  async createUser(user: ICreateUser): Promise<IUser> {
-    const newUser: ICreateUser = {
+  async createUser(user: IUser): Promise<IUser> {
+    const newUser: IUser = {
       ...user,
       id: uuidv4(),
-      senha: await passwordManager.hashPassword(user.senha),
+      password: await passwordManager.hashPassword(user.password),
     };
 
     try {
@@ -37,10 +37,10 @@ class UserService {
     }
   }
 
-  async updateUser(userId: string, userData: ICreateUser): Promise<IUser> {
-    const updatedData: ICreateUser = {
+  async updateUser(userId: string, userData: IUser): Promise<IUser> {
+    const updatedData: IUser = {
       ...userData,
-      senha: await passwordManager.hashPassword(userData.senha),
+      password: await passwordManager.hashPassword(userData.password),
     };
 
     try {

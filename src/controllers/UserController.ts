@@ -1,19 +1,12 @@
 import { Request, Response } from "express";
-import { ICreateUser, IUser, IUserResponse } from "../interfaces/IUser";
+import { IUser } from "../interfaces/IUser";
 import { userService } from "../services/UserService";
 
 class UserController {
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
       const users = await userService.getUsers();
-      const usersToReturn =
-        users.length === 0
-          ? users
-          : userController.parseUsersDataResponse(users);
-
-      res
-        .status(200)
-        .json({ code: 200, status: "success", users: usersToReturn });
+      res.status(200).json({ code: 200, status: "success", users: users });
     } catch (error) {
       console.error("Error getting users.", error);
 
@@ -30,19 +23,20 @@ class UserController {
 
     try {
       const user = await userService.getUser(userId);
-      if (!user) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "User not found.",
-        });
-        return;
-      }
+      console.log("Next", user);
+      // if (user === null) {
+      //   res.status(404).json({
+      //     code: 404,
+      //     status: "error",
+      //     message: "User not found.",
+      //   });
+      //   return;
+      // }
 
       res.status(200).json({
         code: 200,
         status: "success",
-        user: userController.parseUsersDataResponse(user),
+        user: user,
       });
     } catch (error) {
       console.error("Error getting user.", error);
@@ -55,21 +49,18 @@ class UserController {
   }
 
   async createUser(req: Request, res: Response): Promise<void> {
-    const userData: ICreateUser = {
-      ...req.body,
-      cpf: BigInt(req.body.cpf),
-      rg: BigInt(req.body.rg),
-      numeroCarteira: BigInt(req.body.numeroCarteira),
-    };
+    const userData: IUser = req.body;
 
     try {
       const userCreated = await userService.createUser(userData);
+
+      console.log("Retorno", userCreated);
 
       res.status(201).json({
         code: 201,
         status: "success",
         message: "User created successfully.",
-        user: userController.parseUsersDataResponse(userCreated),
+        userCreated: userCreated,
       });
     } catch (error) {
       console.error("Error creating user.", error);
@@ -83,12 +74,7 @@ class UserController {
 
   async updateUser(req: Request, res: Response): Promise<void> {
     const userId: string = req.params.id;
-    const userData: ICreateUser = {
-      ...req.body,
-      cpf: BigInt(req.body.cpf),
-      rg: BigInt(req.body.rg),
-      numeroCarteira: BigInt(req.body.numeroCarteira),
-    };
+    const userData: IUser = req.body;
 
     try {
       const user = await userService.getUser(userId);
@@ -107,7 +93,7 @@ class UserController {
         code: 200,
         status: "success",
         message: "User updated successfully.",
-        user: userController.parseUsersDataResponse(updatedUser),
+        user: updatedUser,
       });
     } catch (error) {
       console.error("Error updating user.", error);
@@ -149,17 +135,6 @@ class UserController {
         message: "Internal error while deleting user.",
       });
     }
-  }
-
-  private parseUsersDataResponse(users: IUser[] | IUser): IUserResponse[] {
-    const userList = Array.isArray(users) ? users : [users];
-
-    return userList.map((user) => ({
-      ...user,
-      cpf: user.cpf.toString(),
-      rg: user.rg.toString(),
-      numeroCarteira: user.numeroCarteira.toString(),
-    }));
   }
 }
 

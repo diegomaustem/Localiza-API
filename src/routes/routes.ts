@@ -18,7 +18,7 @@ router.get("/users", userController.getUsers);
 router.get("/user/:id", userController.getUser);
 router.post(
   "/user",
-  validate(createUserSchema, "body"),
+  // validate(createUserSchema, "body"),
   userController.createUser
 );
 router.put(

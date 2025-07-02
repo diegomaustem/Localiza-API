@@ -15,36 +15,27 @@ datasource db {
 }
 
 model users {
-  id             String  @id @unique          
-  nome           String
-  sobrenome      String
-  cpf            BigInt  @unique
-  rg             BigInt  @unique
-  email          String  @unique
-  senha          String?
-  endereco       String
-  telefone       String
-  numeroCarteira BigInt @unique
-  tipoCarteira   String
+  id        String @id @unique
+  full_name String 
+  email     String @unique
+  address   String 
+  gender    String
+  telephone String 
+  password  String
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
 
-  criacaoData     DateTime @default(now())
-  atualizacaoData DateTime @updatedAt
+  privilege_id String
+  privilege   privileges @relation(fields: [privilege_id], references: [id])
 }
 
-model vehicles {
-  id             String  @id @unique
+model privileges {
+  id   String @id @unique
+  name String 
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
 
-  chassi String     @unique        
-  placa String      @unique
-  marca String
-  modelo String
-  ano Int
-  cor String
-  documento_crlv String @unique
-  cilindrada Int
-
-  criacaoData     DateTime @default(now())
-  atualizacaoData DateTime @updatedAt
+  users users[]
 }
 
 
