@@ -10,6 +10,18 @@ class PrivilegeRepository {
       throw error;
     }
   }
+
+  async findOne(privilegeId: string): Promise<IPrivilege | null> {
+    try {
+      return await prisma.privileges.findUnique({
+        where: { id: privilegeId },
+      });
+    } catch (error) {
+      console.error("Error fetching privilege.", error);
+      throw error;
+    }
+  }
+
   async create(privilege: IPrivilege): Promise<IPrivilege> {
     try {
       return await prisma.privileges.create({

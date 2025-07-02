@@ -12,6 +12,15 @@ class PrivilegeService {
     }
   }
 
+  async getPrivilege(privilegeId: string): Promise<IPrivilege | null> {
+    try {
+      return await privilegeRepository.findOne(privilegeId);
+    } catch (error) {
+      console.error("Failed to retrieve privilege.", error);
+      throw error;
+    }
+  }
+
   async createPrivigele(privilege: IPrivilege): Promise<IPrivilege> {
     const newPrivilege: IPrivilege = {
       ...privilege,

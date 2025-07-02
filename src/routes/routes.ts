@@ -47,7 +47,7 @@ router.delete("/vehicle/:id", vehicleController.deleteVehicle);
 
 // PRIVILEGE :::
 router.get("/privileges", privilegeController.getPrivileges);
-// router.get("/privilege/:id", userController.getUser);
+router.get("/privilege/:id", privilegeController.getPrivilege);
 router.post("/privilege", privilegeController.createPrivilege);
 
 export default router;

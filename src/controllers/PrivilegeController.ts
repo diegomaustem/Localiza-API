@@ -19,6 +19,35 @@ class PrivilegeController {
     }
   }
 
+  async getPrivilege(req: Request, res: Response) {
+    const privilegeId: string = req.params.id;
+
+    try {
+      const privilege = await privilegeService.getPrivilege(privilegeId);
+      if (privilege === null) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Privilege not found.",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        privilege: privilege,
+      });
+    } catch (error) {
+      console.error("Error getting privilege.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while searching for privilege.",
+      });
+    }
+  }
+
   async createPrivilege(req: Request, res: Response): Promise<void> {
     const privilegeData: IPrivilege = req.body;
 
