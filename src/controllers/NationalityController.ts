@@ -74,6 +74,40 @@ class NationalityController {
       });
     }
   }
+
+  async deleteNationality(req: Request, res: Response): Promise<void> {
+    const nationalityId: string = req.params.id;
+
+    try {
+      const nationality = await nationalityService.getNationality(
+        nationalityId
+      );
+
+      if (!nationality) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Nationality not found for deletion.",
+        });
+        return;
+      }
+
+      await nationalityService.deleteNationality(nationalityId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Nationality deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting nationality.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting nationality.",
+      });
+    }
+  }
 }
 
 export const nationalityController = new NationalityController();

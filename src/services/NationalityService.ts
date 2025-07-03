@@ -28,6 +28,15 @@ class NationalityService {
       throw error;
     }
   }
+
+  async deleteNationality(nationalityId: string): Promise<INationality> {
+    try {
+      return await nationalityRepository.delete(nationalityId);
+    } catch (error) {
+      console.error("Failed to delete nationality.", error);
+      throw error;
+    }
+  }
 }
 
 export const nationalityService = new NationalityService();

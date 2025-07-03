@@ -32,6 +32,17 @@ class NationalityRepository {
       throw error;
     }
   }
+
+  async delete(nationalityId: string): Promise<INationality> {
+    try {
+      return await prisma.nationalities.delete({
+        where: { id: nationalityId },
+      });
+    } catch (error) {
+      console.error("Error deleting nationality.", error);
+      throw error;
+    }
+  }
 }
 
 export const nationalityRepository = new NationalityRepository();
