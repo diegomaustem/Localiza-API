@@ -12,6 +12,8 @@ import {
   createVehicleSchema,
   updateVehicleSchema,
 } from "../validations/vehicleValidation";
+import { homedir } from "os";
+import { honorController } from "../controllers/HonorController";
 
 const router = Router();
 
@@ -59,5 +61,10 @@ router.get("/nationality/:id", nationalityController.getNationality);
 router.post("/nationality", nationalityController.createNationality);
 router.put("/nationality/:id", nationalityController.updateNationality);
 router.delete("/nationality/:id", nationalityController.deleteNationality);
+
+// HONORS
+router.get("/honors", honorController.getHonors);
+router.get("/honor/:id", honorController.getHonor);
+router.post("/honor", honorController.createHonor);
 
 export default router;
