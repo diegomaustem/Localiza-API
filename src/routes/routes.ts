@@ -2,6 +2,7 @@ import { Router } from "express";
 import { userController } from "../controllers/UserController";
 import { vehicleController } from "../controllers/VehicleController";
 import { privilegeController } from "../controllers/PrivilegeController";
+import { nationalityController } from "../controllers/NationalityController";
 import { validate } from "../middlewares/validationMiddleware";
 import {
   createUserSchema,
@@ -51,5 +52,9 @@ router.get("/privilege/:id", privilegeController.getPrivilege);
 router.post("/privilege", privilegeController.createPrivilege);
 router.put("/privilege/:id", privilegeController.updatePrivilege);
 router.delete("/privilege/:id", privilegeController.deletePrivilege);
+
+// NATIONALITIES :::
+router.get("/nationalities", nationalityController.getNationalities);
+router.post("/nationality", nationalityController.createNationality);
 
 export default router;
