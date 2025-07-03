@@ -55,6 +55,7 @@ router.delete("/privilege/:id", privilegeController.deletePrivilege);
 
 // NATIONALITIES :::
 router.get("/nationalities", nationalityController.getNationalities);
+router.get("/nationality/:id", nationalityController.getNationality);
 router.post("/nationality", nationalityController.createNationality);
 
 export default router;

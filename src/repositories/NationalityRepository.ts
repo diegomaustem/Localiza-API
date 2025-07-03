@@ -11,6 +11,17 @@ class NationalityRepository {
     }
   }
 
+  async findOne(nationalityId: string): Promise<INationality | null> {
+    try {
+      return await prisma.nationalities.findUnique({
+        where: { id: nationalityId },
+      });
+    } catch (error) {
+      console.error("Error fetching nationality.", error);
+      throw error;
+    }
+  }
+
   async create(nationality: INationality): Promise<INationality> {
     try {
       return await prisma.nationalities.create({

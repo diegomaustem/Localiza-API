@@ -11,6 +11,15 @@ class NationalityService {
     }
   }
 
+  async getNationality(nationalityId: string): Promise<INationality | null> {
+    try {
+      return await nationalityRepository.findOne(nationalityId);
+    } catch (error) {
+      console.error("Failed to retrieve nationality.", error);
+      throw error;
+    }
+  }
+
   async createNationality(nationality: INationality): Promise<INationality> {
     try {
       return await nationalityRepository.create(nationality);

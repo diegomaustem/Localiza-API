@@ -20,6 +20,37 @@ class NationalityController {
     }
   }
 
+  async getNationality(req: Request, res: Response) {
+    const nationalityId: string = req.params.id;
+
+    try {
+      const nationality = await nationalityService.getNationality(
+        nationalityId
+      );
+      if (nationality === null) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Nationality not found.",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        nationality: nationality,
+      });
+    } catch (error) {
+      console.error("Error getting nationality.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while searching for nationality.",
+      });
+    }
+  }
+
   async createNationality(req: Request, res: Response): Promise<void> {
     const nationalityData: INationality = req.body;
 
