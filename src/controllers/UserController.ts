@@ -23,15 +23,15 @@ class UserController {
 
     try {
       const user = await userService.getUser(userId);
-      console.log("Next", user);
-      // if (user === null) {
-      //   res.status(404).json({
-      //     code: 404,
-      //     status: "error",
-      //     message: "User not found.",
-      //   });
-      //   return;
-      // }
+
+      if (!user) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "User not found.",
+        });
+        return;
+      }
 
       res.status(200).json({
         code: 200,
@@ -54,13 +54,11 @@ class UserController {
     try {
       const userCreated = await userService.createUser(userData);
 
-      console.log("Retorno", userCreated);
-
       res.status(201).json({
         code: 201,
         status: "success",
         message: "User created successfully.",
-        userCreated: userCreated,
+        user: userCreated,
       });
     } catch (error) {
       console.error("Error creating user.", error);
@@ -82,7 +80,7 @@ class UserController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found.",
+          message: "User not found for update.",
         });
         return;
       }
@@ -110,22 +108,22 @@ class UserController {
 
     try {
       const user = await userService.getUser(userId);
-
       if (!user) {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found for deletion.",
+          message: "User not found for delete.",
         });
         return;
       }
 
-      await userService.deleteUser(userId);
+      const deletedUser = await userService.deleteUser(userId);
 
       res.status(200).json({
         code: 200,
         status: "success",
         message: "User deleted successfully.",
+        userDeleted: deletedUser,
       });
     } catch (error) {
       console.error("Error deleting user.", error);

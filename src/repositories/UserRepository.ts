@@ -28,7 +28,7 @@ class UserRepository {
         data: user,
       });
     } catch (error) {
-      console.error("Error fetching users.", error);
+      console.error("Error creating user.", error);
       throw error;
     }
   }
