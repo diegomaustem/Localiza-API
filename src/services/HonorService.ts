@@ -28,6 +28,24 @@ class HonorService {
       throw error;
     }
   }
+
+  async updateHonor(honorId: string, honorData: IHonor): Promise<IHonor> {
+    try {
+      return await honorRepository.update(honorId, honorData);
+    } catch (error) {
+      console.error("Failed to update honor.", error);
+      throw error;
+    }
+  }
+
+  async deleteHonor(honorId: string): Promise<IHonor> {
+    try {
+      return await honorRepository.delete(honorId);
+    } catch (error) {
+      console.error("Failed to delete honor.", error);
+      throw error;
+    }
+  }
 }
 
 export const honorService = new HonorService();

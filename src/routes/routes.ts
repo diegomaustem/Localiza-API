@@ -66,5 +66,7 @@ router.delete("/nationality/:id", nationalityController.deleteNationality);
 router.get("/honors", honorController.getHonors);
 router.get("/honor/:id", honorController.getHonor);
 router.post("/honor", honorController.createHonor);
+router.put("/honor/:id", honorController.updateHonor);
+router.delete("/honor/:id", honorController.deleteHonor);
 
 export default router;

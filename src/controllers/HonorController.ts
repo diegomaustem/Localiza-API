@@ -67,6 +67,72 @@ class HonorController {
       });
     }
   }
+
+  async updateHonor(req: Request, res: Response): Promise<void> {
+    const honorId: string = req.params.id;
+    const honorData: IHonor = req.body;
+
+    try {
+      const honor = await honorService.getHonor(honorId);
+      if (!honor) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Honor not found for update.",
+        });
+        return;
+      }
+
+      const updatedHonor = await honorService.updateHonor(honorId, honorData);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Honor updated successfully.",
+        updatedHonor: updatedHonor,
+      });
+    } catch (error) {
+      console.error("Error updating honor.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while updating honor.",
+      });
+    }
+  }
+
+  async deleteHonor(req: Request, res: Response): Promise<void> {
+    const honorId: string = req.params.id;
+
+    try {
+      const honor = await honorService.getHonor(honorId);
+
+      if (!honor) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Honor not found for deletion.",
+        });
+        return;
+      }
+
+      const deletedHonor = await honorService.deleteHonor(honorId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Honor deleted successfully.",
+        deletedHonor: deletedHonor,
+      });
+    } catch (error) {
+      console.error("Error deleting honor.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting honor.",
+      });
+    }
+  }
 }
 
 export const honorController = new HonorController();
