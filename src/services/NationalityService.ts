@@ -29,6 +29,18 @@ class NationalityService {
     }
   }
 
+  async updateNationality(
+    nationalityId: string,
+    nationalityData: INationality
+  ): Promise<INationality> {
+    try {
+      return await nationalityRepository.update(nationalityId, nationalityData);
+    } catch (error) {
+      console.error("Failed to update nationality.", error);
+      throw error;
+    }
+  }
+
   async deleteNationality(nationalityId: string): Promise<INationality> {
     try {
       return await nationalityRepository.delete(nationalityId);

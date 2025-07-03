@@ -33,6 +33,20 @@ class NationalityRepository {
     }
   }
 
+  async update(
+    nationalityId: string,
+    nationalityData: INationality
+  ): Promise<INationality> {
+    try {
+      return await prisma.nationalities.update({
+        where: { id: nationalityId },
+        data: nationalityData,
+      });
+    } catch (error) {
+      console.error("Error updating nationality.", error);
+      throw error;
+    }
+  }
   async delete(nationalityId: string): Promise<INationality> {
     try {
       return await prisma.nationalities.delete({

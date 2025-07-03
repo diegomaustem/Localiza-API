@@ -75,6 +75,44 @@ class NationalityController {
     }
   }
 
+  async updateNationality(req: Request, res: Response): Promise<void> {
+    const nationalityId: string = req.params.id;
+    const nationalityData: INationality = req.body;
+
+    try {
+      const nationality = await nationalityService.getNationality(
+        nationalityId
+      );
+      if (!nationality) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Nationality not found for update.",
+        });
+        return;
+      }
+
+      const updatedNationality = await nationalityService.updateNationality(
+        nationalityId,
+        nationalityData
+      );
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Nationality updated successfully.",
+        nationality: updatedNationality,
+      });
+    } catch (error) {
+      console.error("Error updating nationality.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while updating nationality.",
+      });
+    }
+  }
+
   async deleteNationality(req: Request, res: Response): Promise<void> {
     const nationalityId: string = req.params.id;
 
