@@ -7,7 +7,7 @@ class PrivilegeService {
     try {
       return await privilegeRepository.findMany();
     } catch (error) {
-      console.error("Failed to retrieve Privileges.", error);
+      console.error("Failed to retrieve privileges.", error);
       throw error;
     }
   }
@@ -31,6 +31,18 @@ class PrivilegeService {
       return await privilegeRepository.create(newPrivilege);
     } catch (error) {
       console.error("Failed to create privilege.", error);
+      throw error;
+    }
+  }
+
+  async updatePrivilege(
+    privilegeId: string,
+    privilegeData: IPrivilege
+  ): Promise<IPrivilege> {
+    try {
+      return await privilegeRepository.update(privilegeId, privilegeData);
+    } catch (error) {
+      console.error("Failed to update privilege.", error);
       throw error;
     }
   }

@@ -33,6 +33,21 @@ class PrivilegeRepository {
     }
   }
 
+  async update(
+    privilegeId: string,
+    privilegeData: IPrivilege
+  ): Promise<IPrivilege> {
+    try {
+      return await prisma.privileges.update({
+        where: { id: privilegeId },
+        data: privilegeData,
+      });
+    } catch (error) {
+      console.error("Error updating privilege.", error);
+      throw error;
+    }
+  }
+
   async delete(privilegeId: string): Promise<IPrivilege> {
     try {
       return await prisma.privileges.delete({

@@ -72,6 +72,42 @@ class PrivilegeController {
     }
   }
 
+  async updatePrivilege(req: Request, res: Response): Promise<void> {
+    const privilegeId: string = req.params.id;
+    const privilegeData: IPrivilege = req.body;
+
+    try {
+      const privilege = await privilegeService.getPrivilege(privilegeId);
+      if (!privilege) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Privilege not found for update.",
+        });
+        return;
+      }
+
+      const updatedPrivilege = await privilegeService.updatePrivilege(
+        privilegeId,
+        privilegeData
+      );
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Privilege updated successfully.",
+        privilege: updatedPrivilege,
+      });
+    } catch (error) {
+      console.error("Error updating privilege.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while updating privilege.",
+      });
+    }
+  }
+
   async deletePrivilege(req: Request, res: Response): Promise<void> {
     const privilegeId: string = req.params.id;
 
