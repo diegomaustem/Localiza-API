@@ -15,27 +15,143 @@ datasource db {
 }
 
 model users {
-  id        String @id @unique
-  full_name String 
-  email     String @unique
-  address   String 
-  gender    String
-  telephone String 
-  password  String
+  id String @id @default(uuid())
+  full_name String @db.VarChar(45)
+  email     String @unique @db.VarChar(45) 
+  address   String @db.VarChar(65)
+  gender    String @db.VarChar(4)
+  telephone String @db.VarChar(16)
+  password  String @db.VarChar(45)
+  privileges_id String
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-
-  privilege_id String
-  privilege   privileges @relation(fields: [privilege_id], references: [id])
+  privilege   privileges @relation(fields: [privileges_id], references: [id])
 }
 
 model privileges {
-  id   String @id @unique
-  name String @unique
+  id String @id @default(uuid())
+  name String @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-
   users users[]
 }
 
+model honors {
+  id String @id @default(uuid())
+  name String @db.VarChar(45) 
+  level Int @db.Integer
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  customers customers[]
+}
 
+model nationalities {
+  id String @id @default(uuid())
+  name String @db.VarChar(45) 
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  customers     customers[]
+}
+model customers {
+  id String @id @default(uuid())
+  full_name String @db.VarChar(45) 
+  cpf String @unique @db.VarChar(15) 
+  email String @unique @db.VarChar(45) 
+  gender String @db.VarChar(4)
+  password String @db.VarChar(45)
+  points Int @db.Integer
+  address String @db.VarChar(65)
+  telephone String @db.VarChar(16)
+  cnh_code String @unique @db.VarChar(25)
+  cnh_category String @db.VarChar(6)
+  honors_id String
+  nationalities_id   String 
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  honors       honors @relation(fields: [honors_id], references: [id])
+  nationality  nationalities @relation(fields: [nationalities_id], references: [id])
+  reserves reserves[]
+}
+model reserves {
+  id String @id @default(uuid())
+  daily_amount Int @db.Integer
+  withdrawn DateTime @db.Date
+  return DateTime @db.Date
+  value Decimal @db.Decimal(10, 2)
+  status String @db.VarChar(20)
+  customers_id String
+  vehicles_id   String
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  customer customers @relation(fields: [customers_id], references: [id])
+  vehicle  vehicles  @relation(fields: [vehicles_id], references: [id])
+}
+model vehicles {
+  id String  @id @default(uuid())
+  chassi String @unique @db.VarChar(45)      
+  plate String @unique @db.VarChar(45)
+  mark String @db.VarChar(30)
+  model String @db.VarChar(20)
+  year DateTime  @db.Date
+  color String @db.VarChar(20)
+  crlv_document String @unique @db.VarChar(45)
+  cylinder_capacity Int @db.Integer
+  status String @db.VarChar(20)
+  units_id String
+  categories_id String
+  groups_id String
+  creation_date DateTime @default(now())
+  update_date DateTime @updatedAt
+  unit     units      @relation(fields: [units_id], references: [id])
+  category categories @relation(fields: [categories_id], references: [id])
+  group    groups     @relation(fields: [groups_id], references: [id])
+  reserves reserves[]
+}
+model prices {
+  id            String   @id @default(uuid())
+  price         Decimal  @db.Decimal(10, 2)
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  categories    categories[]
+}
+model categories {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(45)
+  prices_id     String
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  price         prices   @relation(fields: [prices_id], references: [id])
+  vehicles      vehicles[] 
+}
+model groups {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(45)
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  vehicles      vehicles[]
+}
+model units {
+  id        String @id @default(uuid())
+  unit      String @db.VarChar(45)
+  cities_id String
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  city      cities @relation(fields: [cities_id], references: [id])
+  vehicles  vehicles[]
+}
+model cities {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(45)
+  states_id     String
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  state         states   @relation(fields: [states_id], references: [id])
+  units         units[]
+}
+model states {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(45)
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
+  cities        cities[]
+}
