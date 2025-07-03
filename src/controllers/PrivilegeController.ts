@@ -71,6 +71,38 @@ class PrivilegeController {
       });
     }
   }
+
+  async deletePrivilege(req: Request, res: Response): Promise<void> {
+    const privilegeId: string = req.params.id;
+
+    try {
+      const privilege = await privilegeService.getPrivilege(privilegeId);
+
+      if (!privilege) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Privilege not found for deletion.",
+        });
+        return;
+      }
+
+      await privilegeService.deletePrivilege(privilegeId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Privilege deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting privilege.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting privilege.",
+      });
+    }
+  }
 }
 
 export const privilegeController = new PrivilegeController();

@@ -32,6 +32,17 @@ class PrivilegeRepository {
       throw error;
     }
   }
+
+  async delete(privilegeId: string): Promise<IPrivilege> {
+    try {
+      return await prisma.privileges.delete({
+        where: { id: privilegeId },
+      });
+    } catch (error) {
+      console.error("Error deleting privilege.", error);
+      throw error;
+    }
+  }
 }
 
 export const privilegeRepository = new PrivilegeRepository();

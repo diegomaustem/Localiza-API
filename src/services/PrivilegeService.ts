@@ -34,5 +34,14 @@ class PrivilegeService {
       throw error;
     }
   }
+
+  async deletePrivilege(privilegeId: string): Promise<IPrivilege> {
+    try {
+      return await privilegeRepository.delete(privilegeId);
+    } catch (error) {
+      console.error("Failed to delete privilege.", error);
+      throw error;
+    }
+  }
 }
 export const privilegeService = new PrivilegeService();
