@@ -41,9 +41,9 @@ export const createUserSchema = Joi.object({
     "any.required": "Password is required.",
   }),
   privilege_id: Joi.string().pattern(/^\d+$/).required().messages({
-    "string.base": "Privilege ID must be text.", // Or "Privilege ID must be a number as text."
+    "string.base": "Privilege ID must be text.",
     "string.empty": "Privilege ID cannot be empty.",
-    "string.pattern.base": "Privilege ID must contain only numbers.", // Message for the pattern
+    "string.pattern.base": "Privilege ID must contain only numbers.",
     "any.required": "Privilege ID is required.",
   }),
 });
