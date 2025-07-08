@@ -146,12 +146,15 @@ class PrivilegeController {
         return;
       }
 
-      await privilegeService.deletePrivilege(privilegeId);
+      const deletedPrivilege = await privilegeService.deletePrivilege(
+        privilegeId
+      );
 
       res.status(200).json({
         code: 200,
         status: "success",
         message: "Privilege deleted successfully.",
+        deletedPrivilege: deletedPrivilege,
       });
     } catch (error) {
       console.error("Error deleting privilege.", error);
