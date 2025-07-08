@@ -22,6 +22,10 @@ import {
   createNationalitySchema,
   updateNationalitySchema,
 } from "../validations/nationaliryValidation";
+import {
+  createHonorSchema,
+  updateHonorSchema,
+} from "../validations/honorValidation";
 
 const router = Router();
 
@@ -89,8 +93,12 @@ router.delete("/nationality/:id", nationalityController.deleteNationality);
 // HONORS
 router.get("/honors", honorController.getHonors);
 router.get("/honor/:id", honorController.getHonor);
-router.post("/honor", honorController.createHonor);
-router.put("/honor/:id", honorController.updateHonor);
+router.post("/honor", validate(createHonorSchema), honorController.createHonor);
+router.put(
+  "/honor/:id",
+  validate(updateHonorSchema),
+  honorController.updateHonor
+);
 router.delete("/honor/:id", honorController.deleteHonor);
 
 export default router;
