@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { genericRepository } from "../repositories/GenericRepository";
 
 export const createPrivilegeSchema = Joi.object({
   name: Joi.string().trim().min(3).max(45).required().messages({
