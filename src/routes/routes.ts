@@ -18,6 +18,10 @@ import {
   createPrivilegeSchema,
   updatePrivilegeSchema,
 } from "../validations/privilegeValidation";
+import {
+  createNationalitySchema,
+  updateNationalitySchema,
+} from "../validations/nationaliryValidation";
 
 const router = Router();
 
@@ -70,8 +74,16 @@ router.delete("/privilege/:id", privilegeController.deletePrivilege);
 // NATIONALITIES :::
 router.get("/nationalities", nationalityController.getNationalities);
 router.get("/nationality/:id", nationalityController.getNationality);
-router.post("/nationality", nationalityController.createNationality);
-router.put("/nationality/:id", nationalityController.updateNationality);
+router.post(
+  "/nationality",
+  validate(createNationalitySchema),
+  nationalityController.createNationality
+);
+router.put(
+  "/nationality/:id",
+  validate(updateNationalitySchema),
+  nationalityController.updateNationality
+);
 router.delete("/nationality/:id", nationalityController.deleteNationality);
 
 // HONORS

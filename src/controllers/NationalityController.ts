@@ -55,7 +55,7 @@ class NationalityController {
     const nationalityData: INationality = req.body;
 
     try {
-      const nationalityCreated = await nationalityService.createNationality(
+      const createdNationality = await nationalityService.createNationality(
         nationalityData
       );
 
@@ -63,7 +63,7 @@ class NationalityController {
         code: 201,
         status: "success",
         message: "Nationality created successfully.",
-        nationalityCreated: nationalityCreated,
+        createdNationality: createdNationality,
       });
     } catch (error) {
       console.error("Error creating nationality.", error);
@@ -101,7 +101,7 @@ class NationalityController {
         code: 200,
         status: "success",
         message: "Nationality updated successfully.",
-        nationality: updatedNationality,
+        updatedNationality: updatedNationality,
       });
     } catch (error) {
       console.error("Error updating nationality.", error);
@@ -130,12 +130,15 @@ class NationalityController {
         return;
       }
 
-      await nationalityService.deleteNationality(nationalityId);
+      const deletedNationality = await nationalityService.deleteNationality(
+        nationalityId
+      );
 
       res.status(200).json({
         code: 200,
         status: "success",
         message: "Nationality deleted successfully.",
+        deletedNationality: deletedNationality,
       });
     } catch (error) {
       console.error("Error deleting nationality.", error);
