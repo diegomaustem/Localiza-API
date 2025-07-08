@@ -52,13 +52,13 @@ class UserController {
     const userData: IUser = req.body;
 
     try {
-      const userCreated = await userService.createUser(userData);
+      const createdUser = await userService.createUser(userData);
 
       res.status(201).json({
         code: 201,
         status: "success",
         message: "User created successfully.",
-        user: userCreated,
+        createdUser: createdUser,
       });
     } catch (error) {
       console.error("Error creating user.", error);
@@ -91,7 +91,7 @@ class UserController {
         code: 200,
         status: "success",
         message: "User updated successfully.",
-        user: updatedUser,
+        updatedUser: updatedUser,
       });
     } catch (error) {
       console.error("Error updating user.", error);
@@ -123,7 +123,7 @@ class UserController {
         code: 200,
         status: "success",
         message: "User deleted successfully.",
-        userDeleted: deletedUser,
+        deletedUser: deletedUser,
       });
     } catch (error) {
       console.error("Error deleting user.", error);
