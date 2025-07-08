@@ -50,13 +50,13 @@ class HonorController {
     const honorData: IHonor = req.body;
 
     try {
-      const honorCreated = await honorService.createHonor(honorData);
+      const createdHonor = await honorService.createHonor(honorData);
 
       res.status(201).json({
         code: 201,
         status: "success",
         message: "Honor created successfully.",
-        honorCreated: honorCreated,
+        createdHonor: createdHonor,
       });
     } catch (error) {
       console.error("Error creating honor.", error);
