@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { IPrivilege } from "../interfaces/IPrivilege";
 import { privilegeService } from "../services/PrivilegeService";
+import { genericRepository } from "../repositories/GenericRepository";
+import { ValidPrismaTable } from "../types/PrismaTables";
 class PrivilegeController {
   async getPrivileges(req: Request, res: Response): Promise<void> {
     try {
@@ -10,7 +12,6 @@ class PrivilegeController {
         .json({ code: 200, status: "success", privileges: privileges });
     } catch (error) {
       console.error("Error getting privileges.", error);
-
       res.status(500).json({
         code: 500,
         status: "error",
@@ -52,10 +53,20 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
+      const hasPrivigele = await privilegeController.getHasPrivilege(
+        privilegeData
+      );
+      if (hasPrivigele) {
+        res.status(409).json({
+          code: 409,
+          status: "conflict",
+          message: "There is already a privilege with that name.",
+        });
+        return;
+      }
       const privilegeCreated = await privilegeService.createPrivigele(
         privilegeData
       );
-
       res.status(201).json({
         code: 201,
         status: "success",
@@ -63,11 +74,11 @@ class PrivilegeController {
         privilegeCreated: privilegeCreated,
       });
     } catch (error) {
-      console.error("Error creating privilege.", error);
+      console.error(error);
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating privilege.",
+        message: "Internal error while tcreating privilege.",
       });
     }
   }
@@ -77,6 +88,18 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
+      const hasPrivigele = await privilegeController.getHasPrivilege(
+        privilegeData
+      );
+      if (hasPrivigele) {
+        res.status(409).json({
+          code: 409,
+          status: "conflict",
+          message: "There is already a privilege with that name.",
+        });
+        return;
+      }
+
       const privilege = await privilegeService.getPrivilege(privilegeId);
       if (!privilege) {
         res.status(404).json({
@@ -138,6 +161,14 @@ class PrivilegeController {
         message: "Internal error while deleting privilege.",
       });
     }
+  }
+
+  private getHasPrivilege(privilegeData: IPrivilege): Promise<boolean> {
+    const table: ValidPrismaTable = "privileges";
+    const field = "name";
+    const value = privilegeData.name;
+
+    return genericRepository.generateQuery(table, field, value);
   }
 }
 

@@ -6,7 +6,7 @@ export interface IUser {
   gender: string;
   telephone: string;
   password: string;
-  privilege_id: string;
+  privileges_id: string;
   creation_date: Date;
   update_date: Date;
 }
