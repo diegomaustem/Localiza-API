@@ -146,6 +146,18 @@ class PrivilegeController {
         return;
       }
 
+      const hasUserPrivilege = await privilegeController.getHasUserPrivilege(
+        privilegeId
+      );
+      if (hasUserPrivilege) {
+        res.status(409).json({
+          code: 409,
+          status: "error",
+          message: "The privilege is user-specific. It cannot be deleted.",
+        });
+        return;
+      }
+
       const deletedPrivilege = await privilegeService.deletePrivilege(
         privilegeId
       );
@@ -170,6 +182,14 @@ class PrivilegeController {
     const table: ValidPrismaTable = "privileges";
     const field = "name";
     const value = privilegeData.name;
+
+    return genericRepository.generateQuery(table, field, value);
+  }
+
+  private getHasUserPrivilege(privilegeId: string): Promise<boolean> {
+    const table: ValidPrismaTable = "users";
+    const field = "privileges_id";
+    const value = privilegeId;
 
     return genericRepository.generateQuery(table, field, value);
   }

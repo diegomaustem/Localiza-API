@@ -25,12 +25,12 @@ class UserService {
   async createUser(user: IUser): Promise<IUser> {
     const newUser: IUser = {
       ...user,
-      id: uuidv4(),
-      password: await passwordManager.hashPassword(user.password),
+      // id: uuidv4(),
+      // password: await passwordManager.hashPassword(user.password),
     };
 
     try {
-      return await UserRepository.create(newUser);
+      return await UserRepository.create(user);
     } catch (error) {
       console.error("Failed to create user.", error);
       throw error;

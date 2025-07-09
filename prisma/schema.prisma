@@ -21,7 +21,7 @@ model users {
   address   String @db.VarChar(65)
   gender    String @db.VarChar(4)
   telephone String @db.VarChar(16)
-  password  String @db.VarChar(45)
+  password  String @db.VarChar(200)
   privileges_id String
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
@@ -58,7 +58,7 @@ model customers {
   cpf String @unique @db.VarChar(15) 
   email String @unique @db.VarChar(45) 
   gender String @db.VarChar(4)
-  password String @db.VarChar(45)
+  password String @db.VarChar(200)
   points Int @db.Integer
   address String @db.VarChar(65)
   telephone String @db.VarChar(16)

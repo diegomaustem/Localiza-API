@@ -27,7 +27,7 @@ export const createUserSchema = Joi.object({
     "string.max": "Gender must have at most {#limit} character.",
     "any.required": "Gender is required.",
   }),
-  telephone: Joi.string().min(10).max(15).required().messages({
+  telephone: Joi.string().min(10).max(16).required().messages({
     "string.base": "Phone number must be text.",
     "string.empty": "Phone number cannot be empty.",
     "string.min": "Phone number must have at least {#limit} characters.",
@@ -40,10 +40,9 @@ export const createUserSchema = Joi.object({
     "string.min": "Password must have at least {#limit} characters.",
     "any.required": "Password is required.",
   }),
-  privilege_id: Joi.string().pattern(/^\d+$/).required().messages({
+  privileges_id: Joi.string().required().messages({
     "string.base": "Privilege ID must be text.",
     "string.empty": "Privilege ID cannot be empty.",
-    "string.pattern.base": "Privilege ID must contain only numbers.",
     "any.required": "Privilege ID is required.",
   }),
 });
@@ -55,5 +54,5 @@ export const updateUserSchema = Joi.object({
   gender: Joi.string().trim().min(1).max(1),
   telephone: Joi.string().min(10).max(15),
   password: Joi.string().min(6),
-  privilege_id: Joi.string().pattern(/^\d+$/),
+  privilege_id: Joi.string(),
 });
