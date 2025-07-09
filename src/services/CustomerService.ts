@@ -51,6 +51,15 @@ class CustomerService {
       throw error;
     }
   }
+
+  async deleteCustomer(customerId: string): Promise<ICustomer> {
+    try {
+      return await customerRepository.delete(customerId);
+    } catch (error) {
+      console.error("Failed to delete customer.", error);
+      throw error;
+    }
+  }
 }
 
 export const customerService = new CustomerService();

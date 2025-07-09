@@ -47,6 +47,17 @@ class CustomerRepository {
       throw error;
     }
   }
+
+  async delete(customerId: string): Promise<ICustomer> {
+    try {
+      return await prisma.customers.delete({
+        where: { id: customerId },
+      });
+    } catch (error) {
+      console.error("Error deleting customer.", error);
+      throw error;
+    }
+  }
 }
 
 export const customerRepository = new CustomerRepository();

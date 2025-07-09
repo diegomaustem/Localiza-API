@@ -120,6 +120,6 @@ router.put(
   validate(updateCustomerSchema),
   customerController.updateCustomer
 );
-// router.delete("/customer/:id", customerController.deleteCustomer);
+router.delete("/customer/:id", customerController.deleteCustomer);
 
 export default router;

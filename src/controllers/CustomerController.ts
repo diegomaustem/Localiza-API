@@ -157,6 +157,40 @@ class CustomerController {
     }
   }
 
+  async deleteCustomer(req: Request, res: Response): Promise<void> {
+    const customerId: string = req.params.id;
+
+    try {
+      const customer = await customerService.getCustomer(customerId);
+      if (!customer) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Customer not found for delete.",
+        });
+        return;
+      }
+
+      // AO CONSTRUIR RESERVA VERIFICAR SE O CLIENTE POSSUI ALGUMA RESERVA :::
+
+      const deletedCustomer = await customerService.deleteCustomer(customerId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Customer deleted successfully.",
+        deletedCustomer: deletedCustomer,
+      });
+    } catch (error) {
+      console.error("Error deleting customer.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Internal error while deleting customer.",
+      });
+    }
+  }
+
   private getHasNationality(nationalityId: string): Promise<boolean> {
     const table: ValidPrismaTable = "nationalities";
     const field = "id";
