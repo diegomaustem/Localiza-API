@@ -1,5 +1,4 @@
 import { IUser } from "../interfaces/IUser";
-import { v4 as uuidv4 } from "uuid";
 import UserRepository from "../repositories/UserRepository";
 import { passwordManager } from "../utils/PasswordManager";
 
@@ -25,12 +24,11 @@ class UserService {
   async createUser(user: IUser): Promise<IUser> {
     const newUser: IUser = {
       ...user,
-      // id: uuidv4(),
-      // password: await passwordManager.hashPassword(user.password),
+      password: await passwordManager.hashPassword(user.password),
     };
 
     try {
-      return await UserRepository.create(user);
+      return await UserRepository.create(newUser);
     } catch (error) {
       console.error("Failed to create user.", error);
       throw error;

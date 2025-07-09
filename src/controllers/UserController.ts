@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { IUser } from "../interfaces/IUser";
 import { userService } from "../services/UserService";
+import { ValidPrismaTable } from "../types/PrismaTables";
+import { genericRepository } from "../repositories/GenericRepository";
 
 class UserController {
   async getUsers(req: Request, res: Response): Promise<void> {
@@ -52,8 +54,31 @@ class UserController {
     const userData: IUser = req.body;
 
     try {
-      const createdUser = await userService.createUser(userData);
+      const existEmail = await userController.getHasEmail(userData.email);
+      if (existEmail) {
+        res.status(409).json({
+          code: 409,
+          status: "conflict",
+          message:
+            "The email address you provided is already in our records. Please try another one.",
+        });
+        return;
+      }
 
+      const existPrivilege = await userController.getHasPrivilege(
+        userData.privileges_id
+      );
+      if (!existPrivilege) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message:
+            "The reported privilege does not exist.Report a valid privilege.",
+        });
+        return;
+      }
+
+      const createdUser = await userService.createUser(userData);
       res.status(201).json({
         code: 201,
         status: "success",
@@ -85,8 +110,31 @@ class UserController {
         return;
       }
 
-      const updatedUser = await userService.updateUser(userId, userData);
+      const existEmail = await userController.getHasEmail(userData.email);
+      if (existEmail) {
+        res.status(409).json({
+          code: 409,
+          status: "conflict",
+          message:
+            "The email address you provided is already in our records. Please try another one.",
+        });
+        return;
+      }
 
+      const existPrivilege = await userController.getHasPrivilege(
+        userData.privileges_id
+      );
+      if (!existPrivilege) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message:
+            "The reported privilege does not exist.Report a valid privilege.",
+        });
+        return;
+      }
+
+      const updatedUser = await userService.updateUser(userId, userData);
       res.status(200).json({
         code: 200,
         status: "success",
@@ -133,6 +181,22 @@ class UserController {
         message: "Internal error while deleting user.",
       });
     }
+  }
+
+  private getHasPrivilege(privilegeId: string): Promise<boolean> {
+    const table: ValidPrismaTable = "privileges";
+    const field = "id";
+    const value = privilegeId;
+
+    return genericRepository.generateQuery(table, field, value);
+  }
+
+  private getHasEmail(email: string): Promise<boolean> {
+    const table: ValidPrismaTable = "users";
+    const field = "email";
+    const value = email;
+
+    return genericRepository.generateQuery(table, field, value);
   }
 }
 

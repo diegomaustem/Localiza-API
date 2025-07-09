@@ -22,16 +22,15 @@ class UserRepository {
     }
   }
 
-  async create(user: IUser) {
-    console.log(user);
-    // try {
-    //   return await prisma.users.create({
-    //     data: user,
-    //   });
-    // } catch (error) {
-    //   console.error("Error creating user.", error);
-    //   throw error;
-    // }
+  async create(user: IUser): Promise<IUser> {
+    try {
+      return await prisma.users.create({
+        data: user,
+      });
+    } catch (error) {
+      console.error("Error creating user.", error);
+      throw error;
+    }
   }
 
   async update(userId: string, userData: IUser): Promise<IUser> {
