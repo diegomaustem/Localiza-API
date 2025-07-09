@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { IPrivilege } from "../interfaces/IPrivilege";
 import { privilegeRepository } from "../repositories/PrivilegeRepository";
 
@@ -21,14 +20,9 @@ class PrivilegeService {
     }
   }
 
-  async createPrivigele(privilege: IPrivilege): Promise<IPrivilege> {
-    const newPrivilege: IPrivilege = {
-      ...privilege,
-      id: uuidv4(),
-    };
-
+  async createPrivigele(privilegeData: IPrivilege): Promise<IPrivilege> {
     try {
-      return await privilegeRepository.create(newPrivilege);
+      return await privilegeRepository.create(privilegeData);
     } catch (error) {
       console.error("Failed to create privilege.", error);
       throw error;

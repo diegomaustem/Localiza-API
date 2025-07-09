@@ -22,10 +22,10 @@ class PrivilegeRepository {
     }
   }
 
-  async create(privilege: IPrivilege): Promise<IPrivilege> {
+  async create(privilegeData: IPrivilege): Promise<IPrivilege> {
     try {
       return await prisma.privileges.create({
-        data: privilege,
+        data: privilegeData,
       });
     } catch (error) {
       console.error("Error fetching privileges.", error);
