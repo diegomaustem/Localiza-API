@@ -26,6 +26,11 @@ import {
   createHonorSchema,
   updateHonorSchema,
 } from "../validations/honorValidation";
+import {
+  createCustomerSchema,
+  updateCustomerSchema,
+} from "../validations/customerValidation";
+import { customerController } from "../controllers/CustomerController";
 
 const router = Router();
 
@@ -100,5 +105,21 @@ router.put(
   honorController.updateHonor
 );
 router.delete("/honor/:id", honorController.deleteHonor);
+
+// CUSTOMERS
+router.get("/customers", customerController.getCustomers);
+router.get("/customer/:id", customerController.getCustomer);
+
+router.post(
+  "/customer",
+  validate(createCustomerSchema),
+  customerController.createCustomer
+);
+router.put(
+  "/customer/:id",
+  validate(updateCustomerSchema),
+  customerController.updateCustomer
+);
+// router.delete("/customer/:id", customerController.deleteCustomer);
 
 export default router;
