@@ -3,6 +3,7 @@ import { customerService } from "../services/CustomerService";
 import { ICustomer } from "../interfaces/ICustomer";
 import { ValidPrismaTable } from "../types/PrismaTables";
 import { genericRepository } from "../repositories/GenericRepository";
+import HttpError from "../errors/HttpError";
 class CustomerController {
   async getCustomers(req: Request, res: Response): Promise<void> {
     try {
@@ -26,7 +27,7 @@ class CustomerController {
 
     try {
       const customer = await customerService.getCustomer(customerId);
-      if (customer === null) {
+      if (!customer) {
         res.status(404).json({
           code: 404,
           status: "error",
@@ -54,29 +55,7 @@ class CustomerController {
     const customerData: ICustomer = req.body;
 
     try {
-      const hasNationality = await customerController.getHasNationality(
-        customerData.nationalities_id
-      );
-      if (!hasNationality) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Nationality not found. Enter a valid one.",
-        });
-        return;
-      }
-
-      const hasHonor = await customerController.getHasHonor(
-        customerData.honors_id
-      );
-      if (!hasHonor) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Honor not found. Enter a valid one.",
-        });
-        return;
-      }
+      await customerService.customerRulesValidation(customerData);
 
       const createdCustomer = await customerService.createCustomer(
         customerData
@@ -89,7 +68,14 @@ class CustomerController {
         createdCustomer: createdCustomer,
       });
     } catch (error) {
-      console.error("Error creating customer.", error);
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
       res.status(500).json({
         code: 500,
         status: "error",

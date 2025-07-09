@@ -1,6 +1,8 @@
 import { ICustomer } from "../interfaces/ICustomer";
 import { customerRepository } from "../repositories/CustomerRepository";
+import { genericRepository } from "../repositories/GenericRepository";
 import { passwordManager } from "../utils/PasswordManager";
+import HttpError from "../errors/HttpError";
 
 class CustomerService {
   async getCustomers(): Promise<ICustomer[]> {
@@ -58,6 +60,44 @@ class CustomerService {
     } catch (error) {
       console.error("Failed to delete customer.", error);
       throw error;
+    }
+  }
+
+  async customerRulesValidation(customerData: ICustomer): Promise<void> {
+    const hasCpf = await genericRepository.generateQuery(
+      "customers",
+      "cpf",
+      customerData.cpf
+    );
+    if (hasCpf) {
+      throw new HttpError("The CPF provided is already registered.", 409);
+    }
+
+    const hasCnhCode = await genericRepository.generateQuery(
+      "customers",
+      "cnh_code",
+      customerData.cnh_code
+    );
+    if (hasCnhCode) {
+      throw new HttpError("The CNH provided is already registered.", 409);
+    }
+
+    const hasNationality = await genericRepository.generateQuery(
+      "nationalities",
+      "id",
+      customerData.nationalities_id
+    );
+    if (!hasNationality) {
+      throw new HttpError("Nationality not found. Enter a valid one.", 404);
+    }
+
+    const hasHonor = await genericRepository.generateQuery(
+      "honors",
+      "id",
+      customerData.honors_id
+    );
+    if (!hasHonor) {
+      throw new HttpError("Honor not found. Enter a valid one.", 404);
     }
   }
 }
