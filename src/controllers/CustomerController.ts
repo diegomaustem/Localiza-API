@@ -99,29 +99,7 @@ class CustomerController {
         return;
       }
 
-      const hasNationality = await customerController.getHasNationality(
-        customerData.nationalities_id
-      );
-      if (!hasNationality) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Nationality not found. Enter a valid one.",
-        });
-        return;
-      }
-
-      const hasHonor = await customerController.getHasHonor(
-        customerData.honors_id
-      );
-      if (!hasHonor) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Honor not found. Enter a valid one.",
-        });
-        return;
-      }
+      await customerService.customerRulesValidation(customerData, customerId);
 
       const updatedCustomer = await customerService.updateCustomer(
         customerId,

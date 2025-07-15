@@ -63,11 +63,15 @@ class CustomerService {
     }
   }
 
-  async customerRulesValidation(customerData: ICustomer): Promise<void> {
+  async customerRulesValidation(
+    customerData: ICustomer,
+    customerId?: string
+  ): Promise<void> {
     const hasCpf = await genericRepository.generateQuery(
       "customers",
       "cpf",
-      customerData.cpf
+      customerData.cpf,
+      customerId
     );
     if (hasCpf) {
       throw new HttpError("The CPF provided is already registered.", 409);
@@ -76,7 +80,8 @@ class CustomerService {
     const hasCnhCode = await genericRepository.generateQuery(
       "customers",
       "cnh_code",
-      customerData.cnh_code
+      customerData.cnh_code,
+      customerId
     );
     if (hasCnhCode) {
       throw new HttpError("The CNH provided is already registered.", 409);
@@ -85,7 +90,8 @@ class CustomerService {
     const hasNationality = await genericRepository.generateQuery(
       "nationalities",
       "id",
-      customerData.nationalities_id
+      customerData.nationalities_id,
+      customerId
     );
     if (!hasNationality) {
       throw new HttpError("Nationality not found. Enter a valid one.", 404);
@@ -94,7 +100,8 @@ class CustomerService {
     const hasHonor = await genericRepository.generateQuery(
       "honors",
       "id",
-      customerData.honors_id
+      customerData.honors_id,
+      customerId
     );
     if (!hasHonor) {
       throw new HttpError("Honor not found. Enter a valid one.", 404);
