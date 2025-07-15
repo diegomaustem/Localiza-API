@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { IPrivilege } from "../interfaces/IPrivilege";
 import { privilegeService } from "../services/PrivilegeService";
-import { genericRepository } from "../repositories/GenericRepository";
-import { ValidPrismaTable } from "../types/PrismaTables";
 class PrivilegeController {
   async getPrivileges(req: Request, res: Response): Promise<void> {
     try {
@@ -53,7 +51,7 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
-      const hasPrivigele = await privilegeController.getHasPrivilege(
+      const hasPrivigele = await privilegeService.getHasPrivilege(
         privilegeData
       );
       if (hasPrivigele) {
@@ -88,7 +86,7 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
-      const hasPrivigele = await privilegeController.getHasPrivilege(
+      const hasPrivigele = await privilegeService.getHasPrivilege(
         privilegeData
       );
       if (hasPrivigele) {
@@ -136,7 +134,6 @@ class PrivilegeController {
 
     try {
       const privilege = await privilegeService.getPrivilege(privilegeId);
-
       if (!privilege) {
         res.status(404).json({
           code: 404,
@@ -146,7 +143,7 @@ class PrivilegeController {
         return;
       }
 
-      const hasUserPrivilege = await privilegeController.getHasUserPrivilege(
+      const hasUserPrivilege = await privilegeService.getHasUserPrivilege(
         privilegeId
       );
       if (hasUserPrivilege) {
@@ -176,22 +173,6 @@ class PrivilegeController {
         message: "Internal error while deleting privilege.",
       });
     }
-  }
-
-  private getHasPrivilege(privilegeData: IPrivilege): Promise<boolean> {
-    const table: ValidPrismaTable = "privileges";
-    const field = "name";
-    const value = privilegeData.name;
-
-    return genericRepository.generateQuery(table, field, value);
-  }
-
-  private getHasUserPrivilege(privilegeId: string): Promise<boolean> {
-    const table: ValidPrismaTable = "users";
-    const field = "privileges_id";
-    const value = privilegeId;
-
-    return genericRepository.generateQuery(table, field, value);
   }
 }
 

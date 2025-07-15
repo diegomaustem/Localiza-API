@@ -1,5 +1,7 @@
 import { IPrivilege } from "../interfaces/IPrivilege";
+import { genericRepository } from "../repositories/GenericRepository";
 import { privilegeRepository } from "../repositories/PrivilegeRepository";
+import { ValidPrismaTable } from "../types/PrismaTables";
 
 class PrivilegeService {
   async getPrivileges(): Promise<IPrivilege[]> {
@@ -48,6 +50,22 @@ class PrivilegeService {
       console.error("Failed to delete privilege.", error);
       throw error;
     }
+  }
+
+  async getHasPrivilege(privilegeData: IPrivilege): Promise<boolean> {
+    const table: ValidPrismaTable = "privileges";
+    const field = "name";
+    const value = privilegeData.name;
+
+    return genericRepository.generateQuery(table, field, value);
+  }
+
+  async getHasUserPrivilege(privilegeId: string): Promise<boolean> {
+    const table: ValidPrismaTable = "users";
+    const field = "privileges_id";
+    const value = privilegeId;
+
+    return genericRepository.generateQuery(table, field, value);
   }
 }
 export const privilegeService = new PrivilegeService();
