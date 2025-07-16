@@ -12,7 +12,6 @@ import {
   createVehicleSchema,
   updateVehicleSchema,
 } from "../validations/vehicleValidation";
-import { homedir } from "os";
 import { honorController } from "../controllers/HonorController";
 import {
   createPrivilegeSchema,
@@ -31,6 +30,9 @@ import {
   updateCustomerSchema,
 } from "../validations/customerValidation";
 import { customerController } from "../controllers/CustomerController";
+
+import { categoryController } from "../controllers/CategoryController";
+import { createCategorySchema } from "../validations/categoryValidation";
 
 const router = Router();
 
@@ -121,5 +123,15 @@ router.put(
   customerController.updateCustomer
 );
 router.delete("/customer/:id", customerController.deleteCustomer);
+
+// CATEGORIES
+router.get("/categories", categoryController.getCategories);
+router.get("/category/:id", categoryController.getCategory);
+
+router.post(
+  "/category",
+  validate(createCategorySchema),
+  categoryController.createCategory
+);
 
 export default router;
