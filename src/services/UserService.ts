@@ -1,4 +1,6 @@
+import HttpError from "../errors/HttpError";
 import { IUser } from "../interfaces/IUser";
+import { genericRepository } from "../repositories/GenericRepository";
 import UserRepository from "../repositories/UserRepository";
 import { passwordManager } from "../utils/PasswordManager";
 
@@ -55,6 +57,32 @@ class UserService {
     } catch (error) {
       console.error("Failed to delete user.", error);
       throw error;
+    }
+  }
+
+  async userRulesValidation(userData: IUser, userId?: string): Promise<void> {
+    const hasEmail = await genericRepository.generateQuery(
+      "users",
+      "email",
+      userData.email
+    );
+    if (hasEmail) {
+      throw new HttpError(
+        "The email address you provided is already in our records. Please try another one.",
+        409
+      );
+    }
+
+    const hasPrivilege = await genericRepository.generateQuery(
+      "privileges",
+      "id",
+      userData.privileges_id
+    );
+    if (!hasPrivilege) {
+      throw new HttpError(
+        "The reported privilege does not exist.Report a valid privilege.",
+        404
+      );
     }
   }
 }
