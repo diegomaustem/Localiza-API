@@ -52,7 +52,7 @@ class PrivilegeService {
     }
   }
 
-  async getHasPrivilege(privilegeData: IPrivilege): Promise<boolean> {
+  async verifyPrivilege(privilegeData: IPrivilege): Promise<boolean> {
     const table: ValidPrismaTable = "privileges";
     const field = "name";
     const value = privilegeData.name;
@@ -60,7 +60,7 @@ class PrivilegeService {
     return genericRepository.generateQuery(table, field, value);
   }
 
-  async getHasUserPrivilege(privilegeId: string): Promise<boolean> {
+  async verifyUserPrivilege(privilegeId: string): Promise<boolean> {
     const table: ValidPrismaTable = "users";
     const field = "privileges_id";
     const value = privilegeId;
@@ -68,4 +68,5 @@ class PrivilegeService {
     return genericRepository.generateQuery(table, field, value);
   }
 }
+
 export const privilegeService = new PrivilegeService();

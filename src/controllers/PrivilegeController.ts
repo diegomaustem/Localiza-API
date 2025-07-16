@@ -51,7 +51,7 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
-      const hasPrivigele = await privilegeService.getHasPrivilege(
+      const hasPrivigele = await privilegeService.verifyPrivilege(
         privilegeData
       );
       if (hasPrivigele) {
@@ -62,6 +62,7 @@ class PrivilegeController {
         });
         return;
       }
+
       const privilegeCreated = await privilegeService.createPrivigele(
         privilegeData
       );
@@ -86,7 +87,17 @@ class PrivilegeController {
     const privilegeData: IPrivilege = req.body;
 
     try {
-      const hasPrivigele = await privilegeService.getHasPrivilege(
+      const privilege = await privilegeService.getPrivilege(privilegeId);
+      if (!privilege) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Privilege not found for update.",
+        });
+        return;
+      }
+
+      const hasPrivigele = await privilegeService.verifyPrivilege(
         privilegeData
       );
       if (hasPrivigele) {
@@ -94,16 +105,6 @@ class PrivilegeController {
           code: 409,
           status: "conflict",
           message: "There is already a privilege with that name.",
-        });
-        return;
-      }
-
-      const privilege = await privilegeService.getPrivilege(privilegeId);
-      if (!privilege) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Privilege not found for update.",
         });
         return;
       }
@@ -143,14 +144,14 @@ class PrivilegeController {
         return;
       }
 
-      const hasUserPrivilege = await privilegeService.getHasUserPrivilege(
+      const hasUserPrivilege = await privilegeService.verifyUserPrivilege(
         privilegeId
       );
       if (hasUserPrivilege) {
         res.status(409).json({
           code: 409,
           status: "error",
-          message: "The privilege is user-specific. It cannot be deleted.",
+          message: "The privilege is in use. It cannot be deleted.",
         });
         return;
       }
