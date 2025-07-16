@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const priceSchema = Joi.object({
+export const createPriceSchema = Joi.object({
   price: Joi.number().precision(2).min(0).required().messages({
     "number.base": "Price must be a number.",
     "number.precision": "Price can have at most {#limit} decimal places.",
