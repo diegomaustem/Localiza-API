@@ -116,8 +116,17 @@ class HonorController {
         return;
       }
 
-      const deletedHonor = await honorService.deleteHonor(honorId);
+      const hasCustomerHonor = await honorService.verifyCustomerHonor(honorId);
+      if (hasCustomerHonor) {
+        res.status(409).json({
+          code: 409,
+          status: "error",
+          message: "The honor is in use. It cannot be deleted.",
+        });
+        return;
+      }
 
+      const deletedHonor = await honorService.deleteHonor(honorId);
       res.status(200).json({
         code: 200,
         status: "success",

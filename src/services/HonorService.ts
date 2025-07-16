@@ -1,5 +1,7 @@
 import { IHonor } from "../interfaces/IHonor";
+import { genericRepository } from "../repositories/GenericRepository";
 import { honorRepository } from "../repositories/HonorRepository";
+import { ValidPrismaTable } from "../types/PrismaTables";
 
 class HonorService {
   async getHonors(): Promise<IHonor[]> {
@@ -45,6 +47,14 @@ class HonorService {
       console.error("Failed to delete honor.", error);
       throw error;
     }
+  }
+
+  async verifyCustomerHonor(honorId: string): Promise<boolean> {
+    const table: ValidPrismaTable = "customers";
+    const field = "honors_id";
+    const value = honorId;
+
+    return genericRepository.generateQuery(table, field, value);
   }
 }
 
