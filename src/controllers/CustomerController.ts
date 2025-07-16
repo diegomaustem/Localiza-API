@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { customerService } from "../services/CustomerService";
 import { ICustomer } from "../interfaces/ICustomer";
-import { ValidPrismaTable } from "../types/PrismaTables";
-import { genericRepository } from "../repositories/GenericRepository";
 import HttpError from "../errors/HttpError";
 class CustomerController {
   async getCustomers(req: Request, res: Response): Promise<void> {
@@ -164,22 +162,6 @@ class CustomerController {
         message: "Internal error while deleting customer.",
       });
     }
-  }
-
-  private getHasNationality(nationalityId: string): Promise<boolean> {
-    const table: ValidPrismaTable = "nationalities";
-    const field = "id";
-    const value = nationalityId;
-
-    return genericRepository.generateQuery(table, field, value);
-  }
-
-  private getHasHonor(honorId: string): Promise<boolean> {
-    const table: ValidPrismaTable = "honors";
-    const field = "id";
-    const value = honorId;
-
-    return genericRepository.generateQuery(table, field, value);
   }
 }
 
