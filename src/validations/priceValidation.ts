@@ -10,5 +10,5 @@ export const priceSchema = Joi.object({
 });
 
 export const updatePriceSchema = Joi.object({
-  name: Joi.number().precision(2).min(3).required(),
+  name: Joi.number().precision(2).min(0).required(),
 });
