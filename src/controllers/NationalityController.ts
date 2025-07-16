@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { nationalityService } from "../services/NationalityService";
 import { INationality } from "../interfaces/INationality";
+import HttpError from "../errors/HttpError";
 
 class NationalityController {
   async getNationalities(req: Request, res: Response): Promise<void> {
@@ -130,6 +131,8 @@ class NationalityController {
         return;
       }
 
+      await nationalityService.nationalityRulesValidation(nationalityId);
+
       const deletedNationality = await nationalityService.deleteNationality(
         nationalityId
       );
@@ -141,6 +144,14 @@ class NationalityController {
         deletedNationality: deletedNationality,
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
       console.error("Error deleting nationality.", error);
       res.status(500).json({
         code: 500,

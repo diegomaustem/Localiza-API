@@ -1,4 +1,6 @@
+import HttpError from "../errors/HttpError";
 import { INationality } from "../interfaces/INationality";
+import { genericRepository } from "../repositories/GenericRepository";
 import { nationalityRepository } from "../repositories/NationalityRepository";
 
 class NationalityService {
@@ -47,6 +49,17 @@ class NationalityService {
     } catch (error) {
       console.error("Failed to delete nationality.", error);
       throw error;
+    }
+  }
+
+  async nationalityRulesValidation(nationalityId: string): Promise<void> {
+    const hasNationality = await genericRepository.generateQuery(
+      "customers",
+      "nationalities_id",
+      nationalityId
+    );
+    if (hasNationality) {
+      throw new HttpError("Nationality in use. Cannot be deleted.", 409);
     }
   }
 }
