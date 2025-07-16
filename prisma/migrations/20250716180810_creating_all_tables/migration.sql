@@ -104,20 +104,10 @@ CREATE TABLE "vehicles" (
 );
 
 -- CreateTable
-CREATE TABLE "prices" (
-    "id" TEXT NOT NULL,
-    "price" DECIMAL(10,2) NOT NULL,
-    "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "update_date" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "prices_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "categories" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(45) NOT NULL,
-    "prices_id" TEXT NOT NULL,
+    "value" DECIMAL(10,2) NOT NULL,
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -213,9 +203,6 @@ ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_categories_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_groups_id_fkey" FOREIGN KEY ("groups_id") REFERENCES "groups"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "categories" ADD CONSTRAINT "categories_prices_id_fkey" FOREIGN KEY ("prices_id") REFERENCES "prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "units" ADD CONSTRAINT "units_cities_id_fkey" FOREIGN KEY ("cities_id") REFERENCES "cities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

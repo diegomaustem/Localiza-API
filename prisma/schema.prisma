@@ -107,20 +107,12 @@ model vehicles {
   group    groups     @relation(fields: [groups_id], references: [id])
   reserves reserves[]
 }
-model prices {
-  id            String   @id @default(uuid())
-  price         Decimal  @db.Decimal(10, 2)
-  creation_date DateTime @default(now())
-  update_date   DateTime @updatedAt
-  categories    categories[]
-}
 model categories {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(45)
-  prices_id     String
+  value         Decimal  @db.Decimal(10, 2)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  price         prices   @relation(fields: [prices_id], references: [id])
   vehicles      vehicles[] 
 }
 model groups {
