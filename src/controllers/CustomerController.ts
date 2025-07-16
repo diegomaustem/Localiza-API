@@ -76,6 +76,8 @@ class CustomerController {
         });
         return;
       }
+
+      console.error("Error creating customer.", error);
       res.status(500).json({
         code: 500,
         status: "error",
@@ -112,6 +114,15 @@ class CustomerController {
         updatedCustomer: updatedCustomer,
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
+
       console.error("Error updating customer.", error);
       res.status(500).json({
         code: 500,
