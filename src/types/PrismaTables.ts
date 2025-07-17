@@ -7,4 +7,5 @@ export type ValidPrismaTable =
   | "vehicles"
   | "categories"
   | "groups"
-  | "states";
+  | "states"
+  | "cities";
