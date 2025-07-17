@@ -33,6 +33,8 @@ import { customerController } from "../controllers/CustomerController";
 
 import { categoryController } from "../controllers/CategoryController";
 import { createCategorySchema } from "../validations/categoryValidation";
+import { createGroupSchema } from "../validations/groupValidation";
+import { groupController } from "../controllers/GroupController";
 
 const router = Router();
 
@@ -133,5 +135,11 @@ router.post(
   validate(createCategorySchema),
   categoryController.createCategory
 );
+
+// GROUPS
+router.get("/groups", groupController.getGroups);
+router.get("/group/:id", groupController.getGroup);
+
+router.post("/group", validate(createGroupSchema), groupController.createGroup);
 
 export default router;
