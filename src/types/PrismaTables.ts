@@ -6,4 +6,5 @@ export type ValidPrismaTable =
   | "customers"
   | "vehicles"
   | "categories"
-  | "groups";
+  | "groups"
+  | "states";
