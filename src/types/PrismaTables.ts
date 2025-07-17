@@ -8,4 +8,5 @@ export type ValidPrismaTable =
   | "categories"
   | "groups"
   | "states"
-  | "cities";
+  | "cities"
+  | "units";

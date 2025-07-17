@@ -38,7 +38,7 @@ import { groupController } from "../controllers/GroupController";
 import { createStateSchema } from "../validations/stateValidation";
 import { stateController } from "../controllers/StateController";
 import { cityController } from "../controllers/CityController";
-import { createCitySchema } from "../validations/cityValidations";
+import { createCitySchema } from "../validations/cityValidation";
 
 const router = Router();
 
@@ -157,5 +157,11 @@ router.get("/cities", cityController.getCities);
 router.get("/city/:id", cityController.getCity);
 
 router.post("/city", validate(createCitySchema), cityController.createCity);
+
+// UNITS
+// router.get("/units", unitController.getUnits);
+// router.get("/unit/:id", unitController.getUnit);
+
+// router.post("/unit", validate(createUnitSchema), unitController.createUnit);
 
 export default router;
