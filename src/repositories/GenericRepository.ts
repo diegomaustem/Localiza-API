@@ -12,7 +12,12 @@ class GenericRepository {
       const model = (prisma as any)[table];
       const where = id
         ? { AND: [{ [field]: value }, { id: { not: id } }] }
-        : { [field]: value };
+        : {
+            [field]:
+              typeof value === "string"
+                ? { equals: value, mode: "insensitive" }
+                : value,
+          };
 
       const hasInTable = await model.findFirst({ where });
       return !!hasInTable;

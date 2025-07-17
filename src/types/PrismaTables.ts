@@ -4,4 +4,5 @@ export type ValidPrismaTable =
   | "privileges"
   | "users"
   | "customers"
-  | "vehicles";
+  | "vehicles"
+  | "categories";

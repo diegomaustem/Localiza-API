@@ -163,6 +163,12 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "privileges_name_key" ON "privileges"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "honors_name_key" ON "honors"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "nationalities_name_key" ON "nationalities"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "customers_cpf_key" ON "customers"("cpf");
 
 -- CreateIndex
@@ -179,6 +185,15 @@ CREATE UNIQUE INDEX "vehicles_plate_key" ON "vehicles"("plate");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "vehicles_crlv_document_key" ON "vehicles"("crlv_document");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "groups_name_key" ON "groups"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "states_name_key" ON "states"("name");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_privileges_id_fkey" FOREIGN KEY ("privileges_id") REFERENCES "privileges"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

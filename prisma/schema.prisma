@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -38,7 +32,7 @@ model privileges {
 
 model honors {
   id String @id @default(uuid())
-  name String @db.VarChar(45) 
+  name String @unique @db.VarChar(45) 
   level Int @db.Integer
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
@@ -47,7 +41,7 @@ model honors {
 
 model nationalities {
   id String @id @default(uuid())
-  name String @db.VarChar(45) 
+  name String @unique @db.VarChar(45) 
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   customers     customers[]
@@ -109,7 +103,7 @@ model vehicles {
 }
 model categories {
   id            String   @id @default(uuid())
-  name          String   @db.VarChar(45)
+  name          String   @unique @db.VarChar(45)
   value         Decimal  @db.Decimal(10, 2)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
@@ -117,7 +111,7 @@ model categories {
 }
 model groups {
   id            String   @id @default(uuid())
-  name          String   @db.VarChar(45)
+  name          String   @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   vehicles      vehicles[]
@@ -142,7 +136,7 @@ model cities {
 }
 model states {
   id            String   @id @default(uuid())
-  name          String   @db.VarChar(45)
+  name          String   @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   cities        cities[]
