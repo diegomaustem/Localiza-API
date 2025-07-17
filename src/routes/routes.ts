@@ -35,6 +35,7 @@ import { categoryController } from "../controllers/CategoryController";
 import { createCategorySchema } from "../validations/categoryValidation";
 import { createGroupSchema } from "../validations/groupValidation";
 import { groupController } from "../controllers/GroupController";
+import { createStateSchema } from "../validations/stateValidation";
 
 const router = Router();
 
@@ -141,5 +142,11 @@ router.get("/groups", groupController.getGroups);
 router.get("/group/:id", groupController.getGroup);
 
 router.post("/group", validate(createGroupSchema), groupController.createGroup);
+
+// STATES
+router.get("/states", groupController.getGroups);
+router.get("/state/:id", groupController.getGroup);
+
+router.post("/state", validate(createStateSchema), groupController.createGroup);
 
 export default router;
