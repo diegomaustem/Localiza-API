@@ -8,7 +8,7 @@ export const createUserSchema = Joi.object({
     "string.max": "Full name must have at most {#limit} characters.",
     "any.required": "Full name is required.",
   }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().trim().email().required().messages({
     "string.base": "Email must be text.",
     "string.empty": "Email cannot be empty.",
     "string.email": "Invalid email format.",
@@ -27,26 +27,26 @@ export const createUserSchema = Joi.object({
     "string.max": "Gender must have at most {#limit} character.",
     "any.required": "Gender is required.",
   }),
-  telephone: Joi.string().min(10).max(16).required().messages({
+  telephone: Joi.string().trim().min(10).max(16).required().messages({
     "string.base": "Phone number must be text.",
     "string.empty": "Phone number cannot be empty.",
     "string.min": "Phone number must have at least {#limit} characters.",
     "string.max": "Phone number must have at most {#limit} characters.",
     "any.required": "Phone number is required.",
   }),
-  password: Joi.string().min(6).required().messages({
+  password: Joi.string().trim().min(6).required().messages({
     "string.base": "Password must be text.",
     "string.empty": "Password cannot be empty.",
     "string.min": "Password must have at least {#limit} characters.",
     "any.required": "Password is required.",
   }),
-  privileges_id: Joi.string().guid().required().messages({
+  privileges_id: Joi.string().trim().guid().required().messages({
     "string.base": "Privilege ID must be text.",
     "string.guid": "Privilege ID must be a valid UUID.",
     "string.empty": "Privilege ID cannot be empty.",
     "any.required": "Privilege ID is required.",
   }),
-  status_users_id: Joi.string().guid().required().messages({
+  status_users_id: Joi.string().trim().guid().required().messages({
     "string.base": "Status user ID must be text.",
     "string.guid": "Status user ID must be a valid UUID.",
     "string.empty": "Status user ID cannot be empty.",
@@ -56,11 +56,11 @@ export const createUserSchema = Joi.object({
 
 export const updateUserSchema = Joi.object({
   full_name: Joi.string().trim().min(3).max(100),
-  email: Joi.string().email(),
+  email: Joi.string().trim().email(),
   address: Joi.string().trim().min(5),
   gender: Joi.string().trim().min(1).max(1),
-  telephone: Joi.string().min(10).max(15),
-  password: Joi.string().min(6),
-  privileges_id: Joi.string().guid(),
-  status_users_id: Joi.string().guid(),
+  telephone: Joi.string().trim().min(10).max(15),
+  password: Joi.string().trim().min(6),
+  privileges_id: Joi.string().trim().guid(),
+  status_users_id: Joi.string().trim().guid(),
 });
