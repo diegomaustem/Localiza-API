@@ -61,15 +61,15 @@ class UserService {
   }
 
   async userRulesValidation(userData: IUser, userId?: string): Promise<void> {
-    const hasEmail = await genericRepository.generateQuery(
-      "users",
-      "email",
-      userData.email
+    const hasStatusUser = await genericRepository.generateQuery(
+      "status_users",
+      "id",
+      userData.status_users_id
     );
-    if (hasEmail) {
+    if (!hasStatusUser) {
       throw new HttpError(
-        "The email address you provided is already in our records. Please try another one.",
-        409
+        "O status_user informado não consta em nossos registros. Tente outro.",
+        404
       );
     }
 
@@ -80,8 +80,20 @@ class UserService {
     );
     if (!hasPrivilege) {
       throw new HttpError(
-        "The reported privilege does not exist.Report a valid privilege.",
+        "O privilégio informado não consta em nossos registros. Tente outro.",
         404
+      );
+    }
+
+    const hasEmail = await genericRepository.generateQuery(
+      "users",
+      "email",
+      userData.email
+    );
+    if (hasEmail) {
+      throw new HttpError(
+        "O e-mail informado já está cadastrado. Tente outro.",
+        409
       );
     }
   }

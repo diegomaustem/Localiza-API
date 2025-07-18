@@ -10,4 +10,6 @@ export type ValidPrismaTable =
   | "states"
   | "cities"
   | "units"
-  | "reserves";
+  | "reserves"
+  | "status_users"
+  | "status_customers";

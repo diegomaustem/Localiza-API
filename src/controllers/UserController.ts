@@ -14,14 +14,13 @@ class UserController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for users.",
+        message: "Erro interno ao buscar usuários. Tente mais tarde.",
       });
     }
   }
 
   async getUser(req: Request, res: Response): Promise<void> {
     const userId: string = req.params.id;
-
     try {
       const user = await userService.getUser(userId);
 
@@ -29,7 +28,7 @@ class UserController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found.",
+          message: "Usuário não encontrado.",
         });
         return;
       }
@@ -44,14 +43,13 @@ class UserController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for user.",
+        message: "Erro interno ao procurar usuário. Tente mais tarde.",
       });
     }
   }
 
   async createUser(req: Request, res: Response): Promise<void> {
     const userData: IUser = req.body;
-
     try {
       await userService.userRulesValidation(userData);
 
@@ -59,7 +57,7 @@ class UserController {
       res.status(201).json({
         code: 201,
         status: "success",
-        message: "User created successfully.",
+        message: "Usuário criado com sucesso.",
         createdUser: createdUser,
       });
     } catch (error) {
@@ -76,7 +74,7 @@ class UserController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating user.",
+        message: "Erro interno ao criar usuário. Tente mais tarde.",
       });
     }
   }
@@ -91,7 +89,7 @@ class UserController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found for update.",
+          message: "Usuário não encontrado para atualizar.",
         });
         return;
       }
@@ -102,7 +100,7 @@ class UserController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "User updated successfully.",
+        message: "Usuário atualizado com sucesso.",
         updatedUser: updatedUser,
       });
     } catch (error) {
@@ -119,7 +117,7 @@ class UserController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while updating user.",
+        message: "Erro interno ao atualizar usuário.",
       });
     }
   }
