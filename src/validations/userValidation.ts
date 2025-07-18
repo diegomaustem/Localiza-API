@@ -40,13 +40,15 @@ export const createUserSchema = Joi.object({
     "string.min": "Password must have at least {#limit} characters.",
     "any.required": "Password is required.",
   }),
-  privileges_id: Joi.string().required().messages({
+  privileges_id: Joi.string().guid().required().messages({
     "string.base": "Privilege ID must be text.",
+    "string.guid": "Privilege ID must be a valid UUID.",
     "string.empty": "Privilege ID cannot be empty.",
     "any.required": "Privilege ID is required.",
   }),
-  status_users_id: Joi.string().required().messages({
+  status_users_id: Joi.string().guid().required().messages({
     "string.base": "Status user ID must be text.",
+    "string.guid": "Status user ID must be a valid UUID.",
     "string.empty": "Status user ID cannot be empty.",
     "any.required": "Status user ID is required.",
   }),
@@ -59,6 +61,6 @@ export const updateUserSchema = Joi.object({
   gender: Joi.string().trim().min(1).max(1),
   telephone: Joi.string().min(10).max(15),
   password: Joi.string().min(6),
-  privilege_id: Joi.string(),
-  status_users_id: Joi.string(),
+  privileges_id: Joi.string().guid(),
+  status_users_id: Joi.string().guid(),
 });
