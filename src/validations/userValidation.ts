@@ -45,6 +45,11 @@ export const createUserSchema = Joi.object({
     "string.empty": "Privilege ID cannot be empty.",
     "any.required": "Privilege ID is required.",
   }),
+  status_users_id: Joi.string().required().messages({
+    "string.base": "Status user ID must be text.",
+    "string.empty": "Status user ID cannot be empty.",
+    "any.required": "Status user ID is required.",
+  }),
 });
 
 export const updateUserSchema = Joi.object({
@@ -55,4 +60,5 @@ export const updateUserSchema = Joi.object({
   telephone: Joi.string().min(10).max(15),
   password: Joi.string().min(6),
   privilege_id: Joi.string(),
+  status_users_id: Joi.string(),
 });
