@@ -1,4 +1,4 @@
-export interface ICategory {
+export interface IReserver {
   id: string;
   daily_amount: number;
   withdrawn: Date;
