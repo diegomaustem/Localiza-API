@@ -111,6 +111,7 @@ model categories {
 model groups {
   id            String   @id @default(uuid())
   name          String   @unique @db.VarChar(45)
+  description   String? @db.VarChar(255)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   vehicles      vehicles[]
@@ -136,6 +137,7 @@ model cities {
 model states {
   id            String   @id @default(uuid())
   name          String   @unique @db.VarChar(45)
+  abbreviation  String   @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   cities        cities[]
