@@ -1,4 +1,4 @@
-export interface IReserver {
+export interface IReserve {
   id: string;
   daily_amount: number;
   withdrawn: Date;
