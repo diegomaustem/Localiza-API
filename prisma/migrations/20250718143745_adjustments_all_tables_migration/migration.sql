@@ -8,6 +8,7 @@ CREATE TABLE "users" (
     "telephone" VARCHAR(16) NOT NULL,
     "password" VARCHAR(200) NOT NULL,
     "privileges_id" TEXT NOT NULL,
+    "status_users_id" TEXT NOT NULL,
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -60,6 +61,7 @@ CREATE TABLE "customers" (
     "cnh_category" VARCHAR(6) NOT NULL,
     "honors_id" TEXT NOT NULL,
     "nationalities_id" TEXT NOT NULL,
+    "status_customers_id" TEXT NOT NULL,
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -156,6 +158,24 @@ CREATE TABLE "states" (
     CONSTRAINT "states_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "status_customers" (
+    "id" TEXT NOT NULL,
+    "status" VARCHAR(50) NOT NULL,
+    "description" VARCHAR(255),
+
+    CONSTRAINT "status_customers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "status_users" (
+    "id" TEXT NOT NULL,
+    "status" VARCHAR(50) NOT NULL,
+    "description" VARCHAR(255),
+
+    CONSTRAINT "status_users_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -195,14 +215,26 @@ CREATE UNIQUE INDEX "groups_name_key" ON "groups"("name");
 -- CreateIndex
 CREATE UNIQUE INDEX "states_name_key" ON "states"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "status_customers_status_key" ON "status_customers"("status");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "status_users_status_key" ON "status_users"("status");
+
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_privileges_id_fkey" FOREIGN KEY ("privileges_id") REFERENCES "privileges"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_status_users_id_fkey" FOREIGN KEY ("status_users_id") REFERENCES "status_users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "customers" ADD CONSTRAINT "customers_honors_id_fkey" FOREIGN KEY ("honors_id") REFERENCES "honors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "customers" ADD CONSTRAINT "customers_nationalities_id_fkey" FOREIGN KEY ("nationalities_id") REFERENCES "nationalities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "customers" ADD CONSTRAINT "customers_status_customers_id_fkey" FOREIGN KEY ("status_customers_id") REFERENCES "status_customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reserves" ADD CONSTRAINT "reserves_customers_id_fkey" FOREIGN KEY ("customers_id") REFERENCES "customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -2,12 +2,10 @@ generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model users {
   id String @id @default(uuid())
   full_name String @db.VarChar(45)
@@ -17,11 +15,12 @@ model users {
   telephone String @db.VarChar(16)
   password  String @db.VarChar(200)
   privileges_id String
+  status_users_id String
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   privilege   privileges @relation(fields: [privileges_id], references: [id])
+  status_user status_users @relation(fields: [status_users_id], references: [id]) 
 }
-
 model privileges {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45)
@@ -29,7 +28,6 @@ model privileges {
   update_date   DateTime @updatedAt
   users users[]
 }
-
 model honors {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45) 
@@ -38,7 +36,6 @@ model honors {
   update_date   DateTime @updatedAt
   customers customers[]
 }
-
 model nationalities {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45) 
@@ -60,10 +57,12 @@ model customers {
   cnh_category String @db.VarChar(6)
   honors_id String
   nationalities_id   String 
+  status_customers_id String
   creation_date DateTime @default(now())
-  update_date   DateTime @updatedAt
-  honors       honors @relation(fields: [honors_id], references: [id])
-  nationality  nationalities @relation(fields: [nationalities_id], references: [id])
+  update_date DateTime @updatedAt
+  honor honors @relation(fields: [honors_id], references: [id])
+  nationality nationalities @relation(fields: [nationalities_id], references: [id])
+  status_customer status_customers @relation(fields: [status_customers_id], references: [id]) 
   reserves reserves[]
 }
 model reserves {
@@ -140,4 +139,16 @@ model states {
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
   cities        cities[]
+}
+model status_customers {
+  id String   @id @default(uuid())
+  status   String @unique @db.VarChar(50)
+  description String? @db.VarChar(255)
+  customers customers[]
+}
+model status_users {
+  id String   @id @default(uuid())
+  status   String @unique @db.VarChar(50)
+  description String? @db.VarChar(255)
+  users users[]
 }
