@@ -144,11 +144,15 @@ model status_customers {
   id String   @id @default(uuid())
   status   String @unique @db.VarChar(50)
   description String? @db.VarChar(255)
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
   customers customers[]
 }
 model status_users {
   id String   @id @default(uuid())
   status   String @unique @db.VarChar(50)
   description String? @db.VarChar(255)
+  creation_date DateTime @default(now())
+  update_date   DateTime @updatedAt
   users users[]
 }
