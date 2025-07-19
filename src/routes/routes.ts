@@ -45,7 +45,7 @@ import { reserveController } from "../controllers/ReserveController";
 import { createReserveSchema } from "../validations/reserveValidation";
 
 const router = Router();
-
+// Users :::
 router.get("/users", userController.getUsers);
 router.get("/user/:id", userController.getUser);
 router.post(
@@ -59,6 +59,10 @@ router.patch(
   userController.updateUser
 );
 router.delete("/user/:id", userController.deleteUser);
+
+// Privileges :::
+router.get("/privileges", privilegeController.getPrivileges);
+router.get("/privilege/:id", privilegeController.getPrivilege);
 
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
@@ -75,21 +79,6 @@ router.put(
   vehicleController.updateVehicle
 );
 router.delete("/vehicle/:id", vehicleController.deleteVehicle);
-
-// PRIVILEGE :::
-router.get("/privileges", privilegeController.getPrivileges);
-router.get("/privilege/:id", privilegeController.getPrivilege);
-router.post(
-  "/privilege",
-  validate(createPrivilegeSchema),
-  privilegeController.createPrivilege
-);
-router.put(
-  "/privilege/:id",
-  validate(updatePrivilegeSchema),
-  privilegeController.updatePrivilege
-);
-router.delete("/privilege/:id", privilegeController.deletePrivilege);
 
 // NATIONALITIES :::
 router.get("/nationalities", nationalityController.getNationalities);
