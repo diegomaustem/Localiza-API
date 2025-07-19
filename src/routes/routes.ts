@@ -96,16 +96,9 @@ router.put(
 );
 router.delete("/nationality/:id", nationalityController.deleteNationality);
 
-// HONORS
+// Honors :::
 router.get("/honors", honorController.getHonors);
 router.get("/honor/:id", honorController.getHonor);
-router.post("/honor", validate(createHonorSchema), honorController.createHonor);
-router.put(
-  "/honor/:id",
-  validate(updateHonorSchema),
-  honorController.updateHonor
-);
-router.delete("/honor/:id", honorController.deleteHonor);
 
 // CUSTOMERS
 router.get("/customers", customerController.getCustomers);
