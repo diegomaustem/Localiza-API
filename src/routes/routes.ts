@@ -14,10 +14,6 @@ import {
 } from "../validations/vehicleValidation";
 import { honorController } from "../controllers/HonorController";
 import {
-  createPrivilegeSchema,
-  updatePrivilegeSchema,
-} from "../validations/privilegeValidation";
-import {
   createNationalitySchema,
   updateNationalitySchema,
 } from "../validations/nationaliryValidation";
