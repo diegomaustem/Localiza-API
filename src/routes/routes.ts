@@ -18,10 +18,6 @@ import {
   updateNationalitySchema,
 } from "../validations/nationaliryValidation";
 import {
-  createHonorSchema,
-  updateHonorSchema,
-} from "../validations/honorValidation";
-import {
   createCustomerSchema,
   updateCustomerSchema,
 } from "../validations/customerValidation";
