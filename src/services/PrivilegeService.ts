@@ -1,8 +1,5 @@
 import { IPrivilege } from "../interfaces/IPrivilege";
-import { genericRepository } from "../repositories/GenericRepository";
 import { privilegeRepository } from "../repositories/PrivilegeRepository";
-import { ValidPrismaTable } from "../types/PrismaTables";
-
 class PrivilegeService {
   async getPrivileges(): Promise<IPrivilege[]> {
     try {
