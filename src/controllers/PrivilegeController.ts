@@ -12,7 +12,7 @@ class PrivilegeController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for privileges.",
+        message: "Erro interno ao buscar privilégios.",
       });
     }
   }
@@ -26,7 +26,7 @@ class PrivilegeController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Privilege not found.",
+          message: "Privilégio não encontrado.",
         });
         return;
       }
@@ -41,7 +41,7 @@ class PrivilegeController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for privilege.",
+        message: "Erro interno ao buscar privilégio.",
       });
     }
   }
