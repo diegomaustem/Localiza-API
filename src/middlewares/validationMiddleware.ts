@@ -6,6 +6,25 @@ type ValidationSource = "body" | "query" | "params";
 export const validate =
   (schema: Joi.ObjectSchema, source: ValidationSource = "body") =>
   (req: Request, res: Response, next: NextFunction) => {
+    const hasDataEntry = Object.values(req[source]).some((value) => {
+      if (value !== null && value !== undefined) {
+        if (typeof value === "string") {
+          return value.trim() !== "";
+        }
+        return true;
+      }
+      return false;
+    });
+
+    if (!hasDataEntry) {
+      res.status(400).json({
+        code: 400,
+        status: "error",
+        message: "A atualização não pode ser feita com todos os campos vazios.",
+      });
+      return;
+    }
+
     const { error } = schema.validate(req[source], {
       abortEarly: false,
       allowUnknown: true,
@@ -19,7 +38,7 @@ export const validate =
 
       res.status(400).json({
         code: 400,
-        message: "Input data validation failed.",
+        message: "Falha na validação dos dados de entrada.",
         errors: errors,
       });
 
