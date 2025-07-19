@@ -39,6 +39,7 @@ import { unitController } from "../controllers/UnitController";
 import { createUnitSchema } from "../validations/unitValidation";
 import { reserveController } from "../controllers/ReserveController";
 import { createReserveSchema } from "../validations/reserveValidation";
+import { statusUserController } from "../controllers/StatusUserController";
 
 const router = Router();
 // Users :::
@@ -59,6 +60,10 @@ router.delete("/user/:id", userController.deleteUser);
 // Privileges :::
 router.get("/privileges", privilegeController.getPrivileges);
 router.get("/privilege/:id", privilegeController.getPrivilege);
+
+// Status users :::
+router.get("/statusUsers", statusUserController.getStatusUsers);
+router.get("/statusUser/:id", statusUserController.getStatusUser);
 
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
