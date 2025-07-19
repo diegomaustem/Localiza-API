@@ -24,12 +24,14 @@ class UserService {
   }
 
   async createUser(user: IUser): Promise<IUser> {
-    const newUser: IUser = {
-      ...user,
-      password: await passwordManager.hashPassword(user.password),
-    };
-
     try {
+      const hashedPassword = await passwordManager.hashPassword(user.password);
+
+      const newUser: IUser = {
+        ...user,
+        password: hashedPassword,
+      };
+
       return await UserRepository.create(newUser);
     } catch (error) {
       console.error("Failed to create user.", error);
@@ -38,12 +40,15 @@ class UserService {
   }
 
   async updateUser(userId: string, userData: IUser): Promise<IUser> {
-    const updatedData: IUser = {
-      ...userData,
-      password: await passwordManager.hashPassword(userData.password),
-    };
-
     try {
+      const updatedData: IUser = { ...userData };
+
+      if (userData.password) {
+        updatedData.password = await passwordManager.hashPassword(
+          userData.password
+        );
+      }
+
       return await UserRepository.update(userId, updatedData);
     } catch (error) {
       console.error("Failed to update user.", error);
@@ -61,35 +66,32 @@ class UserService {
   }
 
   async userRulesValidation(userData: IUser, userId?: string): Promise<void> {
-    const hasStatusUser = await genericRepository.generateQuery(
-      "status_users",
-      "id",
-      userData.status_users_id
-    );
+    const [hasStatusUser, hasPrivilege, hasEmail] = await Promise.all([
+      genericRepository.generateQuery(
+        "status_users",
+        "id",
+        userData.status_users_id
+      ),
+      genericRepository.generateQuery(
+        "privileges",
+        "id",
+        userData.privileges_id
+      ),
+      genericRepository.generateQuery("users", "email", userData.email),
+    ]);
+
     if (!hasStatusUser) {
       throw new HttpError(
         "O status_user informado não consta em nossos registros. Tente outro.",
         404
       );
     }
-
-    const hasPrivilege = await genericRepository.generateQuery(
-      "privileges",
-      "id",
-      userData.privileges_id
-    );
     if (!hasPrivilege) {
       throw new HttpError(
         "O privilégio informado não consta em nossos registros. Tente outro.",
         404
       );
     }
-
-    const hasEmail = await genericRepository.generateQuery(
-      "users",
-      "email",
-      userData.email
-    );
     if (hasEmail) {
       throw new HttpError(
         "O e-mail informado já está cadastrado. Tente outro.",

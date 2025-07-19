@@ -94,7 +94,13 @@ class UserController {
         return;
       }
 
-      await userService.userRulesValidation(userData);
+      if (
+        userData.email ||
+        userData.status_users_id ||
+        userData.privileges_id
+      ) {
+        await userService.userRulesValidation(userData);
+      }
 
       const updatedUser = await userService.updateUser(userId, userData);
       res.status(200).json({
@@ -131,7 +137,7 @@ class UserController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "User not found for delete.",
+          message: "Usuário não encontrado para exclusão.",
         });
         return;
       }
@@ -141,7 +147,7 @@ class UserController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "User deleted successfully.",
+        message: "Usuário excluído com sucesso.",
         deletedUser: deletedUser,
       });
     } catch (error) {
