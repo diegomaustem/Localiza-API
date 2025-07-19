@@ -46,7 +46,6 @@ import { createReserveSchema } from "../validations/reserveValidation";
 
 const router = Router();
 
-// USERS :::
 router.get("/users", userController.getUsers);
 router.get("/user/:id", userController.getUser);
 router.post(
@@ -54,7 +53,7 @@ router.post(
   validate(createUserSchema, "body"),
   userController.createUser
 );
-router.put(
+router.patch(
   "/user/:id",
   validate(updateUserSchema, "body"),
   userController.updateUser
