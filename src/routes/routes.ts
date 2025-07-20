@@ -66,6 +66,21 @@ router.get("/statusUser/:id", statusUserController.getStatusUser);
 router.get("/statusCustomers", statusCustomerController.getStatusCustomers);
 router.get("/statusCustomer/:id", statusCustomerController.getStatusCustomer);
 
+// Nationalities :::
+router.get("/nationalities", nationalityController.getNationalities);
+router.get("/nationality/:id", nationalityController.getNationality);
+router.post(
+  "/nationality",
+  validate(createNationalitySchema),
+  nationalityController.createNationality
+);
+router.patch(
+  "/nationality/:id",
+  validate(updateNationalitySchema),
+  nationalityController.updateNationality
+);
+router.delete("/nationality/:id", nationalityController.deleteNationality);
+
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
 router.get("/vehicle/:id", vehicleController.getVehicle);
@@ -83,19 +98,6 @@ router.put(
 router.delete("/vehicle/:id", vehicleController.deleteVehicle);
 
 // NATIONALITIES :::
-router.get("/nationalities", nationalityController.getNationalities);
-router.get("/nationality/:id", nationalityController.getNationality);
-router.post(
-  "/nationality",
-  validate(createNationalitySchema),
-  nationalityController.createNationality
-);
-router.put(
-  "/nationality/:id",
-  validate(updateNationalitySchema),
-  nationalityController.updateNationality
-);
-router.delete("/nationality/:id", nationalityController.deleteNationality);
 
 // Honors :::
 router.get("/honors", honorController.getHonors);
