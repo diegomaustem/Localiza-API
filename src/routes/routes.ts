@@ -36,6 +36,7 @@ import { createUnitSchema } from "../validations/unitValidation";
 import { reserveController } from "../controllers/ReserveController";
 import { createReserveSchema } from "../validations/reserveValidation";
 import { statusUserController } from "../controllers/StatusUserController";
+import { statusCustomerController } from "../controllers/StatusCustomerController";
 
 const router = Router();
 // Users :::
@@ -60,6 +61,10 @@ router.get("/privilege/:id", privilegeController.getPrivilege);
 // Status users :::
 router.get("/statusUsers", statusUserController.getStatusUsers);
 router.get("/statusUser/:id", statusUserController.getStatusUser);
+
+// Status customers :::
+router.get("/statusCustomers", statusCustomerController.getStatusCustomers);
+router.get("/statusCustomer/:id", statusCustomerController.getStatusCustomer);
 
 // VEHICLES :::
 router.get("/vehicles", vehicleController.getVehicles);
