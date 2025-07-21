@@ -32,6 +32,29 @@ class UnitRepository {
       throw error;
     }
   }
+
+  async update(unitId: string, unitData: IUnit): Promise<IUnit> {
+    try {
+      return await prisma.units.update({
+        where: { id: unitId },
+        data: unitData,
+      });
+    } catch (error) {
+      console.error("Error updating unit.", error);
+      throw error;
+    }
+  }
+
+  async delete(unitId: string): Promise<IUnit> {
+    try {
+      return await prisma.units.delete({
+        where: { id: unitId },
+      });
+    } catch (error) {
+      console.error("Error deleting unit.", error);
+      throw error;
+    }
+  }
 }
 
 export const unitRepository = new UnitRepository();
