@@ -14,7 +14,7 @@ class CityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for cities.",
+        message: "Erro interno ao procurar cidades.",
       });
     }
   }
@@ -28,7 +28,7 @@ class CityController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "City not found.",
+          message: "Cidade não encontrada.",
         });
         return;
       }
@@ -43,7 +43,7 @@ class CityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for city.",
+        message: "Erro interno ao procurar cidade.",
       });
     }
   }
@@ -52,11 +52,6 @@ class CityController {
     const cityData: ICity = req.body;
 
     try {
-      // REGRAS
-
-      // 1ª TEM QUE VER SE O STATES_ID EXISTE ::: CREATE ::: OK
-      // 1ª TEM QUE VER SE O STATES_ID EXISTE ::: UPDATE ::: OK
-      // 1ª VERIFICAR SE A CIDADE TEM ALGUM RELACIONAMENTO COM UNIT ::: DELETE :::
       await cityService.cityRulesValidation(cityData, undefined);
 
       const createdCity = await cityService.createCity(cityData);
@@ -64,7 +59,7 @@ class CityController {
       res.status(201).json({
         code: 201,
         status: "success",
-        message: "City created successfully.",
+        message: "Cidade criada com sucesso.",
         createdCity: createdCity,
       });
     } catch (error) {
@@ -81,7 +76,7 @@ class CityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating city.",
+        message: "Erro interno ao criar cidade.",
       });
     }
   }
