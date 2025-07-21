@@ -1,8 +1,5 @@
-import HttpError from "../errors/HttpError";
 import { IGroup } from "../interfaces/IGroup";
-import { genericRepository } from "../repositories/GenericRepository";
 import { groupRepository } from "../repositories/GroupRepository";
-
 class GroupService {
   async getGroups(): Promise<IGroup[]> {
     try {
