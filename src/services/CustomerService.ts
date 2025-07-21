@@ -64,47 +64,66 @@ class CustomerService {
   }
 
   async customerRulesValidation(
-    customerData: ICustomer,
+    customerData?: ICustomer,
     customerId?: string
   ): Promise<void> {
-    const hasCpf = await genericRepository.generateQuery(
-      "customers",
-      "cpf",
-      customerData.cpf,
-      customerId
-    );
-    if (hasCpf) {
-      throw new HttpError("The CPF provided is already registered.", 409);
+    if (customerId) {
+      const hasReservation = await genericRepository.generateQuery(
+        "reserves",
+        "customers_id",
+        customerId
+      );
+
+      if (hasReservation) {
+        throw new HttpError(
+          "Este cliente possui reserva(s) e não pode ser removido.",
+          409
+        );
+      }
+      return;
     }
 
-    const hasCnhCode = await genericRepository.generateQuery(
-      "customers",
-      "cnh_code",
-      customerData.cnh_code,
-      customerId
-    );
-    if (hasCnhCode) {
-      throw new HttpError("The CNH provided is already registered.", 409);
+    if (!customerData) {
+      throw new HttpError("Dados do cliente não foram fornecidos.", 400);
     }
 
-    const hasNationality = await genericRepository.generateQuery(
-      "nationalities",
-      "id",
-      customerData.nationalities_id,
-      customerId
-    );
-    if (!hasNationality) {
-      throw new HttpError("Nationality not found. Enter a valid one.", 404);
+    const { cpf, email, cnh_code, nationalities_id, honors_id } = customerData;
+
+    const [
+      existingCpf,
+      existingEmail,
+      existingCnh,
+      nationalityExists,
+      honorExists,
+    ] = await Promise.all([
+      genericRepository.generateQuery("customers", "cpf", cpf),
+      genericRepository.generateQuery("customers", "email", email),
+      genericRepository.generateQuery("customers", "cnh_code", cnh_code),
+      genericRepository.generateQuery("nationalities", "id", nationalities_id),
+      genericRepository.generateQuery("honors", "id", honors_id),
+    ]);
+
+    if (existingCpf) {
+      throw new HttpError("O CPF fornecido já está cadastrado.", 409);
     }
 
-    const hasHonor = await genericRepository.generateQuery(
-      "honors",
-      "id",
-      customerData.honors_id,
-      customerId
-    );
-    if (!hasHonor) {
-      throw new HttpError("Honor not found. Enter a valid one.", 404);
+    if (existingEmail) {
+      throw new HttpError("O e-mail fornecido já está registrado.", 409);
+    }
+
+    if (existingCnh) {
+      throw new HttpError("A CNH fornecida já está registrada.", 409);
+    }
+
+    if (!nationalityExists) {
+      throw new HttpError(
+        "Nacionalidade não encontrada. Insira uma válida.",
+        404
+      );
+    }
+
+    if (!honorExists) {
+      throw new HttpError("Honra não encontrada. Insira uma válida.", 404);
     }
   }
 }
