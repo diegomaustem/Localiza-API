@@ -35,7 +35,10 @@ import {
   updateCitySchema,
 } from "../validations/cityValidation";
 import { unitController } from "../controllers/UnitController";
-import { createUnitSchema } from "../validations/unitValidation";
+import {
+  createUnitSchema,
+  updateUnitSchema,
+} from "../validations/unitValidation";
 import { reserveController } from "../controllers/ReserveController";
 import { createReserveSchema } from "../validations/reserveValidation";
 import { statusUserController } from "../controllers/StatusUserController";
@@ -147,6 +150,12 @@ router.delete("/city/:id", cityController.deleteCity);
 router.get("/units", unitController.getUnits);
 router.get("/unit/:id", unitController.getUnit);
 router.post("/unit", validate(createUnitSchema), unitController.createUnit);
+router.patch(
+  "/unit/:id",
+  validate(updateUnitSchema),
+  unitController.updateUnit
+);
+router.delete("/unit/:id", unitController.deleteUnit);
 
 // RESERVES
 router.get("/reserves", reserveController.getReserves);
