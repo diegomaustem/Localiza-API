@@ -21,32 +21,6 @@ class GroupService {
       throw error;
     }
   }
-
-  async createGroup(groupData: IGroup): Promise<IGroup> {
-    try {
-      return await groupRepository.create(groupData);
-    } catch (error) {
-      console.error("Failed to create group.", error);
-      throw error;
-    }
-  }
-
-  async groupRulesValidation(
-    groupData: IGroup,
-    groupId?: string
-  ): Promise<void> {
-    const hasGroup = await genericRepository.generateQuery(
-      "groups",
-      "name",
-      groupData.name
-    );
-    if (hasGroup) {
-      throw new HttpError(
-        "The group provided is already registered. Enter another name.",
-        409
-      );
-    }
-  }
 }
 
 export const groupService = new GroupService();
