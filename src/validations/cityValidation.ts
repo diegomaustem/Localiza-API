@@ -2,21 +2,32 @@ import Joi from "joi";
 
 export const createCitySchema = Joi.object({
   name: Joi.string().trim().min(2).max(45).required().messages({
-    "string.base": "City name must be text.",
-    "string.empty": "City name cannot be empty.",
-    "string.min": "City name must have at least {#limit} characters.",
-    "string.max": "City name can have at most {#limit} characters.",
-    "any.required": "City name is required.",
+    "string.base": "O nome da cidade deve ser um texto.",
+    "string.empty": "O nome da cidade não pode estar vazio.",
+    "string.min": "O nome da cidade deve ter no mínimo {#limit} caracteres.",
+    "string.max": "O nome da cidade pode ter no máximo {#limit} caracteres.",
+    "any.required": "O nome da cidade é obrigatório.",
   }),
   states_id: Joi.string().guid().required().messages({
-    "string.base": "States ID must be a valid UUID.",
-    "string.guid": "States ID must be a valid UUID.",
-    "string.empty": "States ID cannot be empty.",
-    "any.required": "States ID is required.",
+    "string.base": "O ID do estado deve ser um UUID válido.",
+    "string.guid": "O ID do estado deve ser um UUID válido.",
+    "string.empty": "O ID do estado não pode estar vazio.",
+    "any.required": "O ID do estado é obrigatório.",
   }),
 });
 
 export const updateCitySchema = Joi.object({
-  name: Joi.string().trim().min(2).max(45).required(),
-  states_id: Joi.string().guid().required(),
+  name: Joi.string().trim().min(2).max(45).messages({
+    "string.base": "O nome da cidade deve ser um texto.",
+    "string.empty": "O nome da cidade não pode estar vazio.",
+    "string.min": "O nome da cidade deve ter no mínimo {#limit} caracteres.",
+    "string.max": "O nome da cidade pode ter no máximo {#limit} caracteres.",
+    "any.required": "O nome da cidade é obrigatório.",
+  }),
+  states_id: Joi.string().guid().messages({
+    "string.base": "O ID do estado deve ser um UUID válido.",
+    "string.guid": "O ID do estado deve ser um UUID válido.",
+    "string.empty": "O ID do estado não pode estar vazio.",
+    "any.required": "O ID do estado é obrigatório.",
+  }),
 });
