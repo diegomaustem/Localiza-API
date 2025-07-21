@@ -15,7 +15,7 @@ class CustomerController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for customers.",
+        message: "Erro interno ao buscar clientes.",
       });
     }
   }
@@ -29,7 +29,7 @@ class CustomerController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Customer not found.",
+          message: "Cliente não encontrado.",
         });
         return;
       }
@@ -44,7 +44,7 @@ class CustomerController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for customer.",
+        message: "Erro interno ao procurar cliente.",
       });
     }
   }
@@ -62,7 +62,7 @@ class CustomerController {
       res.status(201).json({
         code: 201,
         status: "success",
-        message: "Customer created successfully.",
+        message: "Cliente criado com sucesso.",
         createdCustomer: createdCustomer,
       });
     } catch (error) {
@@ -79,7 +79,7 @@ class CustomerController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating customer.",
+        message: "Erro interno ao criar cliente.",
       });
     }
   }
@@ -94,12 +94,12 @@ class CustomerController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Customer not found for update.",
+          message: "Cliente não encontrado para atualização.",
         });
         return;
       }
 
-      await customerService.customerRulesValidation(customerData, customerId);
+      await customerService.customerRulesValidation(customerData);
 
       const updatedCustomer = await customerService.updateCustomer(
         customerId,
@@ -108,7 +108,7 @@ class CustomerController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "Customer updated successfully.",
+        message: "Cliente atualizado com sucesso.",
         updatedCustomer: updatedCustomer,
       });
     } catch (error) {
@@ -125,7 +125,7 @@ class CustomerController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while updating customer.",
+        message: "Erro interno ao atualizar o cliente.",
       });
     }
   }
@@ -139,19 +139,18 @@ class CustomerController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Customer not found for delete.",
+          message: "Cliente não encontrado para exclusão.",
         });
         return;
       }
-
-      // AO CONSTRUIR RESERVA VERIFICAR SE O CLIENTE POSSUI ALGUMA RESERVA :::
+      await customerService.customerRulesValidation(undefined, customerId);
 
       const deletedCustomer = await customerService.deleteCustomer(customerId);
 
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "Customer deleted successfully.",
+        message: "Cliente excluído com sucesso.",
         deletedCustomer: deletedCustomer,
       });
     } catch (error) {
@@ -159,7 +158,7 @@ class CustomerController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while deleting customer.",
+        message: "Erro interno ao excluir cliente.",
       });
     }
   }
