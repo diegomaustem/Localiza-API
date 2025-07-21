@@ -32,6 +32,29 @@ class CityRepository {
       throw error;
     }
   }
+
+  async update(cityId: string, cityData: ICity): Promise<ICity> {
+    try {
+      return await prisma.cities.update({
+        where: { id: cityId },
+        data: cityData,
+      });
+    } catch (error) {
+      console.error("Error updating nationality.", error);
+      throw error;
+    }
+  }
+
+  async delete(cityId: string): Promise<ICity> {
+    try {
+      return await prisma.cities.delete({
+        where: { id: cityId },
+      });
+    } catch (error) {
+      console.error("Error deleting nationality.", error);
+      throw error;
+    }
+  }
 }
 
 export const cityRepository = new CityRepository();
