@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
 import { categoryService } from "../services/CategoryService";
-import { ICategory } from "../interfaces/ICategory";
-import HttpError from "../errors/HttpError";
-
 class CategoryController {
   async getCategories(req: Request, res: Response): Promise<void> {
     try {
@@ -16,7 +13,7 @@ class CategoryController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for categories.",
+        message: "Erro interno ao buscar por categorias.",
       });
     }
   }
@@ -30,7 +27,7 @@ class CategoryController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Category not found.",
+          message: "Categoria não encontrada.",
         });
         return;
       }
@@ -45,42 +42,7 @@ class CategoryController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for category.",
-      });
-    }
-  }
-
-  async createCategory(req: Request, res: Response): Promise<void> {
-    const categoryData: ICategory = req.body;
-
-    try {
-      await categoryService.categoryRulesValidation(categoryData);
-
-      const createdCategory = await categoryService.createCategory(
-        categoryData
-      );
-
-      res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "Category created successfully.",
-        createdCategory: createdCategory,
-      });
-    } catch (error) {
-      if (error instanceof HttpError) {
-        res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
-          message: error.message,
-        });
-        return;
-      }
-
-      console.error("Error creating category.", error);
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Internal error while creating category.",
+        message: "Erro interno ao buscar por categoria.",
       });
     }
   }
