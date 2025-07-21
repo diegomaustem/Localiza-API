@@ -52,7 +52,12 @@ class CityController {
     const cityData: ICity = req.body;
 
     try {
-      await cityService.cityRulesValidation(cityData);
+      // REGRAS
+
+      // 1ª TEM QUE VER SE O STATES_ID EXISTE ::: CREATE ::: OK
+      // 1ª TEM QUE VER SE O STATES_ID EXISTE ::: UPDATE ::: OK
+      // 1ª VERIFICAR SE A CIDADE TEM ALGUM RELACIONAMENTO COM UNIT ::: DELETE :::
+      await cityService.cityRulesValidation(cityData, undefined);
 
       const createdCity = await cityService.createCity(cityData);
 
@@ -77,6 +82,93 @@ class CityController {
         code: 500,
         status: "error",
         message: "Internal error while creating city.",
+      });
+    }
+  }
+
+  async updateCity(req: Request, res: Response): Promise<void> {
+    const cityId: string = req.params.id;
+    const cityData: ICity = req.body;
+
+    try {
+      const city = await cityService.getCity(cityId);
+      if (!city) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Cidade não encontrada para atualização.",
+        });
+        return;
+      }
+
+      await cityService.cityRulesValidation(cityData, undefined);
+
+      const updatedCity = await cityService.updateCity(cityId, cityData);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Cidade atualizada com sucesso.",
+        updatedCity: updatedCity,
+      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
+
+      console.error("Error updating nationality.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Erro interno ao atualizar cidade.",
+      });
+    }
+  }
+
+  async deleteCity(req: Request, res: Response): Promise<void> {
+    const cityId: string = req.params.id;
+
+    try {
+      const city = await cityService.getCity(cityId);
+
+      if (!city) {
+        res.status(404).json({
+          code: 404,
+          status: "error",
+          message: "Cidade não encontrada para exclusão.",
+        });
+        return;
+      }
+
+      await cityService.cityRulesValidation(undefined, cityId);
+
+      const deletedCity = await cityService.deleteCity(cityId);
+
+      res.status(200).json({
+        code: 200,
+        status: "success",
+        message: "Cidade excluída com sucesso.",
+        deletedCity: deletedCity,
+      });
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
+      console.error("Error deleting city.", error);
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        message: "Erro interno ao excluir cidade.",
       });
     }
   }
