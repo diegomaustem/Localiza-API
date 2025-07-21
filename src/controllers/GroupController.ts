@@ -14,7 +14,7 @@ class GroupController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for groups.",
+        message: "Erro interno ao procurar por grupos.",
       });
     }
   }
@@ -28,7 +28,7 @@ class GroupController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Group not found.",
+          message: "Grupo não encontrado.",
         });
         return;
       }
@@ -43,40 +43,7 @@ class GroupController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for group.",
-      });
-    }
-  }
-
-  async createGroup(req: Request, res: Response): Promise<void> {
-    const groupData: IGroup = req.body;
-
-    try {
-      await groupService.groupRulesValidation(groupData);
-
-      const createdGroup = await groupService.createGroup(groupData);
-
-      res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "Group created successfully.",
-        createdGroup: createdGroup,
-      });
-    } catch (error) {
-      if (error instanceof HttpError) {
-        res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
-          message: error.message,
-        });
-        return;
-      }
-
-      console.error("Error creating group.", error);
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Internal error while creating group.",
+        message: "Erro interno ao procurar por grupo.",
       });
     }
   }
