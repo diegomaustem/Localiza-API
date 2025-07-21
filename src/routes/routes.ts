@@ -123,11 +123,9 @@ router.get("/honor/:id", honorController.getHonor);
 router.get("/categories", categoryController.getCategories);
 router.get("/category/:id", categoryController.getCategory);
 
-// GROUPS
+// Groups :::
 router.get("/groups", groupController.getGroups);
 router.get("/group/:id", groupController.getGroup);
-
-router.post("/group", validate(createGroupSchema), groupController.createGroup);
 
 // STATES
 router.get("/states", stateController.getStates);
