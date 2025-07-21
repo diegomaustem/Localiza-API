@@ -31,14 +31,50 @@ class CityService {
     }
   }
 
-  async cityRulesValidation(cityData: ICity, cityId?: string): Promise<void> {
-    const hasState = await genericRepository.generateQuery(
-      "states",
-      "id",
-      cityData.states_id
-    );
-    if (!hasState) {
-      throw new HttpError("State not found. Enter a valid one.", 404);
+  async updateCity(cityId: string, cityData: ICity): Promise<ICity> {
+    try {
+      return await cityRepository.update(cityId, cityData);
+    } catch (error) {
+      console.error("Failed to update nationality.", error);
+      throw error;
+    }
+  }
+
+  async deleteCity(cityId: string): Promise<ICity> {
+    try {
+      return await cityRepository.delete(cityId);
+    } catch (error) {
+      console.error("Failed to delete nationality.", error);
+      throw error;
+    }
+  }
+
+  async cityRulesValidation(cityData?: ICity, cityId?: string): Promise<void> {
+    if (cityId) {
+      const cityHasUnits = await genericRepository.generateQuery(
+        "units",
+        "cities_id",
+        cityId
+      );
+
+      if (cityHasUnits) {
+        throw new HttpError(
+          "Esta cidade possui unidades vinculadas e não pode ser excluída.",
+          409
+        );
+      }
+      return;
+    }
+
+    if (cityData) {
+      const existState = await genericRepository.generateQuery(
+        "states",
+        "id",
+        cityData.states_id
+      );
+      if (!existState) {
+        throw new HttpError("Estado não encontrado. Insira um válido.", 404);
+      }
     }
   }
 }
