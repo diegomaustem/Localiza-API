@@ -31,14 +31,50 @@ class UnitService {
     }
   }
 
-  async unitRulesValidation(unitData: IUnit, unitId?: string): Promise<void> {
-    const hasCity = await genericRepository.generateQuery(
-      "cities",
-      "id",
-      unitData.cities_id
-    );
-    if (!hasCity) {
-      throw new HttpError("City not found. Enter a valid one.", 404);
+  async updateUnit(unitId: string, unitData: IUnit): Promise<IUnit> {
+    try {
+      return await unitRepository.update(unitId, unitData);
+    } catch (error) {
+      console.error("Failed to update nationality.", error);
+      throw error;
+    }
+  }
+
+  async deleteUnit(unitId: string): Promise<IUnit> {
+    try {
+      return await unitRepository.delete(unitId);
+    } catch (error) {
+      console.error("Failed to delete unit.", error);
+      throw error;
+    }
+  }
+
+  async unitRulesValidation(unitData?: IUnit, unitId?: string): Promise<void> {
+    if (unitId) {
+      const hasLinkedVehicles = await genericRepository.generateQuery(
+        "vehicles",
+        "units_id",
+        unitId
+      );
+
+      if (hasLinkedVehicles) {
+        throw new HttpError(
+          "Esta unidade está vinculada a veículos e não pode ser excluída.",
+          409
+        );
+      }
+      return;
+    }
+
+    if (unitData) {
+      const hasCity = await genericRepository.generateQuery(
+        "cities",
+        "id",
+        unitData.cities_id
+      );
+      if (!hasCity) {
+        throw new HttpError("Unidade não encontrada. Tente outra.", 404);
+      }
     }
   }
 }
