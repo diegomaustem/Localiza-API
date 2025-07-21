@@ -22,12 +22,10 @@ export const updateCitySchema = Joi.object({
     "string.empty": "O nome da cidade não pode estar vazio.",
     "string.min": "O nome da cidade deve ter no mínimo {#limit} caracteres.",
     "string.max": "O nome da cidade pode ter no máximo {#limit} caracteres.",
-    "any.required": "O nome da cidade é obrigatório.",
   }),
   states_id: Joi.string().guid().messages({
     "string.base": "O ID do estado deve ser um UUID válido.",
     "string.guid": "O ID do estado deve ser um UUID válido.",
     "string.empty": "O ID do estado não pode estar vazio.",
-    "any.required": "O ID do estado é obrigatório.",
   }),
 });
