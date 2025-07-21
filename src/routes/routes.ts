@@ -127,11 +127,9 @@ router.get("/category/:id", categoryController.getCategory);
 router.get("/groups", groupController.getGroups);
 router.get("/group/:id", groupController.getGroup);
 
-// STATES
+// States :::
 router.get("/states", stateController.getStates);
 router.get("/state/:id", stateController.getState);
-
-router.post("/state", validate(createStateSchema), stateController.createState);
 
 // CITIES
 router.get("/cities", cityController.getCities);
