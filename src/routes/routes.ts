@@ -119,15 +119,9 @@ router.delete("/vehicle/:id", vehicleController.deleteVehicle);
 router.get("/honors", honorController.getHonors);
 router.get("/honor/:id", honorController.getHonor);
 
-// CATEGORIES
+// Categories :::
 router.get("/categories", categoryController.getCategories);
 router.get("/category/:id", categoryController.getCategory);
-
-router.post(
-  "/category",
-  validate(createCategorySchema),
-  categoryController.createCategory
-);
 
 // GROUPS
 router.get("/groups", groupController.getGroups);
