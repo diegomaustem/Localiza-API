@@ -16,7 +16,7 @@ class NationalityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for nationalities.",
+        message: "Erro interno ao buscar nacionalidades.",
       });
     }
   }
@@ -32,7 +32,7 @@ class NationalityController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Nationality not found.",
+          message: "Nacionalidade não encontrada.",
         });
         return;
       }
@@ -47,7 +47,7 @@ class NationalityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for nationality.",
+        message: "Erro interno ao buscar nacionalidade.",
       });
     }
   }
@@ -56,6 +56,8 @@ class NationalityController {
     const nationalityData: INationality = req.body;
 
     try {
+      await nationalityService.nationalityRulesValidation(nationalityData);
+
       const createdNationality = await nationalityService.createNationality(
         nationalityData
       );
@@ -63,15 +65,24 @@ class NationalityController {
       res.status(201).json({
         code: 201,
         status: "success",
-        message: "Nationality created successfully.",
+        message: "Nacionalidade criada com sucesso.",
         createdNationality: createdNationality,
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
+
       console.error("Error creating nationality.", error);
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating nationality.",
+        message: "Erro interno ao criar nacionalidade.",
       });
     }
   }
@@ -88,7 +99,7 @@ class NationalityController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Nationality not found for update.",
+          message: "Nacionalidade não encontrada para atualização.",
         });
         return;
       }
@@ -101,7 +112,7 @@ class NationalityController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "Nationality updated successfully.",
+        message: "Nacionalidade atualizada com sucesso.",
         updatedNationality: updatedNationality,
       });
     } catch (error) {
@@ -109,7 +120,7 @@ class NationalityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while updating nationality.",
+        message: "Erro interno ao atualizar nacionalidade.",
       });
     }
   }
@@ -126,12 +137,15 @@ class NationalityController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Nationality not found for deletion.",
+          message: "Nacionalidade não encontrada para exclusão.",
         });
         return;
       }
 
-      await nationalityService.nationalityRulesValidation(nationalityId);
+      await nationalityService.nationalityRulesValidation(
+        undefined,
+        nationalityId
+      );
 
       const deletedNationality = await nationalityService.deleteNationality(
         nationalityId
@@ -140,7 +154,7 @@ class NationalityController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "Nationality deleted successfully.",
+        message: "Nacionalidade excluída com sucesso.",
         deletedNationality: deletedNationality,
       });
     } catch (error) {
@@ -156,7 +170,7 @@ class NationalityController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while deleting nationality.",
+        message: "Erro interno ao excluir nacionalidade.",
       });
     }
   }
