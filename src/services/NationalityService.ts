@@ -22,9 +22,11 @@ class NationalityService {
     }
   }
 
-  async createNationality(nationality: INationality): Promise<INationality> {
+  async createNationality(
+    nationalityData: INationality
+  ): Promise<INationality> {
     try {
-      return await nationalityRepository.create(nationality);
+      return await nationalityRepository.create(nationalityData);
     } catch (error) {
       console.error("Failed to create nationality.", error);
       throw error;
@@ -52,14 +54,39 @@ class NationalityService {
     }
   }
 
-  async nationalityRulesValidation(nationalityId: string): Promise<void> {
-    const hasNationality = await genericRepository.generateQuery(
-      "customers",
-      "nationalities_id",
+  async nationalityRulesValidation(
+    nationalityData?: INationality,
+    nationalityId?: string
+  ): Promise<void> {
+    const [existingNationality, linkedCustomer] = await Promise.all([
+      nationalityData
+        ? genericRepository.generateQuery(
+            "nationalities",
+            "name",
+            nationalityData.name
+          )
+        : Promise.resolve(null),
       nationalityId
-    );
-    if (hasNationality) {
-      throw new HttpError("Nationality in use. Cannot be deleted.", 409);
+        ? genericRepository.generateQuery(
+            "customers",
+            "nationalities_id",
+            nationalityId
+          )
+        : Promise.resolve(null),
+    ]);
+
+    if (existingNationality) {
+      throw new HttpError(
+        "Já existe um registro com essa nacionalidade. Tente outra.",
+        409
+      );
+    }
+
+    if (linkedCustomer) {
+      throw new HttpError(
+        "Esta nacionalidade está em uso e não pode ser excluída.",
+        409
+      );
     }
   }
 }
