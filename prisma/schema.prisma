@@ -85,7 +85,7 @@ model vehicles {
   plate String @unique @db.VarChar(45)
   mark String @db.VarChar(30)
   model String @db.VarChar(20)
-  year DateTime  @db.Date
+  year Int @db.Integer
   color String @db.VarChar(20)
   crlv_document String @unique @db.VarChar(45)
   cylinder_capacity Int @db.Integer
