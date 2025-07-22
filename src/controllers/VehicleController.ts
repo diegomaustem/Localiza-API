@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { ICreateVehicle } from "../interfaces/IVehicle";
+import { IVehicle } from "../interfaces/IVehicle";
 import { vehicleService } from "../services/VehicleService";
+import HttpError from "../errors/HttpError";
 
 class VehicleController {
   async getVehicles(req: Request, res: Response): Promise<void> {
@@ -15,7 +16,7 @@ class VehicleController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for vehicles.",
+        message: "Erro interno durante a busca de veículos.",
       });
     }
   }
@@ -29,7 +30,7 @@ class VehicleController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Vehicle not found.",
+          message: "Veículo não encontrado..",
         });
         return;
       }
@@ -44,36 +45,47 @@ class VehicleController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for vehicle.",
+        message: "Erro interno durante a busca do veículo.",
       });
     }
   }
 
   async createVehicle(req: Request, res: Response): Promise<void> {
-    const vehicleData: ICreateVehicle = req.body;
+    const vehicleData: IVehicle = req.body;
 
     try {
+      await vehicleService.vehicleRulesValidation(vehicleData, undefined);
+
       const vehicleCreated = await vehicleService.createVehicle(vehicleData);
 
       res.status(201).json({
         code: 201,
         status: "success",
-        message: "Vehicle created successfully.",
+        message: "Veículo criado com sucesso.",
         vehicle: vehicleCreated,
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
+
       console.error("Error creating vehicle.", error);
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while creating vehicle.",
+        message: "Erro interno ao criar o veículo.",
       });
     }
   }
 
   async updateVehicle(req: Request, res: Response): Promise<void> {
     const vehicleId: string = req.params.id;
-    const vehicleData: ICreateVehicle = req.body;
+    const vehicleData: IVehicle = req.body;
 
     try {
       const vehicle = await vehicleService.getVehicle(vehicleId);
@@ -81,10 +93,12 @@ class VehicleController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Vehicle not found.",
+          message: "Veículo não encontrado para atualização.",
         });
         return;
       }
+
+      await vehicleService.vehicleRulesValidation(vehicleData, undefined);
 
       const updatedVehicle = await vehicleService.updateVehicle(
         vehicleId,
@@ -94,15 +108,23 @@ class VehicleController {
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "User updated successfully.",
+        message: "Veículo atualizado com sucesso.",
         vehicle: updatedVehicle,
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
       console.error("Error updating vehicle.", error);
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while updating vehicle.",
+        message: "Erro interno ao atualizar o veículo.",
       });
     }
   }
@@ -112,29 +134,37 @@ class VehicleController {
 
     try {
       const vehicle = await vehicleService.getVehicle(vehiceId);
-
       if (!vehicle) {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Vehicle not found for deletion.",
+          message: "Veículo não encontrado para deleção.",
         });
         return;
       }
 
+      await vehicleService.vehicleRulesValidation(undefined, vehiceId);
       await vehicleService.deleteVehicle(vehiceId);
 
       res.status(200).json({
         code: 200,
         status: "success",
-        message: "Vehicle deleted successfully.",
+        message: "Veículo deletado com sucesso.",
       });
     } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.statusCode,
+          status: "error",
+          message: error.message,
+        });
+        return;
+      }
       console.error("Error deleting vehicle.", error);
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while deleting vehicle.",
+        message: "Erro interno ao tentar excluir veículo.",
       });
     }
   }
