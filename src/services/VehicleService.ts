@@ -97,26 +97,26 @@ class VehicleService {
       ] = await Promise.all([
         chassi
           ? genericRepository.generateQuery("vehicles", "chassi", chassi)
-          : null,
+          : Promise.resolve(false),
         plate
           ? genericRepository.generateQuery("vehicles", "plate", plate)
-          : null,
+          : Promise.resolve(false),
         crlv_document
           ? genericRepository.generateQuery(
               "vehicles",
               "crlv_document",
               crlv_document
             )
-          : null,
+          : Promise.resolve(false),
         groups_id
           ? genericRepository.generateQuery("groups", "id", groups_id)
-          : null,
+          : Promise.resolve(false),
         units_id
           ? genericRepository.generateQuery("units", "id", units_id)
-          : null,
+          : Promise.resolve(false),
         categories_id
           ? genericRepository.generateQuery("categories", "id", categories_id)
-          : null,
+          : Promise.resolve(false),
       ]);
 
       if (existingChassi) {
