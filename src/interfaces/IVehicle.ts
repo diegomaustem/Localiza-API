@@ -1,24 +1,17 @@
 export interface IVehicle {
   id: string;
   chassi: string;
-  placa: string;
-  marca: string;
-  modelo: string;
-  ano: number;
-  cor: string;
-  documento_crlv: string;
-  cilindrada: number;
-  criacaoData: Date;
-  atualizacaoData: Date;
-}
-export interface ICreateVehicle {
-  id: string;
-  chassi: string;
-  placa: string;
-  marca: string;
-  modelo: string;
-  ano: number;
-  cor: string;
-  documento_crlv: string;
-  cilindrada: number;
+  plate: string;
+  mark: string;
+  model: string;
+  year: number;
+  color: string;
+  crlv_document: string;
+  cylinder_capacity: number;
+  status: string;
+  units_id: string;
+  categories_id: string;
+  groups_id: string;
+  creation_date: Date;
+  update_date: Date;
 }
