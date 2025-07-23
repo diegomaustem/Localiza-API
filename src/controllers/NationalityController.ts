@@ -103,6 +103,8 @@ class NationalityController {
         return;
       }
 
+      await nationalityService.nationalityRulesValidation(nationalityData);
+
       const updatedNationality = await nationalityService.updateNationality(
         nationalityId,
         nationalityData
@@ -131,7 +133,6 @@ class NationalityController {
       const nationality = await nationalityService.getNationality(
         nationalityId
       );
-
       if (!nationality) {
         res.status(404).json({
           code: 404,
