@@ -2,43 +2,45 @@ import Joi from "joi";
 
 export const createReserveSchema = Joi.object({
   daily_amount: Joi.number().integer().min(0).required().messages({
-    "number.base": "Daily amount must be a number.",
-    "number.integer": "Daily amount must be an integer.",
-    "number.min": "Daily amount cannot be negative.",
-    "any.required": "Daily amount is required.",
+    "number.base": "O valor diário deve ser um número.",
+    "number.integer": "O valor diário deve ser um número inteiro.",
+    "number.min": "O valor diário não pode ser negativo.",
+    "any.required": "O valor diário é obrigatório.",
   }),
 
   withdrawn: Joi.date().iso().required().messages({
-    "date.base": "Withdrawn date must be a valid date.",
-    "date.iso": "Withdrawn date must be in ISO 8601 format (YYYY-MM-DD).",
-    "any.required": "Withdrawn date is required.",
+    "date.base": "A data de retirada deve ser uma data válida.",
+    "date.iso":
+      "A data de retirada deve estar no formato ISO 8601 (YYYY-MM-DD).",
+    "any.required": "A data de retirada é obrigatória.",
   }),
 
   return: Joi.date().iso().required().min(Joi.ref("withdrawn")).messages({
-    "date.base": "Return date must be a valid date.",
-    "date.iso": "Return date must be in ISO 8601 format (YYYY-MM-DD).",
-    "date.min": "Return date cannot be before the withdrawn date.",
-    "any.required": "Return date is required.",
+    "date.base": "A data de devolução deve ser uma data válida.",
+    "date.iso":
+      "A data de devolução deve estar no formato ISO 8601 (YYYY-MM-DD).",
+    "date.min": "A data de devolução não pode ser anterior à data de retirada.",
+    "any.required": "A data de devolução é obrigatória.",
   }),
 
   value: Joi.number().precision(2).min(0).required().messages({
-    "number.base": "Value must be a number.",
-    "number.precision": "Value can only have two decimal places.",
-    "number.min": "Value cannot be negative.",
-    "any.required": "Value is required.",
+    "number.base": "O valor deve ser um número.",
+    "number.precision": "O valor pode ter no máximo duas casas decimais.",
+    "number.min": "O valor não pode ser negativo.",
+    "any.required": "O valor é obrigatório.",
   }),
 
   status: Joi.string()
     .trim()
     .max(20)
-    .valid("active", "pending", "completed", "canceled")
+    .valid("ativa", "pendente", "completa", "cancelada")
     .required()
     .messages({
-      "string.base": "Status must be text.",
-      "string.empty": "Status cannot be empty.",
-      "string.max": "Status must have at most {#limit} characters.",
-      "any.only": "Invalid status provided.",
-      "any.required": "Status is required.",
+      "string.base": "O status deve ser um texto.",
+      "string.empty": "O status não pode estar vazio.",
+      "string.max": "O status deve ter no máximo {#limit} caracteres.",
+      "any.only": "Status inválido fornecido.",
+      "any.required": "O status é obrigatório.",
     }),
 
   customers_id: Joi.string()
@@ -46,10 +48,10 @@ export const createReserveSchema = Joi.object({
     .guid({ version: ["uuidv4"] })
     .required()
     .messages({
-      "string.base": "Customer ID must be text.",
-      "string.empty": "Customer ID cannot be empty.",
-      "string.guid": "Customer ID must be a valid UUID.",
-      "any.required": "Customer ID is required.",
+      "string.base": "O ID do cliente deve ser um texto.",
+      "string.empty": "O ID do cliente não pode estar vazio.",
+      "string.guid": "O ID do cliente deve ser um UUID válido.",
+      "any.required": "O ID do cliente é obrigatório.",
     }),
 
   vehicles_id: Joi.string()
@@ -57,30 +59,64 @@ export const createReserveSchema = Joi.object({
     .guid({ version: ["uuidv4"] })
     .required()
     .messages({
-      "string.base": "Vehicle ID must be text.",
-      "string.empty": "Vehicle ID cannot be empty.",
-      "string.guid": "Vehicle ID must be a valid UUID.",
-      "any.required": "Vehicle ID is required.",
+      "string.base": "O ID do veículo deve ser um texto.",
+      "string.empty": "O ID do veículo não pode estar vazio.",
+      "string.guid": "O ID do veículo deve ser um UUID válido.",
+      "any.required": "O ID do veículo é obrigatório.",
     }),
 });
 
 export const updateReserveSchema = Joi.object({
-  daily_amount: Joi.number().integer().min(0).required(),
-  withdrawn: Joi.date().iso().required(),
-  return: Joi.date().iso().required().min(Joi.ref("withdrawn")),
-  value: Joi.number().precision(2).min(0).required(),
+  daily_amount: Joi.number().integer().min(0).messages({
+    "number.base": "O valor diário deve ser um número.",
+    "number.integer": "O valor diário deve ser um número inteiro.",
+    "number.min": "O valor diário não pode ser negativo.",
+  }),
+  withdrawn: Joi.date().iso().messages({
+    "date.base": "A data de retirada deve ser uma data válida.",
+    "date.iso":
+      "A data de retirada deve estar no formato ISO 8601 (YYYY-MM-DD).",
+  }),
+  return: Joi.date()
+    .iso()
+    .messages({
+      "date.base": "A data de devolução deve ser uma data válida.",
+      "date.iso":
+        "A data de devolução deve estar no formato ISO 8601 (YYYY-MM-DD).",
+      "date.min":
+        "A data de devolução não pode ser anterior à data de retirada.",
+    })
+    .min(Joi.ref("withdrawn")),
+  value: Joi.number().precision(2).min(0).messages({
+    "number.base": "O valor deve ser um número.",
+    "number.precision": "O valor pode ter no máximo duas casas decimais.",
+    "number.min": "O valor não pode ser negativo.",
+  }),
   status: Joi.string()
     .trim()
     .max(20)
-    .valid("active", "pending", "completed", "canceled")
-    .required(),
+    .valid("ativa", "pendente", "completa", "cancelada")
+    .messages({
+      "string.base": "O status deve ser um texto.",
+      "string.empty": "O status não pode estar vazio.",
+      "string.max": "O status deve ter no máximo {#limit} caracteres.",
+      "any.only": "Status inválido fornecido.",
+    }),
   customers_id: Joi.string()
     .trim()
     .guid({ version: ["uuidv4"] })
-    .required(),
+    .messages({
+      "string.base": "O ID do cliente deve ser um texto.",
+      "string.empty": "O ID do cliente não pode estar vazio.",
+      "string.guid": "O ID do cliente deve ser um UUID válido.",
+    }),
 
   vehicles_id: Joi.string()
     .trim()
     .guid({ version: ["uuidv4"] })
-    .required(),
+    .messages({
+      "string.base": "O ID do veículo deve ser um texto.",
+      "string.empty": "O ID do veículo não pode estar vazio.",
+      "string.guid": "O ID do veículo deve ser um UUID válido.",
+    }),
 });
