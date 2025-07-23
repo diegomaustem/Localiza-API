@@ -35,7 +35,7 @@ class UnitService {
     try {
       return await unitRepository.update(unitId, unitData);
     } catch (error) {
-      console.error("Failed to update nationality.", error);
+      console.error("Failed to update unit.", error);
       throw error;
     }
   }
@@ -67,13 +67,14 @@ class UnitService {
     }
 
     if (unitData) {
-      const hasCity = await genericRepository.generateQuery(
-        "cities",
-        "id",
-        unitData.cities_id
-      );
-      if (!hasCity) {
-        throw new HttpError("Unidade não encontrada. Tente outra.", 404);
+      const { cities_id } = unitData;
+
+      const hasCity = cities_id
+        ? await genericRepository.generateQuery("cities", "id", cities_id)
+        : false;
+
+      if (cities_id && !hasCity) {
+        throw new HttpError("Cidade não encontrada. Tente outra.", 404);
       }
     }
   }
