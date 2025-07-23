@@ -1,6 +1,5 @@
 import prisma from "../lib/prisma";
 import { ValidPrismaTable } from "../types/PrismaTables";
-
 class GenericRepository {
   async generateQuery(
     table: ValidPrismaTable,
@@ -27,5 +26,4 @@ class GenericRepository {
     }
   }
 }
-
 export const genericRepository = new GenericRepository();
