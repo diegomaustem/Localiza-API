@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { ICity } from "../interfaces/ICity";
 import { cityService } from "../services/CityService";
 import HttpError from "../errors/HttpError";
-
 class CityController {
   async getCities(req: Request, res: Response): Promise<void> {
     try {
@@ -116,7 +115,7 @@ class CityController {
         return;
       }
 
-      console.error("Error updating nationality.", error);
+      console.error("Error updating city.", error);
       res.status(500).json({
         code: 500,
         status: "error",
