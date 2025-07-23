@@ -67,12 +67,12 @@ class CityService {
     }
 
     if (cityData) {
-      const existState = await genericRepository.generateQuery(
-        "states",
-        "id",
-        cityData.states_id
-      );
-      if (!existState) {
+      const { states_id } = cityData;
+      const existState = states_id
+        ? await genericRepository.generateQuery("states", "id", states_id)
+        : false;
+
+      if (states_id && !existState) {
         throw new HttpError("Estado não encontrado. Insira um válido.", 404);
       }
     }
