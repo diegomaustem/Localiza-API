@@ -11,7 +11,7 @@ class HonorController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for honors.",
+        message: "Erro interno ao buscar honrarias.",
       });
     }
   }
@@ -25,7 +25,7 @@ class HonorController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Honor not found.",
+          message: "Honra não encontrada.",
         });
         return;
       }
@@ -40,7 +40,7 @@ class HonorController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for honor.",
+        message: "Erro interno na busca pela honra.",
       });
     }
   }
