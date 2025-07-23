@@ -1,6 +1,5 @@
 import { ICategory } from "../interfaces/ICategory";
 import { categoryRepository } from "../repositories/CategoryRepository";
-
 class CategoryService {
   async getCategories(): Promise<ICategory[]> {
     try {
