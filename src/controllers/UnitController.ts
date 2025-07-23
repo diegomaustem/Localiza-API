@@ -13,7 +13,7 @@ class UnitController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for units.",
+        message: "Erro interno ao procurar unidades.",
       });
     }
   }
@@ -27,7 +27,7 @@ class UnitController {
         res.status(404).json({
           code: 404,
           status: "error",
-          message: "Unit not found.",
+          message: "Unidade não encontrada.",
         });
         return;
       }
@@ -42,7 +42,7 @@ class UnitController {
       res.status(500).json({
         code: 500,
         status: "error",
-        message: "Internal error while searching for unit.",
+        message: "Erro interno ao buscar unidade.",
       });
     }
   }
