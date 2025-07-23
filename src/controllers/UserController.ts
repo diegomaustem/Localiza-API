@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { IUser } from "../interfaces/IUser";
 import { userService } from "../services/UserService";
 import HttpError from "../errors/HttpError";
-
 class UserController {
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
