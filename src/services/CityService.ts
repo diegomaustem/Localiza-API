@@ -35,7 +35,7 @@ class CityService {
     try {
       return await cityRepository.update(cityId, cityData);
     } catch (error) {
-      console.error("Failed to update nationality.", error);
+      console.error("Failed to update city.", error);
       throw error;
     }
   }
@@ -44,7 +44,7 @@ class CityService {
     try {
       return await cityRepository.delete(cityId);
     } catch (error) {
-      console.error("Failed to delete nationality.", error);
+      console.error("Failed to delete city.", error);
       throw error;
     }
   }
