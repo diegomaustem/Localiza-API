@@ -58,35 +58,34 @@ class NationalityService {
     nationalityData?: INationality,
     nationalityId?: string
   ): Promise<void> {
-    const [existingNationality, linkedCustomer] = await Promise.all([
-      nationalityData
-        ? genericRepository.generateQuery(
-            "nationalities",
-            "name",
-            nationalityData.name
-          )
-        : Promise.resolve(null),
-      nationalityId
-        ? genericRepository.generateQuery(
-            "customers",
-            "nationalities_id",
-            nationalityId
-          )
-        : Promise.resolve(null),
-    ]);
-
-    if (existingNationality) {
-      throw new HttpError(
-        "Já existe um registro com essa nacionalidade. Tente outra.",
-        409
+    if (nationalityId) {
+      const hasLinkedNationalities = await genericRepository.generateQuery(
+        "customers",
+        "nationalities_id",
+        nationalityId
       );
+
+      if (hasLinkedNationalities) {
+        throw new HttpError(
+          "A nacionalidade está vinculada a clientes e não pode ser excluída.",
+          409
+        );
+      }
+      return;
     }
 
-    if (linkedCustomer) {
-      throw new HttpError(
-        "Esta nacionalidade está em uso e não pode ser excluída.",
-        409
-      );
+    if (nationalityData) {
+      const { name } = nationalityData;
+      const existingNationality = name
+        ? await genericRepository.generateQuery("nationalities", "name", name)
+        : false;
+
+      if (name && existingNationality) {
+        throw new HttpError(
+          "Já existe um registro com essa nacionalidade. Tente outra.",
+          409
+        );
+      }
     }
   }
 }
