@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { nationalityService } from "../services/NationalityService";
 import { INationality } from "../interfaces/INationality";
 import HttpError from "../errors/HttpError";
-
 class NationalityController {
   async getNationalities(req: Request, res: Response): Promise<void> {
     try {
