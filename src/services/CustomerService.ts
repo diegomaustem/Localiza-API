@@ -3,7 +3,6 @@ import { customerRepository } from "../repositories/CustomerRepository";
 import { genericRepository } from "../repositories/GenericRepository";
 import { passwordManager } from "../utils/PasswordManager";
 import HttpError from "../errors/HttpError";
-
 class CustomerService {
   async getCustomers(): Promise<ICustomer[]> {
     try {
@@ -83,47 +82,60 @@ class CustomerService {
       return;
     }
 
-    if (!customerData) {
-      throw new HttpError("Dados do cliente não foram fornecidos.", 400);
-    }
+    if (customerData) {
+      const { cpf, email, cnh_code, nationalities_id, honors_id } =
+        customerData;
 
-    const { cpf, email, cnh_code, nationalities_id, honors_id } = customerData;
+      const [
+        existingCpf,
+        existingEmail,
+        existingCnh,
+        nationalityExists,
+        honorExists,
+      ] = await Promise.all([
+        cpf
+          ? genericRepository.generateQuery("customers", "cpf", cpf)
+          : Promise.resolve(false),
+        email
+          ? genericRepository.generateQuery("customers", "email", email)
+          : Promise.resolve(false),
+        cnh_code
+          ? genericRepository.generateQuery("customers", "cnh_code", cnh_code)
+          : Promise.resolve(false),
+        nationalities_id
+          ? genericRepository.generateQuery(
+              "nationalities",
+              "id",
+              nationalities_id
+            )
+          : Promise.resolve(false),
+        honors_id
+          ? genericRepository.generateQuery("honors", "id", honors_id)
+          : Promise.resolve(false),
+      ]);
 
-    const [
-      existingCpf,
-      existingEmail,
-      existingCnh,
-      nationalityExists,
-      honorExists,
-    ] = await Promise.all([
-      genericRepository.generateQuery("customers", "cpf", cpf),
-      genericRepository.generateQuery("customers", "email", email),
-      genericRepository.generateQuery("customers", "cnh_code", cnh_code),
-      genericRepository.generateQuery("nationalities", "id", nationalities_id),
-      genericRepository.generateQuery("honors", "id", honors_id),
-    ]);
+      if (cpf && existingCpf) {
+        throw new HttpError("O CPF informado já está cadastrado.", 409);
+      }
 
-    if (existingCpf) {
-      throw new HttpError("O CPF fornecido já está cadastrado.", 409);
-    }
+      if (email && existingEmail) {
+        throw new HttpError("O e-mail informado já está cadastrado.", 409);
+      }
 
-    if (existingEmail) {
-      throw new HttpError("O e-mail fornecido já está registrado.", 409);
-    }
+      if (cnh_code && existingCnh) {
+        throw new HttpError("A CNH informada já está cadastrada.", 409);
+      }
 
-    if (existingCnh) {
-      throw new HttpError("A CNH fornecida já está registrada.", 409);
-    }
+      if (nationalities_id && !nationalityExists) {
+        throw new HttpError(
+          "Nacionalidade não encontrada. Insira uma válida.",
+          404
+        );
+      }
 
-    if (!nationalityExists) {
-      throw new HttpError(
-        "Nacionalidade não encontrada. Insira uma válida.",
-        404
-      );
-    }
-
-    if (!honorExists) {
-      throw new HttpError("Honra não encontrada. Insira uma válida.", 404);
+      if (honors_id && !honorExists) {
+        throw new HttpError("Honra não encontrada. Insira uma válida.", 404);
+      }
     }
   }
 }
