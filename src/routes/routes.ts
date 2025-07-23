@@ -24,10 +24,7 @@ import {
 import { customerController } from "../controllers/CustomerController";
 
 import { categoryController } from "../controllers/CategoryController";
-import { createCategorySchema } from "../validations/categoryValidation";
-import { createGroupSchema } from "../validations/groupValidation";
 import { groupController } from "../controllers/GroupController";
-import { createStateSchema } from "../validations/stateValidation";
 import { stateController } from "../controllers/StateController";
 import { cityController } from "../controllers/CityController";
 import {
@@ -40,7 +37,10 @@ import {
   updateUnitSchema,
 } from "../validations/unitValidation";
 import { reserveController } from "../controllers/ReserveController";
-import { createReserveSchema } from "../validations/reserveValidation";
+import {
+  createReserveSchema,
+  updateReserveSchema,
+} from "../validations/reserveValidation";
 import { statusUserController } from "../controllers/StatusUserController";
 import { statusCustomerController } from "../controllers/StatusCustomerController";
 
@@ -103,7 +103,7 @@ router.patch(
 );
 router.delete("/customer/:id", customerController.deleteCustomer);
 
-// VEHICLES :::
+// Vehicles :::
 router.get("/vehicles", vehicleController.getVehicles);
 router.get("/vehicle/:id", vehicleController.getVehicle);
 router.post(
@@ -111,8 +111,7 @@ router.post(
   validate(createVehicleSchema, "body"),
   vehicleController.createVehicle
 );
-
-router.put(
+router.patch(
   "/vehicle/:id",
   validate(updateVehicleSchema, "body"),
   vehicleController.updateVehicle
@@ -157,14 +156,18 @@ router.patch(
 );
 router.delete("/unit/:id", unitController.deleteUnit);
 
-// RESERVES
+// Reserves :::
 router.get("/reserves", reserveController.getReserves);
 router.get("/reserve/:id", reserveController.getReserve);
-
 router.post(
   "/reserve",
   validate(createReserveSchema),
   reserveController.createReserve
 );
-
+router.patch(
+  "/reserve/:id",
+  validate(updateReserveSchema),
+  reserveController.updateReserve
+);
+router.delete("/reserve/:id", reserveController.deleteReserve);
 export default router;
