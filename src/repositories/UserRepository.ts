@@ -55,6 +55,22 @@ class UserRepository {
       throw error;
     }
   }
+
+  async findUserLogin(email: string): Promise<IUser | null> {
+    try {
+      return await prisma.users.findFirst({
+        where: {
+          email: {
+            equals: email,
+            mode: "insensitive",
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching user.", error);
+      throw error;
+    }
+  }
 }
 
 export default new UserRepository();
