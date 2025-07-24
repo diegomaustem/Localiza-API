@@ -1,5 +1,6 @@
 import HttpError from "../errors/HttpError";
 import { IUser } from "../interfaces/IUser";
+import { IUserLogin } from "../interfaces/IUserLogin";
 import { genericRepository } from "../repositories/GenericRepository";
 import UserRepository from "../repositories/UserRepository";
 import { passwordManager } from "../utils/PasswordManager";
@@ -60,6 +61,21 @@ class UserService {
       return await UserRepository.delete(userId);
     } catch (error) {
       console.error("Failed to delete user.", error);
+      throw error;
+    }
+  }
+
+  async findUserForLogin(dataUserLogin: IUserLogin): Promise<IUser> {
+    const { email } = dataUserLogin;
+    try {
+      const foundUser = await UserRepository.findUserLogin(email);
+      if (!foundUser) {
+        throw new HttpError("Usuário não encontrado em nossos registros.", 404);
+      }
+
+      return foundUser;
+    } catch (error) {
+      console.error("Failed to find user for login.", error);
       throw error;
     }
   }
