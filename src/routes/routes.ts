@@ -43,8 +43,14 @@ import {
 } from "../validations/reserveValidation";
 import { statusUserController } from "../controllers/StatusUserController";
 import { statusCustomerController } from "../controllers/StatusCustomerController";
+import { authController } from "../controllers/AuthController";
+import { loginSchema } from "../validations/loginValidation";
 
 const router = Router();
+
+// Auth :::
+router.post("/login", validate(loginSchema, "body"), authController.login);
+
 // Users :::
 router.get("/users", userController.getUsers);
 router.get("/user/:id", userController.getUser);
