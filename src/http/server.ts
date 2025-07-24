@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import router from "../routes/routes";
 import cors from "cors";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ class Server {
   }
 
   private middlewares(): void {
+    this.server.use(helmet());
     this.server.use(cors());
     this.server.use(express.json());
   }
