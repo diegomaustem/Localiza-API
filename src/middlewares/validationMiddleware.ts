@@ -20,7 +20,7 @@ export const validate =
       res.status(400).json({
         code: 400,
         status: "error",
-        message: "A atualização não pode ser feita com todos os campos vazios.",
+        message: "Não é permitido que todos os campos sejam vazios.",
       });
       return;
     }
