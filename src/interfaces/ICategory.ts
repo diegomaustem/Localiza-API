@@ -1,7 +1,8 @@
+import { Decimal } from "../generated/prisma/runtime/library";
 export interface ICategory {
   id: string;
   name: string;
-  value: number;
+  value: Decimal;
   creation_date: Date;
   update_date: Date;
 }
