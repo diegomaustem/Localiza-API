@@ -57,14 +57,14 @@ router.get("/users", auth, userController.getUsers);
 router.get("/user/:id", auth, userController.getUser);
 router.post(
   "/user",
-  validate(createUserSchema, "body"),
   auth,
+  validate(createUserSchema, "body"),
   userController.createUser
 );
 router.patch(
   "/user/:id",
-  validate(updateUserSchema, "body"),
   auth,
+  validate(updateUserSchema, "body"),
   userController.updateUser
 );
 router.delete("/user/:id", auth, userController.deleteUser);
@@ -94,14 +94,14 @@ router.get("/nationalities", auth, nationalityController.getNationalities);
 router.get("/nationality/:id", auth, nationalityController.getNationality);
 router.post(
   "/nationality",
-  validate(createNationalitySchema),
   auth,
+  validate(createNationalitySchema),
   nationalityController.createNationality
 );
 router.patch(
   "/nationality/:id",
-  validate(updateNationalitySchema),
   auth,
+  validate(updateNationalitySchema),
   nationalityController.updateNationality
 );
 router.delete(
@@ -116,14 +116,14 @@ router.get("/customer/:id", auth, customerController.getCustomer);
 
 router.post(
   "/customer",
-  validate(createCustomerSchema),
   auth,
+  validate(createCustomerSchema),
   customerController.createCustomer
 );
 router.patch(
   "/customer/:id",
-  validate(updateCustomerSchema),
   auth,
+  validate(updateCustomerSchema),
   customerController.updateCustomer
 );
 router.delete("/customer/:id", auth, customerController.deleteCustomer);
@@ -133,14 +133,14 @@ router.get("/vehicles", auth, vehicleController.getVehicles);
 router.get("/vehicle/:id", auth, vehicleController.getVehicle);
 router.post(
   "/vehicle",
-  validate(createVehicleSchema, "body"),
   auth,
+  validate(createVehicleSchema, "body"),
   vehicleController.createVehicle
 );
 router.patch(
   "/vehicle/:id",
-  validate(updateVehicleSchema, "body"),
   auth,
+  validate(updateVehicleSchema, "body"),
   vehicleController.updateVehicle
 );
 router.delete("/vehicle/:id", auth, vehicleController.deleteVehicle);
@@ -166,14 +166,14 @@ router.get("/cities", auth, cityController.getCities);
 router.get("/city/:id", auth, cityController.getCity);
 router.post(
   "/city",
-  validate(createCitySchema),
   auth,
+  validate(createCitySchema),
   cityController.createCity
 );
 router.patch(
   "/city/:id",
-  validate(updateCitySchema),
   auth,
+  validate(updateCitySchema),
   cityController.updateCity
 );
 router.delete("/city/:id", auth, cityController.deleteCity);
@@ -183,14 +183,14 @@ router.get("/units", auth, unitController.getUnits);
 router.get("/unit/:id", auth, unitController.getUnit);
 router.post(
   "/unit",
-  validate(createUnitSchema),
   auth,
+  validate(createUnitSchema),
   unitController.createUnit
 );
 router.patch(
   "/unit/:id",
-  validate(updateUnitSchema),
   auth,
+  validate(updateUnitSchema),
   unitController.updateUnit
 );
 router.delete("/unit/:id", auth, unitController.deleteUnit);
@@ -200,14 +200,14 @@ router.get("/reserves", auth, reserveController.getReserves);
 router.get("/reserve/:id", auth, reserveController.getReserve);
 router.post(
   "/reserve",
-  validate(createReserveSchema),
   auth,
+  validate(createReserveSchema),
   reserveController.createReserve
 );
 router.patch(
   "/reserve/:id",
-  validate(updateReserveSchema),
   auth,
+  validate(updateReserveSchema),
   reserveController.updateReserve
 );
 router.delete("/reserve/:id", auth, reserveController.deleteReserve);
