@@ -5,6 +5,7 @@ import { privilegeController } from "../controllers/PrivilegeController";
 import { nationalityController } from "../controllers/NationalityController";
 import { validate } from "../middlewares/validationMiddleware";
 import { auth } from "../middlewares/authMiddleware";
+import { limiter } from "../middlewares/rateLimiter";
 import {
   createUserSchema,
   updateUserSchema,
@@ -50,7 +51,12 @@ import { loginSchema } from "../validations/loginValidation";
 const router = Router();
 
 // Auth :::
-router.post("/login", validate(loginSchema, "body"), authController.login);
+router.post(
+  "/login",
+  limiter,
+  validate(loginSchema, "body"),
+  authController.login
+);
 
 // Users :::
 router.get("/users", auth, userController.getUsers);
