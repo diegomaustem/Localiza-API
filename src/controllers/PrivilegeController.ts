@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 import { privilegeService } from "../services/PrivilegeService";
+import { IPaginated } from "../interfaces/IPaginated";
 class PrivilegeController {
   async getPrivileges(req: Request, res: Response): Promise<void> {
     try {
-      const privileges = await privilegeService.getPrivileges();
+      const paginated: IPaginated = {
+        page: parseInt(String(req.query.page)) || 1,
+        limit: parseInt(String(req.query.limit)) || 10,
+      };
+
+      const privileges = await privilegeService.getPrivileges(paginated);
       res
         .status(200)
         .json({ code: 200, status: "success", privileges: privileges });
