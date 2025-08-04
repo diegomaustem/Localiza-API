@@ -1,9 +1,13 @@
+import { IPaginated } from "../interfaces/IPaginated";
 import { IPrivilege } from "../interfaces/IPrivilege";
+import { IPaginatedResult } from "../interfaces/IPaginatedResult";
 import { privilegeRepository } from "../repositories/PrivilegeRepository";
 class PrivilegeService {
-  async getPrivileges(): Promise<IPrivilege[]> {
+  async getPrivileges(
+    paginated: IPaginated
+  ): Promise<IPaginatedResult<IPrivilege>> {
     try {
-      return await privilegeRepository.findMany();
+      return await privilegeRepository.findMany(paginated);
     } catch (error) {
       console.error("Failed to retrieve privileges.", error);
       throw error;
