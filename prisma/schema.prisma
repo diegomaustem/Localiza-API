@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-model users {
+model User {
   id String @id @default(uuid())
   full_name String @db.VarChar(45)
   email     String @unique @db.VarChar(45) 
@@ -14,36 +14,44 @@ model users {
   gender    String @db.VarChar(4)
   telephone String @db.VarChar(16)
   password  String @db.VarChar(200)
-  privileges_id String
-  status_users_id String
+  IdPrivileges String @map("id_privileges")
+  IdStatusUsers String @map("id_status_users")
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  privilege   privileges @relation(fields: [privileges_id], references: [id])
-  status_user status_users @relation(fields: [status_users_id], references: [id]) 
+  privilege   Privilege @relation(fields: [IdPrivileges], references: [id])
+  status_user StatusUser @relation(fields: [IdStatusUsers], references: [id]) 
+  
+  @@map("users")
 }
-model privileges {
+model Privilege {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  users users[]
+  users User[]
+
+  @@map("privileges")
 }
-model honors {
+model Honor {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45) 
   level Int @db.Integer
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  customers customers[]
+  customers Customer[]
+
+  @@map("honors")
 }
-model nationalities {
+model Nationality {
   id String @id @default(uuid())
   name String @unique @db.VarChar(45) 
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  customers     customers[]
+  customers     Customer[]
+
+  @@map("nationalities")
 }
-model customers {
+model Customer {
   id String @id @default(uuid())
   full_name String @db.VarChar(45) 
   cpf String @unique @db.VarChar(15) 
@@ -55,31 +63,35 @@ model customers {
   telephone String @db.VarChar(16)
   cnh_code String @unique @db.VarChar(25)
   cnh_category String @db.VarChar(6)
-  honors_id String
-  nationalities_id   String 
-  status_customers_id String
+  IdHonors String @map("honors_id")
+  IdNationalities String @map("nationalities_id") 
+  IdStatusCustomers String @map("status_customers_id")
   creation_date DateTime @default(now())
   update_date DateTime @updatedAt
-  honor honors @relation(fields: [honors_id], references: [id])
-  nationality nationalities @relation(fields: [nationalities_id], references: [id])
-  status_customer status_customers @relation(fields: [status_customers_id], references: [id]) 
-  reserves reserves[]
+  honor Honor @relation(fields: [IdHonors], references: [id])
+  nationality Nationality @relation(fields: [IdNationalities], references: [id])
+  status_customer StatusCustomer @relation(fields: [IdStatusCustomers], references: [id]) 
+  reserves Reserve[]
+
+  @@map("customers")
 }
-model reserves {
+model Reserve {
   id String @id @default(uuid())
   daily_amount Int @db.Integer
   withdrawn DateTime @db.Date
   return DateTime @db.Date
   value Decimal @db.Decimal(10, 2)
   status String @db.VarChar(20)
-  customers_id String
-  vehicles_id   String
+  IdCustomer String @map("customers_id")
+  IdVehicle String @map("vehicles_id")
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  customer customers @relation(fields: [customers_id], references: [id])
-  vehicle  vehicles  @relation(fields: [vehicles_id], references: [id])
+  customer Customer @relation(fields: [IdCustomer], references: [id])
+  vehicle  Vehicle @relation(fields: [IdVehicle], references: [id])
+
+  @@map("reserves")
 }
-model vehicles {
+model Vehicle {
   id String  @id @default(uuid())
   chassi String @unique @db.VarChar(45)      
   plate String @unique @db.VarChar(45)
@@ -90,71 +102,87 @@ model vehicles {
   crlv_document String @unique @db.VarChar(45)
   cylinder_capacity Int @db.Integer
   status String @db.VarChar(20)
-  units_id String
-  categories_id String
-  groups_id String
+  IdUnit String @map("units_id")
+  IdCategory String @map("categories_id")
+  IdGroup  String @map("groups_id")
   creation_date DateTime @default(now())
   update_date DateTime @updatedAt
-  unit     units      @relation(fields: [units_id], references: [id])
-  category categories @relation(fields: [categories_id], references: [id])
-  group    groups     @relation(fields: [groups_id], references: [id])
-  reserves reserves[]
+  unit     Unit      @relation(fields: [IdUnit], references: [id])
+  category Category @relation(fields: [IdCategory], references: [id])
+  group    Group     @relation(fields: [IdGroup], references: [id])
+  reserves Reserve[]
+
+  @@map("vehicles")
 }
-model categories {
+model Category {
   id            String   @id @default(uuid())
   name          String   @unique @db.VarChar(45)
   value         Decimal  @db.Decimal(10, 2)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  vehicles      vehicles[] 
+  vehicles      Vehicle[] 
+
+  @@map("categories")
 }
-model groups {
+model Group {
   id            String   @id @default(uuid())
   name          String   @unique @db.VarChar(45)
   description   String? @db.VarChar(255)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  vehicles      vehicles[]
+  vehicles      Vehicle[]
+
+  @@map("groups")
 }
-model units {
+model Unit {
   id        String @id @default(uuid())
   unit      String @db.VarChar(45)
-  cities_id String
+  IdCity String @map("cities_id")
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  city      cities @relation(fields: [cities_id], references: [id])
-  vehicles  vehicles[]
+  city      City @relation(fields: [IdCity], references: [id])
+  vehicles  Vehicle[]
+
+  @@map("units")
 }
-model cities {
+model City {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(45)
-  states_id     String
+  IdState String @map("states_id")
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  state         states   @relation(fields: [states_id], references: [id])
-  units         units[]
+  state         State @relation(fields: [IdState], references: [id])
+  units         Unit[]
+
+  @@map("cities")
 }
-model states {
+model State {
   id            String   @id @default(uuid())
   name          String   @unique @db.VarChar(45)
   abbreviation  String   @unique @db.VarChar(45)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  cities        cities[]
+  cities        City[]
+
+  @@map("states")
 }
-model status_customers {
+model StatusCustomer {
   id String   @id @default(uuid())
   status   String @unique @db.VarChar(50)
   description String? @db.VarChar(255)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  customers customers[]
+  customers Customer[]
+
+  @@map("status_customers")
 }
-model status_users {
+model StatusUser {
   id String   @id @default(uuid())
   status   String @unique @db.VarChar(50)
   description String? @db.VarChar(255)
   creation_date DateTime @default(now())
   update_date   DateTime @updatedAt
-  users users[]
+  users User[]
+
+  @@map("status_users")
 }

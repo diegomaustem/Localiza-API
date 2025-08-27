@@ -7,8 +7,8 @@ CREATE TABLE "users" (
     "gender" VARCHAR(4) NOT NULL,
     "telephone" VARCHAR(16) NOT NULL,
     "password" VARCHAR(200) NOT NULL,
-    "privileges_id" TEXT NOT NULL,
-    "status_users_id" TEXT NOT NULL,
+    "id_privileges" TEXT NOT NULL,
+    "id_status_users" TEXT NOT NULL,
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -91,7 +91,7 @@ CREATE TABLE "vehicles" (
     "plate" VARCHAR(45) NOT NULL,
     "mark" VARCHAR(30) NOT NULL,
     "model" VARCHAR(20) NOT NULL,
-    "year" DATE NOT NULL,
+    "year" INTEGER NOT NULL,
     "color" VARCHAR(20) NOT NULL,
     "crlv_document" VARCHAR(45) NOT NULL,
     "cylinder_capacity" INTEGER NOT NULL,
@@ -120,6 +120,7 @@ CREATE TABLE "categories" (
 CREATE TABLE "groups" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(45) NOT NULL,
+    "description" VARCHAR(255),
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -152,6 +153,7 @@ CREATE TABLE "cities" (
 CREATE TABLE "states" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(45) NOT NULL,
+    "abbreviation" VARCHAR(45) NOT NULL,
     "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_date" TIMESTAMP(3) NOT NULL,
 
@@ -163,6 +165,8 @@ CREATE TABLE "status_customers" (
     "id" TEXT NOT NULL,
     "status" VARCHAR(50) NOT NULL,
     "description" VARCHAR(255),
+    "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "update_date" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "status_customers_pkey" PRIMARY KEY ("id")
 );
@@ -172,6 +176,8 @@ CREATE TABLE "status_users" (
     "id" TEXT NOT NULL,
     "status" VARCHAR(50) NOT NULL,
     "description" VARCHAR(255),
+    "creation_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "update_date" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "status_users_pkey" PRIMARY KEY ("id")
 );
@@ -216,16 +222,19 @@ CREATE UNIQUE INDEX "groups_name_key" ON "groups"("name");
 CREATE UNIQUE INDEX "states_name_key" ON "states"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "states_abbreviation_key" ON "states"("abbreviation");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "status_customers_status_key" ON "status_customers"("status");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "status_users_status_key" ON "status_users"("status");
 
 -- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_privileges_id_fkey" FOREIGN KEY ("privileges_id") REFERENCES "privileges"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_id_privileges_fkey" FOREIGN KEY ("id_privileges") REFERENCES "privileges"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_status_users_id_fkey" FOREIGN KEY ("status_users_id") REFERENCES "status_users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_id_status_users_fkey" FOREIGN KEY ("id_status_users") REFERENCES "status_users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "customers" ADD CONSTRAINT "customers_honors_id_fkey" FOREIGN KEY ("honors_id") REFERENCES "honors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

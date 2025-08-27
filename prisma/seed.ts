@@ -3,12 +3,12 @@ import prisma from "../src/lib/prisma";
 async function main() {
   console.log("|--- RUNNING SEEDS ---|");
 
-  await prisma.status_users.upsert({
+  await prisma.statusUser.upsert({
     where: { status: "Ativo" },
     update: {},
     create: { status: "Ativo", description: "Usuário ativo no sistema." },
   });
-  await prisma.status_users.upsert({
+  await prisma.statusUser.upsert({
     where: { status: "Inativo" },
     update: {},
     create: {
@@ -16,7 +16,7 @@ async function main() {
       description: "Usuário inativo no sistema.",
     },
   });
-  await prisma.status_users.upsert({
+  await prisma.statusUser.upsert({
     where: { status: "Bloqueado" },
     update: {},
     create: {
@@ -26,17 +26,17 @@ async function main() {
   });
   console.log("StatusUsers : OK");
 
-  await prisma.privileges.upsert({
+  await prisma.privilege.upsert({
     where: { name: "Admin" },
     update: {},
     create: { name: "Admin" },
   });
-  await prisma.privileges.upsert({
+  await prisma.privilege.upsert({
     where: { name: "Gerente" },
     update: {},
     create: { name: "Gerente" },
   });
-  await prisma.privileges.upsert({
+  await prisma.privilege.upsert({
     where: { name: "Funcionario" },
     update: {},
     create: { name: "Funcionario" },
@@ -75,7 +75,7 @@ async function main() {
 
   await Promise.all(
     states.map((state) =>
-      prisma.states.upsert({
+      prisma.state.upsert({
         where: { abbreviation: state.abbreviation },
         update: { name: state.name },
         create: { name: state.name, abbreviation: state.abbreviation },
@@ -84,12 +84,12 @@ async function main() {
   );
   console.log("States : OK");
 
-  await prisma.status_customers.upsert({
+  await prisma.statusCustomer.upsert({
     where: { status: "Ativo" },
     update: {},
     create: { status: "Ativo", description: "Cliente ativo no sistema." },
   });
-  await prisma.status_customers.upsert({
+  await prisma.statusCustomer.upsert({
     where: { status: "Inativo" },
     update: {},
     create: {
@@ -97,7 +97,7 @@ async function main() {
       description: "Cliente inativo no sistema.",
     },
   });
-  await prisma.status_customers.upsert({
+  await prisma.statusCustomer.upsert({
     where: { status: "Bloqueado" },
     update: {},
     create: {
@@ -107,12 +107,12 @@ async function main() {
   });
   console.log("StatusCustomers : OK");
 
-  await prisma.honors.upsert({
+  await prisma.honor.upsert({
     where: { name: "Ouro" },
     update: {},
     create: { name: "Ouro", level: 1000 },
   });
-  await prisma.honors.upsert({
+  await prisma.honor.upsert({
     where: { name: "Prata" },
     update: {},
     create: {
@@ -120,7 +120,7 @@ async function main() {
       level: 500,
     },
   });
-  await prisma.honors.upsert({
+  await prisma.honor.upsert({
     where: { name: "Bronze" },
     update: {},
     create: {
@@ -130,17 +130,17 @@ async function main() {
   });
   console.log("Honors : OK");
 
-  await prisma.groups.upsert({
+  await prisma.group.upsert({
     where: { name: "A" },
     update: {},
     create: { name: "A", description: "Econômico básico (manual, 1.0)" },
   });
-  await prisma.groups.upsert({
+  await prisma.group.upsert({
     where: { name: "B" },
     update: {},
     create: { name: "B", description: "Hatch compacto (manual, 1.0 ou 1.3)" },
   });
-  await prisma.groups.upsert({
+  await prisma.group.upsert({
     where: { name: "C" },
     update: {},
     create: {
@@ -148,7 +148,7 @@ async function main() {
       description: "Hatch médio (automático, 1.0 turbo)",
     },
   });
-  await prisma.groups.upsert({
+  await prisma.group.upsert({
     where: { name: "D" },
     update: {},
     create: {
@@ -158,7 +158,7 @@ async function main() {
   });
   console.log("Groups : OK");
 
-  await prisma.categories.upsert({
+  await prisma.category.upsert({
     where: { name: "Hatchback" },
     update: {},
     create: {
@@ -166,7 +166,7 @@ async function main() {
       value: 228,
     },
   });
-  await prisma.categories.upsert({
+  await prisma.category.upsert({
     where: { name: "Sedan" },
     update: {},
     create: {
@@ -174,7 +174,7 @@ async function main() {
       value: 328,
     },
   });
-  await prisma.categories.upsert({
+  await prisma.category.upsert({
     where: { name: "SUV" },
     update: {},
     create: {
