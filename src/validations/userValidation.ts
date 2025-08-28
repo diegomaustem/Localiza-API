@@ -1,72 +1,83 @@
 import Joi from "joi";
 
-export const createUserSchema = Joi.object({
+export const schemaCreateUser = Joi.object({
   full_name: Joi.string().trim().min(3).max(45).required().messages({
-    "string.base": "O full_name deve ser um texto.",
-    "string.empty": "O full_name não pode estar vazio.",
-    "string.min": "O full_name deve ter pelo menos {#limit} caracteres.",
-    "string.max": "O full_name deve ter no máximo {#limit} caracteres.",
-    "any.required": "O full_name é obrigatório.",
+    "string.base": "full_name must be a text.",
+    "string.empty": "full_name cannot be empty.",
+    "string.min": "full_name must have at least {#limit} characters.",
+    "string.max": "full_name must not exceed {#limit} characters.",
+    "any.required": "full_name is required.",
   }),
   email: Joi.string().trim().email().required().messages({
-    "string.base": "O e-mail deve ser um texto.",
-    "string.empty": "O e-mail não pode estar vazio.",
-    "string.email": "O formato do e-mail é inválido.",
-    "any.required": "O e-mail é obrigatório.",
+    "string.base": "Email must be a text.",
+    "string.empty": "Email cannot be empty.",
+    "string.email": "Invalid email format.",
+    "any.required": "Email is required.",
   }),
   address: Joi.string().trim().min(3).max(65).required().messages({
-    "string.base": "O address deve ser um texto.",
-    "string.empty": "O address não pode estar vazio.",
-    "string.min": "O address deve ter pelo menos {#limit} caracteres.",
-    "any.required": "O address é obrigatório.",
+    "string.base": "Address must be a text.",
+    "string.empty": "Address cannot be empty.",
+    "string.min": "Address must have at least {#limit} characters.",
+    "any.required": "Address is required.",
   }),
   gender: Joi.string().trim().min(1).max(1).required().messages({
-    "string.base": "O gender deve ser um texto.",
-    "string.empty": "O gender não pode estar vazio.",
-    "string.min": "O gender deve conter pelo menos {#limit} caractere.",
-    "string.max": "O gender deve conter no máximo {#limit} caractere.",
-    "any.required": "O gender é obrigatório.",
+    "string.base": "Gender must be a text.",
+    "string.empty": "Gender cannot be empty.",
+    "string.min": "Gender must have at least {#limit} character.",
+    "string.max": "Gender cannot exceed {#limit} characters.",
+    "any.required": "Gender is required.",
   }),
   telephone: Joi.string().trim().min(10).max(16).required().messages({
-    "string.base": "O telephone deve ser um texto.",
-    "string.empty": "O telephone não pode estar vazio.",
-    "string.min": "O telephone deve ter pelo menos {#limit} caracteres.",
-    "string.max": "O telephone deve ter no máximo {#limit} caracteres.",
-    "any.required": "O telephone é obrigatório.",
+    "string.base": "Telephone must be a text.",
+    "string.empty": "Telephone cannot be empty.",
+    "string.min": "Telephone must have at least {#limit} characters.",
+    "string.max": "Telephone cannot exceed {#limit} characters.",
+    "any.required": "Telephone is required.",
   }),
   password: Joi.string().trim().min(6).max(200).required().messages({
-    "string.base": "O password deve ser um texto.",
-    "string.empty": "O password não pode estar vazio.",
-    "string.min": "O password deve ter pelo menos {#limit} caracteres.",
-    "any.required": "O password é obrigatório.",
+    "string.base": "Password must be a text.",
+    "string.empty": "Password cannot be empty.",
+    "string.min": "Password must have at least {#limit} characters.",
+    "any.required": "Password is required.",
   }),
-  privileges_id: Joi.string().trim().guid().required().messages({
-    "string.base": "O privileges_id deve ser um texto.",
-    "string.guid": "O privileges_id deve ser um UUID válido.",
-    "string.empty": "O privileges_id não pode estar vazio.",
-    "any.required": "O privileges_id é obrigatório.",
+  IdPrivileges: Joi.string().trim().guid().required().messages({
+    "string.base": "IdPrivileges must be a text.",
+    "string.guid": "IdPrivileges must be a valid UUID.",
+    "string.empty": "IdPrivileges cannot be empty.",
+    "any.required": "IdPrivileges is required.",
   }),
-  status_users_id: Joi.string().trim().guid().required().messages({
-    "string.base": "O status_users_id deve ser um texto.",
-    "string.guid": "O status_users_id deve ser um UUID válido.",
-    "string.empty": "O status_users_id não pode estar vazio.",
-    "any.required": "O status_users_id é obrigatório.",
+  IdStatusUsers: Joi.string().trim().guid().required().messages({
+    "string.base": "IdStatusUsers must be a text.",
+    "string.guid": "IdStatusUsers must be a valid UUID.",
+    "string.empty": "IdStatusUsers cannot be empty.",
+    "any.required": "IdStatusUsers is required.",
   }),
 });
 
-export const updateUserSchema = Joi.object({
-  full_name: Joi.string().trim().min(3).max(100).messages({
-    "string.base": "O full_name deve ser um texto.",
-    "string.empty": "O full_name não pode estar vazio.",
-    "string.min": "O full_name deve ter pelo menos {#limit} caracteres.",
-    "string.max": "O full_name deve ter no máximo {#limit} caracteres.",
-  }),
+export const schemaUpdateUser = Joi.object({
+  full_name: Joi.string()
+    .trim()
+    .min(3)
+    .max(100)
+    .messages({
+      "string.base": "full_name must be a text.",
+      "string.empty": "full_name cannot be empty.",
+      "string.min": "full_name must have at least {#limit} characters.",
+      "string.max": "full_name must not exceed {#limit} characters.",
+    })
+    .allow(null)
+    .optional(),
 
-  email: Joi.string().trim().email().messages({
-    "string.base": "O e-mail deve ser um texto.",
-    "string.empty": "O e-mail não pode estar vazio.",
-    "string.email": "O formato do e-mail é inválido.",
-  }),
+  email: Joi.string()
+    .trim()
+    .email()
+    .messages({
+      "string.base": "Email must be a text.",
+      "string.empty": "Email cannot be empty.",
+      "string.email": "Invalid email format.",
+    })
+    .allow(null)
+    .optional(),
 
   address: Joi.string().trim().min(5).messages({
     "string.base": "O address deve ser um texto.",
@@ -74,35 +85,62 @@ export const updateUserSchema = Joi.object({
     "string.min": "O address deve ter pelo menos {#limit} caracteres.",
   }),
 
-  gender: Joi.string().trim().min(1).max(1).messages({
-    "string.base": "O gender deve ser um texto.",
-    "string.empty": "O gender não pode estar vazio.",
-    "string.min": "O gender deve conter pelo menos {#limit} caractere.",
-    "string.max": "O gender deve conter no máximo {#limit} caractere.",
-  }),
+  gender: Joi.string()
+    .trim()
+    .min(1)
+    .max(1)
+    .messages({
+      "string.base": "Gender must be a text.",
+      "string.empty": "Gender cannot be empty.",
+      "string.min": "Gender must have at least {#limit} character.",
+      "string.max": "Gender cannot exceed {#limit} characters.",
+    })
+    .allow(null)
+    .optional(),
 
-  telephone: Joi.string().trim().min(10).max(15).messages({
-    "string.base": "O telephone deve ser um texto.",
-    "string.empty": "O telephone não pode estar vazio.",
-    "string.min": "O telephone deve ter pelo menos {#limit} caracteres.",
-    "string.max": "O telephone deve ter no máximo {#limit} caracteres.",
-  }),
+  telephone: Joi.string()
+    .trim()
+    .min(10)
+    .max(15)
+    .messages({
+      "string.base": "Telephone must be a text.",
+      "string.empty": "Telephone cannot be empty.",
+      "string.min": "Telephone must have at least {#limit} characters.",
+      "string.max": "Telephone cannot exceed {#limit} characters.",
+    })
+    .allow(null)
+    .optional(),
 
-  password: Joi.string().trim().min(6).messages({
-    "string.base": "O password deve ser um texto.",
-    "string.empty": "O password não pode estar vazio.",
-    "string.min": "O password deve ter pelo menos {#limit} caracteres.",
-  }),
+  password: Joi.string()
+    .trim()
+    .min(6)
+    .messages({
+      "string.base": "Password must be a text.",
+      "string.empty": "Password cannot be empty.",
+      "string.min": "Password must have at least {#limit} characters.",
+    })
+    .allow(null)
+    .optional(),
 
-  privileges_id: Joi.string().trim().guid().messages({
-    "string.base": "O privileges_id deve ser um texto.",
-    "string.guid": "O privileges_id deve ser um UUID válido.",
-    "string.empty": "O privileges_id não pode estar vazio.",
-  }),
+  IdPrivileges: Joi.string()
+    .trim()
+    .guid()
+    .messages({
+      "string.base": "IdPrivileges must be a text.",
+      "string.guid": "IdPrivileges must be a valid UUID.",
+      "string.empty": "IdPrivileges cannot be empty.",
+    })
+    .allow(null)
+    .optional(),
 
-  status_users_id: Joi.string().trim().guid().messages({
-    "string.base": "O status_users_id deve ser um texto.",
-    "string.guid": "O status_users_id deve ser um UUID válido.",
-    "string.empty": "O status_users_id não pode estar vazio.",
-  }),
+  IdStatusUsers: Joi.string()
+    .trim()
+    .guid()
+    .messages({
+      "string.base": "IdStatusUsers must be a text.",
+      "string.guid": "IdStatusUsers must be a valid UUID.",
+      "string.empty": "IdStatusUsers cannot be empty.",
+    })
+    .allow(null)
+    .optional(),
 });
