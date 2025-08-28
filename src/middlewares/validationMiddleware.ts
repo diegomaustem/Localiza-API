@@ -6,44 +6,30 @@ type ValidationSource = "body" | "query" | "params";
 export const validate =
   (schema: Joi.ObjectSchema, source: ValidationSource = "body") =>
   (req: Request, res: Response, next: NextFunction) => {
-    const hasDataEntry = Object.values(req[source]).some((value) => {
-      if (value !== null && value !== undefined) {
-        if (typeof value === "string") {
-          return value.trim() !== "";
-        }
-        return true;
+    try {
+      const { error } = schema.validate(req[source], {
+        abortEarly: false,
+        allowUnknown: false,
+      });
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          problem: detail.message.replace(/['"]/g, ""),
+        }));
+
+        res.status(400).json({
+          message: "Input data validation failed.",
+          errors: errors,
+        });
+        return;
       }
-      return false;
-    });
-
-    if (!hasDataEntry) {
-      res.status(400).json({
-        code: 400,
-        status: "error",
-        message: "Não é permitido que todos os campos sejam vazios.",
+      next();
+    } catch (error) {
+      console.error("[Middleware] - Validation middleware error.", error);
+      res.status(500).json({
+        message: "Internal validation processing error.",
       });
       return;
     }
-
-    const { error } = schema.validate(req[source], {
-      abortEarly: false,
-      allowUnknown: true,
-    });
-
-    if (error) {
-      const errors = error.details.map((detail) => ({
-        field: detail.path.join("."),
-        message: detail.message.replace(/['"]/g, ""),
-      }));
-
-      res.status(400).json({
-        code: 400,
-        message: "Falha na validação dos dados de entrada.",
-        errors: errors,
-      });
-
-      return;
-    }
-
-    next();
   };
