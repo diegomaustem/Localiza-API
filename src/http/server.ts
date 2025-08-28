@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import router from "../routes/routes";
+import router from "../routes/index";
 import cors from "cors";
 import helmet from "helmet";
 
@@ -12,7 +12,7 @@ class Server {
 
   constructor() {
     this.server = express();
-    this.port = process.env.PORT || 3000;
+    this.port = Number(process.env.PORT) || 3000;
     this.middlewares();
     this.routes();
     this.handleNotFound();
@@ -31,9 +31,8 @@ class Server {
   private handleNotFound(): void {
     this.server.use((req: Request, res: Response) => {
       res.status(404).json({
-        code: 404,
         error: "error",
-        message: "Rota não encontrada. Verifique o caminho e tente novamente.",
+        message: "Route not found. Please check the path and try again.",
       });
     });
   }
