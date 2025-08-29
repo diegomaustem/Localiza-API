@@ -1,8 +1,3 @@
-// import { ILogin } from "./ILogin";
-// import { IUsuario } from "./IUsuario";
-// import { IPaginacao } from "../IPaginacao";
-// import { IResultadoPaginado } from "../IResultadoPaginado";
-
 import { IUser } from "./IUser";
 import { IUserCreation } from "./IUserCreation";
 import { IUserUpdate } from "./IUserUpdate";
