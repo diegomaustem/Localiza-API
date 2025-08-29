@@ -13,7 +13,6 @@ export class UserService implements IUserService {
     private repositoryGeneric: IGenericRepository
   ) {}
 
-  // AJUSTEI A NOMENCLATURA DO SERVICE :::
   async listUsers(): Promise<IUser[]> {
     try {
       return await this.repositoryUser.findMany();
@@ -25,7 +24,15 @@ export class UserService implements IUserService {
 
   async listUser(id: string): Promise<IUser | null> {
     try {
-      return await this.repositoryUser.findOne(id);
+      const user = await this.repositoryUser.findOne(id);
+      if (!user) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "User not found in our records.",
+          404
+        );
+      }
+      return user;
     } catch (error) {
       console.error("[Service] - Failed to retrieve user.", error);
       throw error;
