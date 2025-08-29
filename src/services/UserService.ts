@@ -1,118 +1,150 @@
 import HttpError from "../errors/HttpError";
-import { IUser } from "../interfaces/IUser";
-import { IUserLogin } from "../interfaces/IUserLogin";
-import { genericRepository } from "../repositories/GenericRepository";
-import UserRepository from "../repositories/UserRepository";
+import { IGenericRepository } from "../interfaces/Generic/IGenericRepository";
+import { IUser } from "../interfaces/User/IUser";
+import { IUserCreation } from "../interfaces/User/IUserCreation";
+import { IUserRepository } from "../interfaces/User/IUserRepository";
+import { IUserService } from "../interfaces/User/IUserService";
+import { IUserUpdate } from "../interfaces/User/IUserUpdate";
 import { passwordManager } from "../utils/PasswordManager";
-class UserService {
-  async getUsers(): Promise<IUser[]> {
+
+export class UserService implements IUserService {
+  constructor(
+    private repositoryUser: IUserRepository,
+    private repositoryGeneric: IGenericRepository
+  ) {}
+
+  // AJUSTEI A NOMENCLATURA DO SERVICE :::
+  async listUsers(): Promise<IUser[]> {
     try {
-      return await UserRepository.findMany();
+      return await this.repositoryUser.findMany();
     } catch (error) {
-      console.error("Failed to retrieve users.", error);
+      console.error("[Service] - Error listing users.", error);
       throw error;
     }
   }
 
-  async getUser(userId: string): Promise<IUser | null> {
+  async listUser(id: string): Promise<IUser | null> {
     try {
-      return await UserRepository.findOne(userId);
+      return await this.repositoryUser.findOne(id);
     } catch (error) {
-      console.error("Failed to retrieve user.", error);
+      console.error("[Service] - Failed to retrieve user.", error);
       throw error;
     }
   }
 
-  async createUser(user: IUser): Promise<IUser> {
+  async create(user: IUserCreation): Promise<IUser> {
     try {
-      const hashedPassword = await passwordManager.hashPassword(user.password);
-
-      const newUser: IUser = {
-        ...user,
-        password: hashedPassword,
-      };
-
-      return await UserRepository.create(newUser);
+      await this.userRulesValidation(user);
+      const passwordHash = await passwordManager.hashPassword(user.password);
+      user.password = passwordHash;
+      return await this.repositoryUser.create(user);
     } catch (error) {
-      console.error("Failed to create user.", error);
+      console.error("[Service] - Failed to create user.", error);
       throw error;
     }
   }
 
-  async updateUser(userId: string, userData: IUser): Promise<IUser> {
+  async update(id: string, user: IUserUpdate): Promise<IUser> {
     try {
-      const updatedData: IUser = { ...userData };
+      const existingUser = await this.repositoryUser.findOne(id);
 
-      if (userData.password) {
-        updatedData.password = await passwordManager.hashPassword(
-          userData.password
+      if (!existingUser) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "The user you are trying to update does not exist.",
+          404
         );
       }
 
-      return await UserRepository.update(userId, updatedData);
+      await this.userRulesValidation(user, id);
+
+      if (user.password) {
+        const passwordHash = await passwordManager.hashPassword(user.password);
+        user.password = passwordHash;
+      }
+      return await this.repositoryUser.update(id, user);
     } catch (error) {
-      console.error("Failed to update user.", error);
+      console.error("[Service] - Failed to update user.", error);
       throw error;
     }
   }
 
-  async deleteUser(userId: string): Promise<IUser> {
+  async delete(id: string): Promise<IUser> {
     try {
-      return await UserRepository.delete(userId);
-    } catch (error) {
-      console.error("Failed to delete user.", error);
-      throw error;
-    }
-  }
-
-  async findUserForLogin(dataUserLogin: IUserLogin): Promise<IUser> {
-    const { email } = dataUserLogin;
-    try {
-      const foundUser = await UserRepository.findUserLogin(email);
-      if (!foundUser) {
-        throw new HttpError("Usuário não encontrado em nossos registros.", 404);
+      const existingUser = await this.repositoryUser.findOne(id);
+      if (!existingUser) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "The user you are trying to delete does not exist.",
+          404
+        );
       }
 
-      return foundUser;
+      return await this.repositoryUser.delete(id);
     } catch (error) {
-      console.error("Failed to find user for login.", error);
+      console.error("[Service] - Failed to delete user.", error);
       throw error;
     }
   }
 
-  async userRulesValidation(userData: IUser, userId?: string): Promise<void> {
-    const { status_users_id, privileges_id, email } = userData;
+  async findByEmail(email: string): Promise<IUser | null> {
+    try {
+      const user = await this.repositoryUser.findByEmail(email);
+      if (!user) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "User not found in our records.",
+          404
+        );
+      }
+      return user;
+    } catch (error) {
+      console.error("[Service] - Failed to retrieve user by email.", error);
+      throw error;
+    }
+  }
 
-    const [hasStatusUser, hasPrivilege, hasEmail] = await Promise.all([
-      status_users_id
-        ? genericRepository.generateQuery("status_users", "id", status_users_id)
+  private async userRulesValidation(
+    user: IUserCreation | IUserUpdate,
+    id?: string
+  ): Promise<void> {
+    const { IdStatusUsers, IdPrivileges, email } = user;
+
+    if (email) {
+      const existingUser = await this.repositoryUser.findByEmail(email);
+
+      if (existingUser && existingUser.id !== id) {
+        throw new HttpError(
+          "CONFLICT",
+          "The email you provided is already in use. Please choose another one.",
+          409
+        );
+      }
+    }
+
+    const [statusExists, privilegeExists] = await Promise.all([
+      IdStatusUsers
+        ? this.repositoryGeneric.genericQuery("statusUser", "id", IdStatusUsers)
         : Promise.resolve(false),
-      privileges_id
-        ? genericRepository.generateQuery("privileges", "id", privileges_id)
-        : Promise.resolve(false),
-      email
-        ? genericRepository.generateQuery("users", "email", email)
+
+      IdPrivileges
+        ? this.repositoryGeneric.genericQuery("privilege", "id", IdPrivileges)
         : Promise.resolve(false),
     ]);
 
-    if (status_users_id && !hasStatusUser) {
+    if (IdStatusUsers && !statusExists) {
       throw new HttpError(
-        "O status_user informado não consta em nossos registros. Tente outro.",
+        "RESOURCE_NOT_FOUND",
+        "The provided IdStatusUsers is not in our records. Please try another one.",
         404
       );
     }
-    if (privileges_id && !hasPrivilege) {
+    if (IdPrivileges && !privilegeExists) {
       throw new HttpError(
-        "O privilégio informado não consta em nossos registros. Tente outro.",
+        "RESOURCE_NOT_FOUND",
+        "The provided IdPrivileges is not in our records. Please try another one.",
         404
-      );
-    }
-    if (email && hasEmail) {
-      throw new HttpError(
-        "O e-mail informado já está cadastrado. Tente outro.",
-        409
       );
     }
   }
 }
-export const userService = new UserService();
