@@ -1,157 +1,131 @@
 import { Request, Response } from "express";
-import { IUser } from "../interfaces/IUser";
-import { userService } from "../services/UserService";
+import { IUserService } from "../interfaces/User/IUserService";
 import HttpError from "../errors/HttpError";
-class UserController {
-  async getUsers(req: Request, res: Response): Promise<void> {
+
+export class UserController {
+  constructor(private readonly service: IUserService) {}
+
+  listUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-      const users = await userService.getUsers();
-      res.status(200).json({ code: 200, status: "success", users: users });
+      const users = await this.service.listUsers();
+      res.status(200).json({ data: { users: users } });
     } catch (error) {
-      console.error("Error getting users.", error);
+      console.error("[Controller] - Error fetching users.", error);
 
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar usuários. Tente mais tarde.",
-      });
-    }
-  }
-
-  async getUser(req: Request, res: Response): Promise<void> {
-    const userId: string = req.params.id;
-    try {
-      const user = await userService.getUser(userId);
-
-      if (!user) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Usuário não encontrado.",
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        user: user,
-      });
-    } catch (error) {
-      console.error("Error getting user.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar usuário. Tente mais tarde.",
+        code: "INTERNAL_SERVER_ERROR",
+        mensagem: "Internal error fetching users. Please try again later.",
       });
     }
-  }
+  };
 
-  async createUser(req: Request, res: Response): Promise<void> {
-    const userData: IUser = req.body;
+  listUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      await userService.userRulesValidation(userData);
+      const id = req.params.id;
+      const user = await this.service.listUser(id);
+      res.status(200).json({ data: { user: user } });
+    } catch (error) {
+      console.error("[Controller] - Failed to retrieve user.", error);
 
-      const createdUser = await userService.createUser(userData);
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+        return;
+      }
+
+      res.status(500).json({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while retrieving user. Try again later.",
+      });
+    }
+  };
+
+  create = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userData = req.body;
+      const newUser = await this.service.create(userData);
       res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "Usuário criado com sucesso.",
-        createdUser: createdUser,
+        message: "User created successfully.",
+        data: { user: newUser },
       });
     } catch (error) {
+      console.error("[Controller] - Failed to create user.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          mensagem: error.message,
+        });
+        return;
+      }
+
+      res.status(500).json({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while creating user. Try again later.",
+      });
+    }
+  };
+
+  update = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = req.params.id;
+      const userData = req.body;
+      const updatedUser = await this.service.update(id, userData);
+      res.status(200).json({
+        message: "User updated successfully.",
+        data: { user: updatedUser },
+      });
+    } catch (error) {
+      console.error("[Controller] - Failed to update user.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
 
-      console.error("Error creating user.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao criar usuário. Tente mais tarde.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while updating user. Try again later.",
       });
     }
-  }
+  };
 
-  async updateUser(req: Request, res: Response): Promise<void> {
-    const userId: string = req.params.id;
-    const userData: IUser = req.body;
-
+  delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const user = await userService.getUser(userId);
-      if (!user) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Usuário não encontrado para atualizar.",
-        });
-        return;
-      }
-
-      await userService.userRulesValidation(userData);
-
-      const updatedUser = await userService.updateUser(userId, userData);
+      const id = req.params.id;
+      const deletedUser = await this.service.delete(id);
       res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Usuário atualizado com sucesso.",
-        updatedUser: updatedUser,
+        code: "User deleted successfully.",
+        data: { user: deletedUser },
       });
     } catch (error) {
+      console.error("[Controller] - Failed to delete user.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
 
-      console.error("Error updating user.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao atualizar usuário.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while deleting user. Try again later.",
       });
     }
-  }
-
-  async deleteUser(req: Request, res: Response): Promise<void> {
-    const userId: string = req.params.id;
-
-    try {
-      const user = await userService.getUser(userId);
-      if (!user) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Usuário não encontrado para exclusão.",
-        });
-        return;
-      }
-
-      const deletedUser = await userService.deleteUser(userId);
-
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Usuário excluído com sucesso.",
-        deletedUser: deletedUser,
-      });
-    } catch (error) {
-      console.error("Error deleting user.", error);
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Internal error while deleting user.",
-      });
-    }
-  }
+  };
 }
-
-export const userController = new UserController();
