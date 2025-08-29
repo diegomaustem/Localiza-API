@@ -1,27 +1,24 @@
-import { IPaginated } from "../interfaces/IPaginated";
-import { IPrivilege } from "../interfaces/IPrivilege";
-import { IPaginatedResult } from "../interfaces/IPaginatedResult";
-import { privilegeRepository } from "../repositories/PrivilegeRepository";
-class PrivilegeService {
-  async getPrivileges(
-    paginated: IPaginated
-  ): Promise<IPaginatedResult<IPrivilege>> {
+import { IPrivilege } from "../interfaces/Privilege/IPrivilege";
+import { IPrivilegeRepository } from "../interfaces/Privilege/IPrivilegeRepository";
+
+export class ServicePrivilege {
+  constructor(private repository: IPrivilegeRepository) {}
+
+  async listPrivileges(): Promise<IPrivilege[]> {
     try {
-      return await privilegeRepository.findMany(paginated);
+      return await this.repository.findMany();
     } catch (error) {
-      console.error("Failed to retrieve privileges.", error);
+      console.error("Error retrieving privileges:", error);
       throw error;
     }
   }
 
-  async getPrivilege(privilegeId: string): Promise<IPrivilege | null> {
+  async listPrivilege(id: string): Promise<IPrivilege | null> {
     try {
-      return await privilegeRepository.findOne(privilegeId);
+      return await this.repository.findOne(id);
     } catch (error) {
-      console.error("Failed to retrieve privilege.", error);
+      console.error("Error retrieving privilege by ID:", error);
       throw error;
     }
   }
 }
-
-export const privilegeService = new PrivilegeService();
