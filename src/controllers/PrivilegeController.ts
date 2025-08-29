@@ -1,56 +1,53 @@
 import { Request, Response } from "express";
-import { privilegeService } from "../services/PrivilegeService";
-import { IPaginated } from "../interfaces/IPaginated";
-class PrivilegeController {
-  async getPrivileges(req: Request, res: Response): Promise<void> {
-    try {
-      const paginated: IPaginated = {
-        page: parseInt(String(req.query.page)) || 1,
-        limit: parseInt(String(req.query.limit)) || 10,
-      };
+import { ServicePrivilege } from "../services/PrivilegeService";
+import HttpError from "../errors/HttpError";
 
-      const privileges = await privilegeService.getPrivileges(paginated);
-      res
-        .status(200)
-        .json({ code: 200, status: "success", privileges: privileges });
+export class PrivilegeController {
+  constructor(private readonly service: ServicePrivilege) {}
+
+  listPrivileges = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const privileges = await this.service.listPrivileges();
+      res.status(200).json({ data: { privileges: privileges } });
     } catch (error) {
-      console.error("Error getting privileges.", error);
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar privilégios.",
-      });
-    }
-  }
+      console.error("[Controller] - Error fetching privileges.", error);
 
-  async getPrivilege(req: Request, res: Response) {
-    const privilegeId: string = req.params.id;
-
-    try {
-      const privilege = await privilegeService.getPrivilege(privilegeId);
-      if (privilege === null) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Privilégio não encontrado.",
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        privilege: privilege,
-      });
-    } catch (error) {
-      console.error("Error getting privilege.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar privilégio.",
+        code: "INTERNAL_SERVER_ERROR",
+        message:
+          "Internal error while fetching privileges. Please try again later.",
       });
     }
-  }
-}
+  };
 
-export const privilegeController = new PrivilegeController();
+  listPrivilege = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const privilege = await this.service.listPrivilege(id);
+      res.status(200).json({ data: { privilege: privilege } });
+    } catch (error) {
+      console.error("[Controller] - Error fetching privilege.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          mensagem: error.message,
+        });
+        return;
+      }
+
+      res.status(500).json({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error fetching privilege. Please try again later.",
+      });
+    }
+  };
+}
