@@ -37,7 +37,7 @@ export class UserController {
 
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: "INTERNAL_SERVER_ERROR",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
