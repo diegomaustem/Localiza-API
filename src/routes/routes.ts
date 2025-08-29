@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { userController } from "../controllers/UserController";
+import { userController } from "../controllers/OLD-UserController";
 import { vehicleController } from "../controllers/VehicleController";
-import { privilegeController } from "../controllers/PrivilegeController";
+import { privilegeController } from "../controllers/OLD-PrivilegeController";
 import { nationalityController } from "../controllers/NationalityController";
 import { validate } from "../middlewares/validationMiddleware";
 import { auth } from "../middlewares/authMiddleware";

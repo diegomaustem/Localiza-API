@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { IUserLogin } from "../interfaces/IUserLogin";
-import { userService } from "../services/UserService";
+import { userService } from "../services/OLD-UserService";
 import HttpError from "../errors/HttpError";
 
 class AuthController {
