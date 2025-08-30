@@ -1,57 +1,57 @@
 import { Request, Response } from "express";
-import { statusUserService } from "../services/StatusUserService";
-import { statusCustomerService } from "../services/StatusCustomerService";
+import { IStatusCustomerService } from "../interfaces/StatusCustomer/IStatusCustomerService";
+import HttpError from "../errors/HttpError";
 
-class StatusCustomerController {
-  async getStatusCustomers(req: Request, res: Response): Promise<void> {
+export class StatusCustomerController {
+  constructor(private readonly service: IStatusCustomerService) {}
+
+  listStatusCustomers = async (req: Request, res: Response): Promise<void> => {
     try {
-      const statusCustomers = await statusCustomerService.getStatusCustomers();
+      const statusCustomers = await this.service.listStatusCustomers();
       res.status(200).json({
-        code: 200,
-        status: "success",
-        statusCustomers: statusCustomers,
+        data: {
+          statusCustomers: statusCustomers,
+        },
       });
     } catch (error) {
       console.error("Error getting statusCustomers.", error);
 
-      res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar por statusCustomers",
-      });
-    }
-  }
-
-  async getStatusCustomer(req: Request, res: Response): Promise<void> {
-    const statusCustomerId: string = req.params.id;
-
-    try {
-      const statusCustomer = await statusCustomerService.getStatusCustomer(
-        statusCustomerId
-      );
-      if (statusCustomer === null) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "statusCustomer não encontrado.",
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        statusCustomer: statusCustomer,
-      });
-    } catch (error) {
-      console.error("Error getting statusCustomer.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar statusCustomer.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for statusCustomers.",
       });
     }
-  }
-}
+  };
 
-export const statusCustomerController = new StatusCustomerController();
+  listStatusCustomer = async (req: Request, res: Response): Promise<void> => {
+    const id: string = req.params.id;
+
+    try {
+      const statusCustomer = await this.service.listStatusCustomer(id);
+      res.status(200).json({ data: { statusCustomer: statusCustomer } });
+    } catch (error) {
+      console.error("Error getting statusCustomer.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+        return;
+      }
+
+      res.status(500).json({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error fetching statusCustomer.",
+      });
+    }
+  };
+}
