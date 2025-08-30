@@ -1,24 +1,30 @@
-import { IStatusUser } from "../interfaces/IStatusUser";
-import { statusUserRepository } from "../repositories/StatusUserRepository";
+import { IStatusUser } from "../interfaces/StatusUser/IStatusUser";
+import { IStatusUserService } from "../interfaces/StatusUser/IStatusUserService";
+import HttpError from "../errors/HttpError";
+import { IStatusUserRepository } from "../interfaces/StatusUser/IStatusUserRepository";
 
-class StatusUserService {
-  async getStatusUsers(): Promise<IStatusUser[]> {
+export class StatusUserService implements IStatusUserService {
+  constructor(private readonly repository: IStatusUserRepository) {}
+
+  async listStatusUsers(): Promise<IStatusUser[]> {
     try {
-      return await statusUserRepository.findMany();
+      return await this.repository.findMany();
     } catch (error) {
       console.error("Failed to retrieve statusUsers.", error);
       throw error;
     }
   }
 
-  async getStatusUser(statusUserId: string): Promise<IStatusUser | null> {
+  async listStatusUser(id: string): Promise<IStatusUser | null> {
     try {
-      return await statusUserRepository.findOne(statusUserId);
+      const statusUser = await this.repository.findOne(id);
+      if (!statusUser) {
+        throw new HttpError("RESOURCE_NOT_FOUND", "statusUser not found.", 404);
+      }
+      return statusUser;
     } catch (error) {
       console.error("Failed to retrieve statusUser.", error);
       throw error;
     }
   }
 }
-
-export const statusUserService = new StatusUserService();
