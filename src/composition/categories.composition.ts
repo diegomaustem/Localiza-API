@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma";
 import { CategoryController } from "../controllers/CategoryController";
-import { RepositoryCategoryPrisma } from "../repositories/CategoryRepository";
+import { RepositoryCategoryPrisma } from "../repositories/RepositoryCategoryPrisma";
 import { CategoryService } from "../services/CategoryService";
 
 export function createCategoryController(): CategoryController {
