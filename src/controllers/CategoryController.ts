@@ -1,51 +1,43 @@
 import { Request, Response } from "express";
-import { categoryService } from "../services/CategoryService";
-class CategoryController {
-  async getCategories(req: Request, res: Response): Promise<void> {
+import HttpError from "../errors/HttpError";
+import { ICategoryService } from "../interfaces/Category/ICategoryService";
+export class CategoryController {
+  constructor(private readonly service: ICategoryService) {}
+
+  listCategories = async (req: Request, res: Response): Promise<void> => {
     try {
-      const categories = await categoryService.getCategories();
-      res
-        .status(200)
-        .json({ code: 200, status: "success", categories: categories });
+      const categories = await this.service.listCategories();
+      res.status(200).json({ data: { categories: categories } });
     } catch (error) {
       console.error("Error getting categories.", error);
-
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar por categorias.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error fetching categories.",
       });
     }
-  }
+  };
 
-  async getCategory(req: Request, res: Response): Promise<void> {
-    const categoryId: string = req.params.id;
+  listCategory = async (req: Request, res: Response): Promise<void> => {
+    const id: string = req.params.id;
 
     try {
-      const category = await categoryService.getCategory(categoryId);
-      if (category === null) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Categoria não encontrada.",
+      const category = await this.service.listCategory(id);
+      res.status(200).json({ data: { category: category } });
+    } catch (error) {
+      console.error("Error getting category.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        category: category,
-      });
-    } catch (error) {
-      console.error("Error getting category.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar por categoria.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error fetching category.",
       });
     }
-  }
+  };
 }
-
-export const categoryController = new CategoryController();
