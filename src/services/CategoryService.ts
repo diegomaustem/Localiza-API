@@ -17,7 +17,7 @@ export class CategoryService implements ICategoryService {
 
   async listCategory(id: string): Promise<ICategory | null> {
     try {
-      const category = await this.repository.findOne(id);
+      const category = await this.repository.findUnique(id);
       if (!category) {
         throw new HttpError(
           "RESOURCE_NOT_FOUND",
