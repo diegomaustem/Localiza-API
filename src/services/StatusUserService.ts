@@ -10,20 +10,20 @@ export class StatusUserService implements IStatusUserService {
     try {
       return await this.repository.findMany();
     } catch (error) {
-      console.error("Failed to retrieve statusUsers.", error);
+      console.error("[Service] - Failed to retrieve statusUsers.", error);
       throw error;
     }
   }
 
   async listStatusUser(id: string): Promise<IStatusUser | null> {
     try {
-      const statusUser = await this.repository.findOne(id);
+      const statusUser = await this.repository.findUnique(id);
       if (!statusUser) {
         throw new HttpError("RESOURCE_NOT_FOUND", "statusUser not found.", 404);
       }
       return statusUser;
     } catch (error) {
-      console.error("Failed to retrieve statusUser.", error);
+      console.error("[Service] - Failed to retrieve statusUser.", error);
       throw error;
     }
   }
