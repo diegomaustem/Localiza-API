@@ -16,13 +16,13 @@ export class RepositoryStatusCustomerPrisma
     }
   }
 
-  async findOne(id: string): Promise<IStatusCustomer | null> {
+  async findUnique(id: string): Promise<IStatusCustomer | null> {
     try {
       return await this.prisma.statusCustomer.findUnique({
         where: { id },
       });
     } catch (error) {
-      console.error("Repository] - Error fetching statusCustomer.", error);
+      console.error("[Repository] - Error fetching statusCustomer.", error);
       throw error;
     }
   }
