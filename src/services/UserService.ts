@@ -9,8 +9,8 @@ import { passwordManager } from "../utils/PasswordManager";
 
 export class UserService implements IUserService {
   constructor(
-    private repositoryUser: IUserRepository,
-    private repositoryGeneric: IGenericRepository
+    private readonly repositoryUser: IUserRepository,
+    private readonly repositoryGeneric: IGenericRepository
   ) {}
 
   async listUsers(): Promise<IUser[]> {
@@ -24,7 +24,7 @@ export class UserService implements IUserService {
 
   async listUser(id: string): Promise<IUser | null> {
     try {
-      const user = await this.repositoryUser.findOne(id);
+      const user = await this.repositoryUser.findUnique(id);
       if (!user) {
         throw new HttpError(
           "RESOURCE_NOT_FOUND",
@@ -53,7 +53,7 @@ export class UserService implements IUserService {
 
   async update(id: string, user: IUserUpdate): Promise<IUser> {
     try {
-      const existingUser = await this.repositoryUser.findOne(id);
+      const existingUser = await this.repositoryUser.findUnique(id);
 
       if (!existingUser) {
         throw new HttpError(
@@ -78,7 +78,7 @@ export class UserService implements IUserService {
 
   async delete(id: string): Promise<IUser> {
     try {
-      const existingUser = await this.repositoryUser.findOne(id);
+      const existingUser = await this.repositoryUser.findUnique(id);
       if (!existingUser) {
         throw new HttpError(
           "RESOURCE_NOT_FOUND",
