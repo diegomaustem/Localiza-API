@@ -4,7 +4,7 @@ import { IUserUpdate } from "./IUserUpdate";
 
 export interface IUserRepository {
   findMany(): Promise<IUser[]>;
-  findOne(id: string): Promise<IUser | null>;
+  findUnique(id: string): Promise<IUser | null>;
   create(user: IUserCreation): Promise<IUser>;
   update(id: string, user: IUserUpdate): Promise<IUser>;
   delete(id: string): Promise<IUser>;
