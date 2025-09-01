@@ -4,20 +4,20 @@ import { IPrivilegeRepository } from "../interfaces/Privilege/IPrivilegeReposito
 import HttpError from "../errors/HttpError";
 
 export class ServicePrivilege {
-  constructor(private repository: IPrivilegeRepository) {}
+  constructor(private readonly repository: IPrivilegeRepository) {}
 
   async listPrivileges(): Promise<IPrivilege[]> {
     try {
       return await this.repository.findMany();
     } catch (error) {
-      console.error("Error retrieving privileges:", error);
+      console.error("[Service] - Error retrieving privileges:", error);
       throw error;
     }
   }
 
   async listPrivilege(id: string): Promise<IPrivilege | null> {
     try {
-      const privilege = await this.repository.findOne(id);
+      const privilege = await this.repository.findUnique(id);
       if (!privilege) {
         throw new HttpError("RESOURCE_NOT_FOUND", "Privilege not found.", 404);
       }
