@@ -4,6 +4,7 @@ import { privilegeRoutes } from "./modules/privilegeRoutes";
 import { statusUserRoutes } from "./modules/statusUserRoutes";
 import { statusCustomerRoutes } from "./modules/statusCustomerRoutes";
 import { categoryRoutes } from "./modules/catagoryRoutes";
+import { stateRoutes } from "./modules/stateRoutes";
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.use("/privileges", privilegeRoutes);
 router.use("/statusUsers", statusUserRoutes);
 router.use("/statusCustomers", statusCustomerRoutes);
 router.use("/categories", categoryRoutes);
+router.use("/states", stateRoutes);
 
 export default router;
