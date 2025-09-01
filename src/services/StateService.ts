@@ -1,24 +1,34 @@
-import { IState } from "../interfaces/IState";
-import { stateRepository } from "../repositories/StateRepository";
+import HttpError from "../errors/HttpError";
+import { IState } from "../interfaces/State/IState";
+import { IStateRepository } from "../interfaces/State/IStateRepository";
+import { IStateService } from "../interfaces/State/IStateService";
 
-class StateService {
-  async getStates(): Promise<IState[]> {
+export class StateService implements IStateService {
+  constructor(private readonly repository: IStateRepository) {}
+
+  async listStates(): Promise<IState[]> {
     try {
-      return await stateRepository.findMany();
+      return await this.repository.findMany();
     } catch (error) {
-      console.error("Failed to retrieve states.", error);
+      console.error("[Service] - Failed to retrieve states.", error);
       throw error;
     }
   }
 
-  async getState(stateId: string): Promise<IState | null> {
+  async listState(id: string): Promise<IState | null> {
     try {
-      return await stateRepository.findOne(stateId);
+      const state = await this.repository.findUnique(id);
+      if (!state) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "State not found in our records.",
+          404
+        );
+      }
+      return state;
     } catch (error) {
-      console.error("Failed to retrieve state.", error);
+      console.error("[Service] - Failed to retrieve state.", error);
       throw error;
     }
   }
 }
-
-export const stateService = new StateService();
