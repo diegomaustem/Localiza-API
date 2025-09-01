@@ -3,7 +3,7 @@ import { IStatusUser } from "../interfaces/StatusUser/IStatusUser";
 import { IStatusUserRepository } from "../interfaces/StatusUser/IStatusUserRepository";
 
 export class RepositoryStatusUserPrisma implements IStatusUserRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async findMany(): Promise<IStatusUser[]> {
     try {
