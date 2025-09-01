@@ -1,7 +1,8 @@
 import { PrismaClient } from "../generated/prisma";
 import { IState } from "../interfaces/State/IState";
+import { IStateRepository } from "../interfaces/State/IStateRepository";
 
-export class RepositoryStatePrisma {
+export class RepositoryStatePrisma implements IStateRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findMany(): Promise<IState[]> {
@@ -13,7 +14,7 @@ export class RepositoryStatePrisma {
     }
   }
 
-  async findOne(id: string): Promise<IState | null> {
+  async findUnique(id: string): Promise<IState | null> {
     try {
       return await this.prisma.state.findUnique({
         where: { id },
