@@ -9,7 +9,7 @@ export class CategoryController {
       const categories = await this.service.listCategories();
       res.status(200).json({ data: { categories: categories } });
     } catch (error) {
-      console.error("Error getting categories.", error);
+      console.error("[Controller] - Error getting categories.", error);
       res.status(500).json({
         code: "INTERNAL_SERVER_ERROR",
         message: "Internal error fetching categories.",
@@ -24,11 +24,11 @@ export class CategoryController {
       const category = await this.service.listCategory(id);
       res.status(200).json({ data: { category: category } });
     } catch (error) {
-      console.error("Error getting category.", error);
+      console.error("[Controller] - Error getting category.", error);
 
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: "INTERNAL_SERVER_ERROR",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
