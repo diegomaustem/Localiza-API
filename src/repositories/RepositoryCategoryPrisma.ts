@@ -1,7 +1,8 @@
 import { PrismaClient } from "../generated/prisma";
 import { ICategory } from "../interfaces/Category/ICategory";
+import { ICategoryRepository } from "../interfaces/Category/ICategoryRepository";
 
-export class RepositoryCategoryPrisma {
+export class RepositoryCategoryPrisma implements ICategoryRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findMany(): Promise<ICategory[]> {
@@ -13,7 +14,7 @@ export class RepositoryCategoryPrisma {
     }
   }
 
-  async findOne(id: string): Promise<ICategory | null> {
+  async findUnique(id: string): Promise<ICategory | null> {
     try {
       return await this.prisma.category.findUnique({
         where: { id },
