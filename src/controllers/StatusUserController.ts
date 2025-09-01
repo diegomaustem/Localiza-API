@@ -10,7 +10,6 @@ export class StatusUserController {
       res.status(200).json({ data: { statusUsers: statusUsers } });
     } catch (error) {
       console.error("Error getting statusUsers.", error);
-
       res.status(500).json({
         code: "INTERNAL_SERVER_ERROR",
         message: "Internal error while searching for statusUsers.",
