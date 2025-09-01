@@ -14,7 +14,7 @@ export class RepositoryStatusUserPrisma implements IStatusUserRepository {
     }
   }
 
-  async findOne(id: string): Promise<IStatusUser | null> {
+  async findUnique(id: string): Promise<IStatusUser | null> {
     try {
       return await this.prisma.statusUser.findUnique({
         where: { id },
