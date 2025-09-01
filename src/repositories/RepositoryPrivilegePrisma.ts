@@ -3,7 +3,7 @@ import { IPrivilegeRepository } from "../interfaces/Privilege/IPrivilegeReposito
 import { PrismaClient } from "../generated/prisma";
 
 export class RepositoryPrivilegePrisma implements IPrivilegeRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async findMany(): Promise<IPrivilege[]> {
     try {
@@ -14,7 +14,7 @@ export class RepositoryPrivilegePrisma implements IPrivilegeRepository {
     }
   }
 
-  async findOne(id: string): Promise<IPrivilege | null> {
+  async findUnique(id: string): Promise<IPrivilege | null> {
     try {
       return await this.prisma.privilege.findUnique({
         where: { id },
