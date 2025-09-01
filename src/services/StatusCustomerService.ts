@@ -17,7 +17,7 @@ export class StatusCustomerService implements IStatusCustomerService {
 
   async listStatusCustomer(id: string): Promise<IStatusCustomer | null> {
     try {
-      const statusCustomer = await this.repository.findOne(id);
+      const statusCustomer = await this.repository.findUnique(id);
       if (!statusCustomer) {
         throw new HttpError(
           "RESOURCE_NOT_FOUND",
