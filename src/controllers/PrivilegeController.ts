@@ -11,15 +11,6 @@ export class PrivilegeController {
       res.status(200).json({ data: { privileges: privileges } });
     } catch (error) {
       console.error("[Controller] - Error fetching privileges.", error);
-
-      if (error instanceof HttpError) {
-        res.status(error.statusCode).json({
-          code: error.code || "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
-        return;
-      }
-
       res.status(500).json({
         code: "INTERNAL_SERVER_ERROR",
         message:
