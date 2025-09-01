@@ -10,7 +10,7 @@ export class StatusCustomerService implements IStatusCustomerService {
     try {
       return await this.repository.findMany();
     } catch (error) {
-      console.error("Failed to retrieve statusCustomers.", error);
+      console.error("[Service] - Failed to retrieve statusCustomers.", error);
       throw error;
     }
   }
@@ -27,7 +27,7 @@ export class StatusCustomerService implements IStatusCustomerService {
       }
       return statusCustomer;
     } catch (error) {
-      console.error("Failed to retrieve statusCustomer.", error);
+      console.error("[Service] - Failed to retrieve statusCustomer.", error);
       throw error;
     }
   }
