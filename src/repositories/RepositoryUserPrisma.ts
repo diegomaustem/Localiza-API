@@ -5,7 +5,7 @@ import { IUserRepository } from "../interfaces/User/IUserRepository";
 import { IUserUpdate } from "../interfaces/User/IUserUpdate";
 
 export class RepositoryUserPrisma implements IUserRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async findMany(): Promise<IUser[]> {
     try {
@@ -16,7 +16,7 @@ export class RepositoryUserPrisma implements IUserRepository {
     }
   }
 
-  async findOne(id: string): Promise<IUser | null> {
+  async findUnique(id: string): Promise<IUser | null> {
     try {
       return await this.prisma.user.findUnique({
         where: { id },
