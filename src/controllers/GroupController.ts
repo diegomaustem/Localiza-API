@@ -1,52 +1,47 @@
 import { Request, Response } from "express";
-import { groupService } from "../services/GroupService";
-import { IGroup } from "../interfaces/IGroup";
 import HttpError from "../errors/HttpError";
+import { IGroupService } from "../interfaces/Group/IGroupService";
+export class GroupController {
+  constructor(private readonly service: IGroupService) {}
 
-class GroupController {
-  async getGroups(req: Request, res: Response): Promise<void> {
+  listGroups = async (req: Request, res: Response): Promise<void> => {
     try {
-      const groups = await groupService.getGroups();
-      res.status(200).json({ code: 200, status: "success", groups: groups });
+      const groups = await this.service.listGroups();
+      res.status(200).json({ data: { groups: groups } });
     } catch (error) {
-      console.error("Error getting groups.", error);
+      console.error("[Controller] - Error getting groups.", error);
 
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar por grupos.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for groups.",
       });
     }
-  }
+  };
 
-  async getGroup(req: Request, res: Response): Promise<void> {
-    const groupId: string = req.params.id;
-
+  listGroup = async (req: Request, res: Response): Promise<void> => {
     try {
-      const group = await groupService.getGroup(groupId);
-      if (!group) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Grupo não encontrado.",
+      const id = req.params.id;
+      const group = await this.service.listGroup(id);
+      res.status(200).json({
+        data: {
+          group: group,
+        },
+      });
+    } catch (error) {
+      console.error("Error getting group.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        group: group,
-      });
-    } catch (error) {
-      console.error("Error getting group.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar por grupo.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for group.",
       });
     }
-  }
+  };
 }
-
-export const groupController = new GroupController();
