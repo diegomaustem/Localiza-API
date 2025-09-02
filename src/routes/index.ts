@@ -6,6 +6,7 @@ import { statusCustomerRoutes } from "./modules/statusCustomerRoutes";
 import { categoryRoutes } from "./modules/catagoryRoutes";
 import { stateRoutes } from "./modules/stateRoutes";
 import { groupRoutes } from "./modules/groupRoutes";
+import { cityRoutes } from "./modules/cityRoutes";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/statusCustomers", statusCustomerRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/states", stateRoutes);
 router.use("/groups", groupRoutes);
+router.use("/cities", cityRoutes);
 
 export default router;
