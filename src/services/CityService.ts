@@ -1,82 +1,123 @@
 import HttpError from "../errors/HttpError";
-import { ICity } from "../interfaces/ICity";
-import { cityRepository } from "../repositories/CityRepository";
-import { genericRepository } from "../repositories/GenericRepository";
+import { ICity } from "../interfaces/City/ICity";
+import { ICityService } from "../interfaces/City/ICityService";
+import { ICityRepository } from "../interfaces/City/ICityRepository";
+import { ICityCreation } from "../interfaces/City/ICityCreation";
+import { ICityUpdate } from "../interfaces/City/ICityUpdate";
+import { IGenericRepository } from "../interfaces/Generic/IGenericRepository";
 
-class CityService {
-  async getCities(): Promise<ICity[]> {
+export class CityService implements ICityService {
+  constructor(
+    private readonly repositoryCity: ICityRepository,
+    private readonly repositoryGeneric: IGenericRepository
+  ) {}
+
+  async listCities(): Promise<ICity[]> {
     try {
-      return await cityRepository.findMany();
+      return await this.repositoryCity.findMany();
     } catch (error) {
-      console.error("Failed to retrieve cities.", error);
+      console.error("[Service] - Failed to retrieve cities.", error);
       throw error;
     }
   }
 
-  async getCity(cityId: string): Promise<ICity | null> {
+  async listCity(id: string): Promise<ICity | null> {
     try {
-      return await cityRepository.findOne(cityId);
-    } catch (error) {
-      console.error("Failed to retrieve city.", error);
-      throw error;
-    }
-  }
-
-  async createCity(cityData: ICity): Promise<ICity> {
-    try {
-      return await cityRepository.create(cityData);
-    } catch (error) {
-      console.error("Failed to create city.", error);
-      throw error;
-    }
-  }
-
-  async updateCity(cityId: string, cityData: ICity): Promise<ICity> {
-    try {
-      return await cityRepository.update(cityId, cityData);
-    } catch (error) {
-      console.error("Failed to update city.", error);
-      throw error;
-    }
-  }
-
-  async deleteCity(cityId: string): Promise<ICity> {
-    try {
-      return await cityRepository.delete(cityId);
-    } catch (error) {
-      console.error("Failed to delete city.", error);
-      throw error;
-    }
-  }
-
-  async cityRulesValidation(cityData?: ICity, cityId?: string): Promise<void> {
-    if (cityId) {
-      const cityHasUnits = await genericRepository.generateQuery(
-        "units",
-        "cities_id",
-        cityId
-      );
-
-      if (cityHasUnits) {
+      const city = await this.repositoryCity.findUnique(id);
+      if (!city) {
         throw new HttpError(
-          "Esta cidade possui unidades vinculadas e não pode ser excluída.",
-          409
+          "RESOURCE_NOT_FOUND",
+          "City not found in our records.",
+          404
         );
       }
-      return;
+      return city;
+    } catch (error) {
+      console.error("[Service] - Failed to retrieve city.", error);
+      throw error;
     }
+  }
 
-    if (cityData) {
-      const { states_id } = cityData;
-      const existState = states_id
-        ? await genericRepository.generateQuery("states", "id", states_id)
-        : false;
+  async create(city: ICity): Promise<ICity> {
+    try {
+      await this.validateCityState(city);
+      return await this.repositoryCity.create(city);
+    } catch (error) {
+      console.error("[Service] - Failed to create city.", error);
+      throw error;
+    }
+  }
 
-      if (states_id && !existState) {
-        throw new HttpError("Estado não encontrado. Insira um válido.", 404);
+  async update(id: string, cityData: ICity): Promise<ICity> {
+    try {
+      const city = await this.repositoryCity.findUnique(id);
+      if (!city) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "City not found in our records for update.",
+          404
+        );
       }
+      await this.validateCityState(cityData);
+      return await this.repositoryCity.update(id, cityData);
+    } catch (error) {
+      console.error("[Service] - Failed to update city.", error);
+      throw error;
+    }
+  }
+
+  async delete(id: string): Promise<ICity> {
+    try {
+      const city = await this.repositoryCity.findUnique(id);
+      if (!city) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "City not found in our records for deletion.",
+          404
+        );
+      }
+      await this.validateCityDeletion(id);
+      return await this.repositoryCity.delete(id);
+    } catch (error) {
+      console.error("[Service] - Failed to delete city.", error);
+      throw error;
+    }
+  }
+
+  private async validateCityState(
+    city: ICityCreation | ICityUpdate
+  ): Promise<void> {
+    console.log(city);
+    const { IdState } = city;
+    if (!IdState) return;
+    const existingState = await this.repositoryGeneric.genericQuery(
+      "state",
+      "id",
+      IdState
+    );
+
+    if (!existingState) {
+      throw new HttpError(
+        "RESOURCE_NOT_FOUND",
+        "The provided state is not in our records. Please try another one.",
+        404
+      );
+    }
+  }
+
+  private async validateCityDeletion(id: string): Promise<void> {
+    const unitsLinkedToCity = await this.repositoryGeneric.genericQuery(
+      "unit",
+      "IdCity",
+      id
+    );
+
+    if (unitsLinkedToCity) {
+      throw new HttpError(
+        "CONFLICT",
+        "The city cannot be deleted. There are units linked to it.",
+        409
+      );
     }
   }
 }
-
-export const cityService = new CityService();
