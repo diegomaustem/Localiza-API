@@ -1,171 +1,132 @@
 import { Request, Response } from "express";
-import { ICity } from "../interfaces/ICity";
-import { cityService } from "../services/CityService";
+import { ICityService } from "../interfaces/City/ICityService";
 import HttpError from "../errors/HttpError";
-class CityController {
-  async getCities(req: Request, res: Response): Promise<void> {
-    try {
-      const cities = await cityService.getCities();
-      res.status(200).json({ code: 200, status: "success", cities: cities });
-    } catch (error) {
-      console.error("Error getting cities.", error);
+export class CityController {
+  constructor(private readonly service: ICityService) {}
 
+  listCities = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const cities = await this.service.listCities();
+      res.status(200).json({ data: { cities: cities } });
+    } catch (error) {
+      console.error("[Controller] - Error getting cities.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar cidades.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for cities.",
       });
     }
-  }
+  };
 
-  async getCity(req: Request, res: Response): Promise<void> {
-    const cityId: string = req.params.id;
-
+  listCity = async (req: Request, res: Response): Promise<void> => {
     try {
-      const city = await cityService.getCity(cityId);
-      if (!city) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Cidade não encontrada.",
+      const id: string = req.params.id;
+      const city = await this.service.listCity(id);
+      res.status(200).json({
+        data: {
+          city: city,
+        },
+      });
+    } catch (error) {
+      console.error("[Controller] - Error getting city.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          mensagem: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        city: city,
-      });
-    } catch (error) {
-      console.error("Error getting city.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar cidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for city.",
       });
     }
-  }
+  };
 
-  async createCity(req: Request, res: Response): Promise<void> {
-    const cityData: ICity = req.body;
-
+  create = async (req: Request, res: Response): Promise<void> => {
     try {
-      await cityService.cityRulesValidation(cityData, undefined);
-
-      const createdCity = await cityService.createCity(cityData);
-
+      const city = req.body;
+      const createdCity = await this.service.create(city);
       res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "Cidade criada com sucesso.",
-        createdCity: createdCity,
+        message: "City created successfully.",
+        data: {
+          city: createdCity,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error creating city.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
 
-      console.error("Error creating city.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao criar cidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while creating city.",
       });
     }
-  }
+  };
 
-  async updateCity(req: Request, res: Response): Promise<void> {
-    const cityId: string = req.params.id;
-    const cityData: ICity = req.body;
-
+  update = async (req: Request, res: Response): Promise<void> => {
     try {
-      const city = await cityService.getCity(cityId);
-      if (!city) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Cidade não encontrada para atualização.",
-        });
-        return;
-      }
-
-      await cityService.cityRulesValidation(cityData, undefined);
-
-      const updatedCity = await cityService.updateCity(cityId, cityData);
+      const id = req.params.id;
+      const city = req.body;
+      const updatedCity = await this.service.update(id, city);
 
       res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Cidade atualizada com sucesso.",
-        updatedCity: updatedCity,
+        message: "City updated successfully.",
+        data: {
+          city: updatedCity,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error updating city.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
-          message: error.message,
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          mensagem: error.message,
         });
         return;
       }
 
-      console.error("Error updating city.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao atualizar cidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while updating city.",
       });
     }
-  }
+  };
 
-  async deleteCity(req: Request, res: Response): Promise<void> {
-    const cityId: string = req.params.id;
-
+  delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const city = await cityService.getCity(cityId);
-
-      if (!city) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Cidade não encontrada para exclusão.",
-        });
-        return;
-      }
-
-      await cityService.cityRulesValidation(undefined, cityId);
-
-      const deletedCity = await cityService.deleteCity(cityId);
-
+      const id = req.params.id;
+      const deletedCity = await this.service.delete(id);
       res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Cidade excluída com sucesso.",
-        deletedCity: deletedCity,
+        message: "City deleted successfully.",
+        data: {
+          city: deletedCity,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error deleting city.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
-          message: error.message,
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          mensagem: error.message,
         });
         return;
       }
-      console.error("Error deleting city.", error);
+
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao excluir cidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while deleting city.",
       });
     }
-  }
+  };
 }
-
-export const cityController = new CityController();
