@@ -1,93 +1,128 @@
 import HttpError from "../errors/HttpError";
-import { INationality } from "../interfaces/INationality";
+import { IGenericRepository } from "../interfaces/Generic/IGenericRepository";
+import { INationalityRepository } from "../interfaces/Nationality/ICategoryRepository";
+import { INationalityService } from "../interfaces/Nationality/ICategoryService";
+import { INationality } from "../interfaces/Nationality/INationality";
+import { INationalityCreation } from "../interfaces/Nationality/INationalityCreation";
+import { INationalityUpdate } from "../interfaces/Nationality/INationalityUpdate";
 import { genericRepository } from "../repositories/GenericRepository";
-import { nationalityRepository } from "../repositories/NationalityRepository";
 
-class NationalityService {
-  async getNationalities(): Promise<INationality[]> {
+export class NationalityService implements INationalityService {
+  constructor(
+    private readonly repositoryNationality: INationalityRepository,
+    private readonly repositoryGeneric: IGenericRepository
+  ) {}
+
+  async listNationalities(): Promise<INationality[]> {
     try {
-      return await nationalityRepository.findMany();
+      return await this.repositoryNationality.findMany();
     } catch (error) {
-      console.error("Failed to retrieve nationalities.", error);
+      console.error("[Service] - Failed to retrieve nationalities.", error);
       throw error;
     }
   }
 
-  async getNationality(nationalityId: string): Promise<INationality | null> {
+  async listNationality(id: string): Promise<INationality | null> {
     try {
-      return await nationalityRepository.findOne(nationalityId);
+      const nationality = await this.repositoryNationality.findUnique(id);
+      if (!nationality) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "Nationality not found in our records.",
+          404
+        );
+      }
+      return nationality;
     } catch (error) {
-      console.error("Failed to retrieve nationality.", error);
+      console.error("[Service] - Failed to retrieve nationality.", error);
       throw error;
     }
   }
 
-  async createNationality(
+  async create(nationality: INationality): Promise<INationality> {
+    try {
+      await this.validateNationality(nationality);
+      return await this.repositoryNationality.create(nationality);
+    } catch (error) {
+      console.error("[Service] - Failed to create nationality.", error);
+      throw error;
+    }
+  }
+
+  async update(
+    id: string,
     nationalityData: INationality
   ): Promise<INationality> {
     try {
-      return await nationalityRepository.create(nationalityData);
+      const nationality = await this.repositoryNationality.findUnique(id);
+      if (!nationality) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "Nationality not found in our records for update.",
+          404
+        );
+      }
+      await this.validateNationality(nationalityData);
+      return await this.repositoryNationality.update(id, nationalityData);
     } catch (error) {
-      console.error("Failed to create nationality.", error);
+      console.error("[Service] - Failed to update nationality.", error);
       throw error;
     }
   }
 
-  async updateNationality(
-    nationalityId: string,
-    nationalityData: INationality
-  ): Promise<INationality> {
+  async delete(id: string): Promise<INationality> {
     try {
-      return await nationalityRepository.update(nationalityId, nationalityData);
-    } catch (error) {
-      console.error("Failed to update nationality.", error);
-      throw error;
-    }
-  }
+      const nationality = await this.repositoryNationality.findUnique(id);
+      if (!nationality) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "Nationality not found in our records for deletion.",
+          404
+        );
+      }
 
-  async deleteNationality(nationalityId: string): Promise<INationality> {
-    try {
-      return await nationalityRepository.delete(nationalityId);
+      await this.validateNationalityCustomer(id);
+      return await this.repositoryNationality.delete(id);
     } catch (error) {
       console.error("Failed to delete nationality.", error);
       throw error;
     }
   }
 
-  async nationalityRulesValidation(
-    nationalityData?: INationality,
-    nationalityId?: string
+  private async validateNationality(
+    nationalityData: INationalityCreation | INationalityUpdate
   ): Promise<void> {
-    if (nationalityId) {
-      const hasLinkedNationalities = await genericRepository.generateQuery(
-        "customers",
-        "nationalities_id",
-        nationalityId
+    const { name } = nationalityData;
+    if (!name) return;
+
+    const existingNationality = await this.repositoryGeneric.genericQuery(
+      "nationality",
+      "name",
+      name
+    );
+
+    if (existingNationality) {
+      throw new HttpError(
+        "CONFLICT",
+        "A record with this nationality already exists. Please try another one.",
+        409
       );
-
-      if (hasLinkedNationalities) {
-        throw new HttpError(
-          "A nacionalidade está vinculada a clientes e não pode ser excluída.",
-          409
-        );
-      }
-      return;
     }
+  }
 
-    if (nationalityData) {
-      const { name } = nationalityData;
-      const existingNationality = name
-        ? await genericRepository.generateQuery("nationalities", "name", name)
-        : false;
+  private async validateNationalityCustomer(id: string): Promise<void> {
+    const hasLinkedCustomers = await genericRepository.generateQuery(
+      "customer",
+      "IdNationalities",
+      id
+    );
 
-      if (name && existingNationality) {
-        throw new HttpError(
-          "Já existe um registro com essa nacionalidade. Tente outra.",
-          409
-        );
-      }
+    if (hasLinkedCustomers) {
+      throw new HttpError(
+        "CONFLICT",
+        "The nationality is linked to customers and cannot be deleted.",
+        409
+      );
     }
   }
 }
-
-export const nationalityService = new NationalityService();
