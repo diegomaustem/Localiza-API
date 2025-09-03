@@ -7,6 +7,7 @@ import { categoryRoutes } from "./modules/catagoryRoutes";
 import { stateRoutes } from "./modules/stateRoutes";
 import { groupRoutes } from "./modules/groupRoutes";
 import { cityRoutes } from "./modules/cityRoutes";
+import { nationalityRoutes } from "./modules/nationalityRoutes";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/categories", categoryRoutes);
 router.use("/states", stateRoutes);
 router.use("/groups", groupRoutes);
 router.use("/cities", cityRoutes);
+router.use("/nationalities", nationalityRoutes);
 
 export default router;
