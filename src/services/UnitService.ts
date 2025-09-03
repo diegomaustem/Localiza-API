@@ -1,83 +1,128 @@
 import HttpError from "../errors/HttpError";
-import { IUnit } from "../interfaces/IUnit";
-import { genericRepository } from "../repositories/GenericRepository";
-import { unitRepository } from "../repositories/UnitRepository";
+import { IGenericRepository } from "../interfaces/Generic/IGenericRepository";
+import { IUnit } from "../interfaces/Unit/IUnit";
+import { IUnitCreation } from "../interfaces/Unit/IUnitCreation";
+import { IUnitUpdate } from "../interfaces/Unit/IUnitUpdate";
+import { IUnitRepository } from "../interfaces/Unit/IUnitRepository";
+import { IUnitService } from "../interfaces/Unit/IUnitService";
 
-class UnitService {
-  async getUnits(): Promise<IUnit[]> {
+export class UnitService implements IUnitService {
+  constructor(
+    private readonly repositoryUnit: IUnitRepository,
+    private readonly repositoryGeneric: IGenericRepository
+  ) {}
+
+  async listUnits(): Promise<IUnit[]> {
     try {
-      return await unitRepository.findMany();
+      return await this.repositoryUnit.findMany();
     } catch (error) {
-      console.error("Failed to retrieve units.", error);
+      console.error("[Service] - Failed to retrieve units.", error);
       throw error;
     }
   }
 
-  async getUnit(unitId: string): Promise<IUnit | null> {
+  async listUnit(id: string): Promise<IUnit | null> {
     try {
-      return await unitRepository.findOne(unitId);
-    } catch (error) {
-      console.error("Failed to retrieve unit.", error);
-      throw error;
-    }
-  }
-
-  async createUnit(unitData: IUnit): Promise<IUnit> {
-    try {
-      return await unitRepository.create(unitData);
-    } catch (error) {
-      console.error("Failed to create unit.", error);
-      throw error;
-    }
-  }
-
-  async updateUnit(unitId: string, unitData: IUnit): Promise<IUnit> {
-    try {
-      return await unitRepository.update(unitId, unitData);
-    } catch (error) {
-      console.error("Failed to update unit.", error);
-      throw error;
-    }
-  }
-
-  async deleteUnit(unitId: string): Promise<IUnit> {
-    try {
-      return await unitRepository.delete(unitId);
-    } catch (error) {
-      console.error("Failed to delete unit.", error);
-      throw error;
-    }
-  }
-
-  async unitRulesValidation(unitData?: IUnit, unitId?: string): Promise<void> {
-    if (unitId) {
-      const hasLinkedVehicles = await genericRepository.generateQuery(
-        "vehicles",
-        "units_id",
-        unitId
-      );
-
-      if (hasLinkedVehicles) {
+      const unit = await this.repositoryUnit.findUnique(id);
+      if (!unit) {
         throw new HttpError(
-          "Esta unidade está vinculada a veículos e não pode ser excluída.",
-          409
+          "RESOURCE_NOT_FOUND",
+          "Unit not found in our records.",
+          404
         );
       }
-      return;
+      return unit;
+    } catch (error) {
+      console.error("[Service] - Failed to retrieve unit.", error);
+      throw error;
     }
+  }
 
-    if (unitData) {
-      const { cities_id } = unitData;
+  async create(unit: IUnitCreation): Promise<IUnit> {
+    try {
+      await this.validateCityExist(unit);
+      return await this.repositoryUnit.create(unit);
+    } catch (error) {
+      console.error("[Service] - Failed to create unit.", error);
+      throw error;
+    }
+  }
 
-      const hasCity = cities_id
-        ? await genericRepository.generateQuery("cities", "id", cities_id)
-        : false;
-
-      if (cities_id && !hasCity) {
-        throw new HttpError("Cidade não encontrada. Tente outra.", 404);
+  async update(id: string, unitData: IUnit): Promise<IUnit> {
+    try {
+      const unit = await this.repositoryUnit.findUnique(id);
+      if (!unit) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "Unit not found in our records for update.",
+          404
+        );
       }
+      if (unitData.IdCity) {
+        await this.validateCityExist(unit);
+      }
+      return await this.repositoryUnit.update(id, unitData);
+    } catch (error) {
+      console.error("[Service] - Failed to update unit.", error);
+      throw error;
+    }
+  }
+
+  async delete(id: string): Promise<IUnit> {
+    try {
+      const unit = await this.repositoryUnit.findUnique(id);
+      if (!unit) {
+        throw new HttpError(
+          "RESOURCE_NOT_FOUND",
+          "Unit not found in our records for deletion.",
+          404
+        );
+      }
+      await this.validateUnitHasVehicles(unit);
+      return await this.repositoryUnit.delete(id);
+    } catch (error) {
+      console.error("[Service] - Failed to delete unit.", error);
+      throw error;
+    }
+  }
+
+  private async validateCityExist(
+    unit: IUnitCreation | IUnitUpdate
+  ): Promise<void> {
+    const { IdCity } = unit;
+    if (!IdCity) return;
+
+    const hasCity = await this.repositoryGeneric.genericQuery(
+      "city",
+      "id",
+      IdCity
+    );
+
+    if (!hasCity) {
+      throw new HttpError(
+        "RESOURCE_NOT_FOUND",
+        "The provided city is not in our records. Please try another one.",
+        404
+      );
+    }
+  }
+
+  private async validateUnitHasVehicles(unit: IUnit): Promise<void> {
+    const { id } = unit;
+    if (!id) return;
+
+    const hasVehicle = await this.repositoryGeneric.genericQuery(
+      "vehicle",
+      "IdUnit",
+      id
+    );
+
+    if (hasVehicle) {
+      throw new HttpError(
+        "CONFLICT",
+        "This unit is linked to vehicles and cannot be deleted.",
+        409
+      );
     }
   }
 }
-
-export const unitService = new UnitService();
