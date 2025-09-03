@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCityController } from "../../composition/city.composition";
+import { createCityController } from "../../composition/cities.composition";
 
 const router = Router();
 const cityController = createCityController();
