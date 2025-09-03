@@ -90,7 +90,7 @@ export class CityController {
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
           code: error.code || "INTERNAL_SERVER_ERROR",
-          mensagem: error.message,
+          message: error.message,
         });
         return;
       }
@@ -118,7 +118,7 @@ export class CityController {
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
           code: error.code || "INTERNAL_SERVER_ERROR",
-          mensagem: error.message,
+          message: error.message,
         });
         return;
       }
