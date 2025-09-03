@@ -21,7 +21,7 @@ export class UnitController {
   listUnit = async (req: Request, res: Response): Promise<void> => {
     try {
       const id = req.params.id;
-      const unit = this.service.listUnit(id);
+      const unit = await this.service.listUnit(id);
       res.status(200).json({
         data: {
           unit: unit,
