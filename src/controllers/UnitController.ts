@@ -1,171 +1,131 @@
 import { Request, Response } from "express";
-import { IUnit } from "../interfaces/IUnit";
-import { unitService } from "../services/UnitService";
 import HttpError from "../errors/HttpError";
-class UnitController {
-  async getUnits(req: Request, res: Response): Promise<void> {
+import { IUnitService } from "../interfaces/Unit/IUnitService";
+export class UnitController {
+  constructor(private readonly service: IUnitService) {}
+
+  listUnits = async (req: Request, res: Response): Promise<void> => {
     try {
-      const units = await unitService.getUnits();
-      res.status(200).json({ code: 200, status: "success", units: units });
+      const units = await this.service.listUnits();
+      res.status(200).json({ data: { units: units } });
     } catch (error) {
-      console.error("Error getting units.", error);
+      console.error("[Controller] - Error getting units.", error);
 
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao procurar unidades.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while searching for units.",
       });
     }
-  }
+  };
 
-  async getUnit(req: Request, res: Response): Promise<void> {
-    const unitId: string = req.params.id;
-
+  listUnit = async (req: Request, res: Response): Promise<void> => {
     try {
-      const unit = await unitService.getUnit(unitId);
-      if (!unit) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Unidade não encontrada.",
+      const id = req.params.id;
+      const unit = this.service.listUnit(id);
+      res.status(200).json({
+        data: {
+          unit: unit,
+        },
+      });
+    } catch (error) {
+      console.error("[Controller] - Error getting unit.", error);
+
+      if (error instanceof HttpError) {
+        res.status(error.statusCode).json({
+          code: error.code || "INTERNAL_SERVER_ERROR",
+          message: error.message,
         });
         return;
       }
 
-      res.status(200).json({
-        code: 200,
-        status: "success",
-        unit: unit,
-      });
-    } catch (error) {
-      console.error("Error getting unit.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao buscar unidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while fetching unit.",
       });
     }
-  }
+  };
 
-  async createUnit(req: Request, res: Response): Promise<void> {
-    const unitData: IUnit = req.body;
-
+  create = async (req: Request, res: Response): Promise<void> => {
     try {
-      await unitService.unitRulesValidation(unitData);
-
-      const createdUnit = await unitService.createUnit(unitData);
-
+      const unit = req.body;
+      const createdUnit = await this.service.create(unit);
       res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "Unidade criada com sucesso.",
-        createdUnit: createdUnit,
+        message: "Unit created successfully.",
+        data: {
+          unit: createdUnit,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error creating unit.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
-
-      console.error("Error creating unit.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao criar unidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while creating unit.",
       });
     }
-  }
+  };
 
-  async updateUnit(req: Request, res: Response): Promise<void> {
-    const unitId: string = req.params.id;
-    const unitData: IUnit = req.body;
-
+  update = async (req: Request, res: Response): Promise<void> => {
     try {
-      const unit = await unitService.getUnit(unitId);
-      if (!unit) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Unidade não encontrada para atualização.",
-        });
-        return;
-      }
-
-      await unitService.unitRulesValidation(unitData);
-
-      const updatedUnit = await unitService.updateUnit(unitId, unitData);
-
+      const id = req.params.id;
+      const unitData = req.body;
+      const updatedUnit = await this.service.update(id, unitData);
       res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Unidade atualizada com sucesso.",
-        updatedUnit: updatedUnit,
+        message: "Unit updated successfully.",
+        data: {
+          unit: updatedUnit,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error updating unit.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
 
-      console.error("Error updating unit.", error);
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao atualizar unidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while updating unit.",
       });
     }
-  }
+  };
 
-  async deleteUnit(req: Request, res: Response): Promise<void> {
-    const unitId: string = req.params.id;
-
+  delete = async (req: Request, res: Response): Promise<void> => {
     try {
-      const unit = await unitService.getUnit(unitId);
-
-      if (!unit) {
-        res.status(404).json({
-          code: 404,
-          status: "error",
-          message: "Unidade não encontrada para exclusão.",
-        });
-        return;
-      }
-
-      await unitService.unitRulesValidation(undefined, unitId);
-
-      const deletedUnit = await unitService.deleteUnit(unitId);
-
+      const id = req.params.id;
+      const deletedUnit = await this.service.delete(id);
       res.status(200).json({
-        code: 200,
-        status: "success",
-        message: "Unidade excluída com sucesso.",
-        deletedUnit: deletedUnit,
+        message: "Unit deleted successfully.",
+        data: {
+          unit: deletedUnit,
+        },
       });
     } catch (error) {
+      console.error("[Controller] - Error deleting unit.", error);
+
       if (error instanceof HttpError) {
         res.status(error.statusCode).json({
-          code: error.statusCode,
-          status: "error",
+          code: error.code || "INTERNAL_SERVER_ERROR",
           message: error.message,
         });
         return;
       }
-      console.error("Error deleting unit.", error);
+
       res.status(500).json({
-        code: 500,
-        status: "error",
-        message: "Erro interno ao excluir unidade.",
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal error while deleting unit.",
       });
     }
-  }
+  };
 }
-
-export const unitController = new UnitController();
