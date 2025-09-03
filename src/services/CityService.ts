@@ -87,7 +87,6 @@ export class CityService implements ICityService {
   private async validateCityState(
     city: ICityCreation | ICityUpdate
   ): Promise<void> {
-    console.log(city);
     const { IdState } = city;
     if (!IdState) return;
     const existingState = await this.repositoryGeneric.genericQuery(
